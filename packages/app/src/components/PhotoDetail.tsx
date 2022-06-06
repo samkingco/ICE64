@@ -10,7 +10,7 @@ import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { useOpenSeaURL } from "../hooks/useOpenSeaURL";
 import { usePhotoPagination } from "../hooks/usePhotoPagination";
-import { ChainName, deployedAddress } from "../utils/contracts";
+import { chainIdToName, deployedAddress } from "../utils/contracts";
 import { getEditionId, getOriginalId, isEdition } from "../utils/tokenIds";
 import { MonoButton } from "./Button";
 import { Divider } from "./Divider";
@@ -201,8 +201,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
 
   const { data: account } = useAccount();
   const { activeChain } = useNetwork();
-  const chainName =
-    activeChain && (activeChain.name.toLowerCase() as ChainName);
+  const chainName = (activeChain && chainIdToName(activeChain.id)) || "rinkeby";
 
   const contractAddress = deployedAddress("ICE64", chainName);
   const etherscan = useEtherscanURL();
