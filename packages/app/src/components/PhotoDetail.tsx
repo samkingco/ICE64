@@ -343,7 +343,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
             defaultIndex={edition ? 1 : 0}
             tabHeadings={["1 of 1", "Edition of 32"]}
             tabPanels={[
-              <Description>
+              <Description key="tab-1-of-1">
                 <SaleInfoArea>
                   {isFetchingPhoto && (
                     <LoadingIndicatorWrapper>
@@ -389,7 +389,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                   image stored on IPFS.
                 </Body>
               </Description>,
-              <Description>
+              <Description key="tab-edition-of-32">
                 <SaleInfoArea>
                   {isFetchingPhoto && (
                     <LoadingIndicatorWrapper>

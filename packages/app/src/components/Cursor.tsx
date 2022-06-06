@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const StyledCursor = styled.div`
   pointer-events: none;
@@ -60,30 +60,34 @@ export function Cursor({ text }: Props) {
 
   const requestRef = useRef<ReturnType<typeof requestAnimationFrame>>(null);
 
+  const mouseMoveEvent = useCallback(
+    (e: MouseEvent) => {
+      if (!hasMoved) setHasMoved(true);
+
+      endX.current = e.clientX;
+      endY.current = e.clientY;
+
+      if (ref.current) {
+        ref.current.style.top = endY.current + "px";
+        ref.current.style.left = endX.current + "px";
+      }
+    },
+    [hasMoved]
+  );
+
   useEffect(() => {
+    const ref = requestRef.current;
     endX.current = window.innerWidth / 2;
     endY.current = window.innerHeight / 2;
     document.addEventListener("mousemove", mouseMoveEvent);
 
     return () => {
       document.removeEventListener("mousemove", mouseMoveEvent);
-      if (requestRef.current) {
-        cancelAnimationFrame(requestRef.current);
+      if (ref) {
+        cancelAnimationFrame(ref);
       }
     };
-  }, []);
-
-  const mouseMoveEvent = (e: MouseEvent) => {
-    if (!hasMoved) setHasMoved(true);
-
-    endX.current = e.clientX;
-    endY.current = e.clientY;
-
-    if (ref.current) {
-      ref.current.style.top = endY.current + "px";
-      ref.current.style.left = endX.current + "px";
-    }
-  };
+  }, [mouseMoveEvent]);
 
   return (
     <StyledCursor ref={ref}>
