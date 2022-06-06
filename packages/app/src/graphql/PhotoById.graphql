@@ -1,0 +1,15 @@
+query PhotoById($originalId: ID!, $editionId: ID!) {
+  originalPhoto(id: $originalId) {
+    id
+    currentOwner {
+      address
+    }
+  }
+  editionPhoto(id: $editionId) {
+    id
+    totalPurchased
+    currentOwners {
+      address
+    }
+  }
+}

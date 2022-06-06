@@ -1,0 +1,80 @@
+---
+name: contracts
+on:
+  - push
+env:
+  NODE_ENV: ci
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: ./packages/contracts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Setup pnpm
+        uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
+        with:
+          version: 6.10.0
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install node dependencies
+        run: pnpm install
+      - name: Run build step (compile contracts, generate types, etc.)
+        run: pnpm build
+      - name: Outdated files detected, run `pnpm build` and commit them
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git status
+            git --no-pager diff
+            exit 1
+          fi
+  test:
+    defaults:
+      run:
+        working-directory: ./packages/contracts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+      - name: Setup pnpm
+        uses: pnpm/action-setup@646cdf48217256a3d0b80361c5a50727664284f2
+        with:
+          version: 6.10.0
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install node dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm test

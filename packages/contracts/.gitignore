@@ -1,0 +1,9 @@
+cache
+artifacts/build-info
+artifacts/**/*.dbg.json
+*.tsbuildinfo
+
+coverage
+coverage.json
+
+.env*

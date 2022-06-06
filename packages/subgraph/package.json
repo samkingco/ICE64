@@ -1,0 +1,13 @@
+{
+  "name": "@ice64/subgraph",
+  "private": true,
+  "scripts": {
+    "codegen": "graph codegen subgraph*.yaml",
+    "build": "graph build subgraph*.yaml",
+    "deploy:rinkeby": "graph deploy --studio ice64-test subgraph-rinkeby.yaml"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.25.1",
+    "@graphprotocol/graph-ts": "0.24.1"
+  }
+}

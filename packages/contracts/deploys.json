@@ -1,0 +1,22 @@
+{
+  "ICE64": {
+    "rinkeby": {
+      "address": "0x401995d4fd0B1BF94B286cA949af245af2daE3d3",
+      "blockNumber": 10788127
+    },
+    "localhost": {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "blockNumber": 3
+    }
+  },
+  "ICE64Renderer": {
+    "rinkeby": {
+      "address": "0x44Dc3CdA4e7a904bBCA217Da14732E1218129b7f",
+      "blockNumber": 10787898
+    },
+    "localhost": {
+      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "blockNumber": 4
+    }
+  }
+}

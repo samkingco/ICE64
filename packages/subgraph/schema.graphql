@@ -1,0 +1,32 @@
+type Settings @entity {
+  id: ID!
+  priceOriginal: BigInt!
+  priceEdition: BigInt!
+  maxEditions: BigInt!
+}
+
+type OriginalPhoto @entity {
+  id: ID!
+  editionId: BigInt!
+  uri: String
+  purchasedBy: Wallet!
+  purchasedAt: BigInt!
+  currentOwner: Wallet!
+}
+
+type EditionPhoto @entity {
+  id: ID!
+  originalId: BigInt!
+  uri: String
+  purchasedBy: [Wallet!]!
+  currentOwners: [Wallet!]!
+  maxEditions: BigInt!
+  totalPurchased: BigInt!
+}
+
+type Wallet @entity {
+  id: ID!
+  address: Bytes!
+  originals: [OriginalPhoto!]! @derivedFrom(field: "currentOwner")
+  editions: [EditionPhoto!]! @derivedFrom(field: "currentOwners")
+}

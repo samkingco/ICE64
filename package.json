@@ -1,0 +1,14 @@
+{
+  "name": "ice64",
+  "private": true,
+  "scripts": {
+    "preinstall": "yes | npx only-allow pnpm",
+    "dev": "pnpm -r dev --stream"
+  },
+  "devDependencies": {
+    "prettier": "^2.6.2"
+  },
+  "dependencies": {
+    "typescript": "^4.7.2"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "XQSTValidate",
+  "sourceName": "@exquisite-graphics/contracts/contracts/XQSTValidate.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "MAX_COLORS",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_COLS",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_PIXELS",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_ROWS",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60cc610039600b82828239805160001a60731461002c57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060515760003560e01c8063581581a01460565780637eccd594146074578063e67953ea146056578063fd7982ca14608e575b600080fd5b605d60ff81565b60405160ff90911681526020015b60405180910390f35b607c61010081565b60405161ffff9091168152602001606b565b607c6127108156fea2646970667358221220940d9edbe2d9d3a9618bf1f91376eb84f78b4a026af29469b5ef4f0ad5f6e59564736f6c634300080e0033",
+  "deployedBytecode": "0x730000000000000000000000000000000000000000301460806040526004361060515760003560e01c8063581581a01460565780637eccd594146074578063e67953ea146056578063fd7982ca14608e575b600080fd5b605d60ff81565b60405160ff90911681526020015b60405180910390f35b607c61010081565b60405161ffff9091168152602001606b565b607c6127108156fea2646970667358221220940d9edbe2d9d3a9618bf1f91376eb84f78b4a026af29469b5ef4f0ad5f6e59564736f6c634300080e0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

@@ -1,0 +1,13 @@
+{
+  "exclude": ["dist", "node_modules"],
+  "include": ["./test", "./src", "./scripts", "./typechain-types"],
+  "files": ["./hardhat.config.ts"],
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "target": "es6",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+}

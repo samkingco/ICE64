@@ -1,0 +1,4 @@
+{
+  // improve monorepo handling
+  "eslint.workingDirectories": [{"mode":"auto"}]
+}

@@ -1,0 +1,127 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IGraphics",
+  "sourceName": "@exquisite-graphics/contracts/contracts/interfaces/IGraphics.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "BackgroundColorIndexOutOfRange",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExceededMaxColors",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExceededMaxColumns",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExceededMaxPixels",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExceededMaxRows",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MissingHeader",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotEnoughData",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PixelColorIndexOutOfRange",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "draw",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "drawRects",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "drawRectsUnsafe",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "drawUnsafe",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
