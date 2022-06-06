@@ -1,11 +1,26 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useAccount, useBalance, useConnect, useDisconnect } from "wagmi";
+import {
+  useAccount,
+  useBalance,
+  useConnect,
+  useDisconnect,
+  useNetwork,
+} from "wagmi";
+import { useEtherscanURL } from "../hooks/useEtherscanURL";
+import { targetNetwork } from "../utils/contracts";
 import { buttonReset } from "./Button";
 import { Divider } from "./Divider";
 import { ENSAddress } from "./ENSAddress";
 import { Modal } from "./Modal";
-import { Mono, Subheading } from "./Typography";
+import { Body, Mono, Subheading } from "./Typography";
+
+enum ConnectedStatus {
+  NotConnected,
+  WrongNetwork,
+  SwitchingNetwork,
+  Connected,
+}
 
 const ModalContent = styled.div`
   width: 100%;
@@ -50,6 +65,39 @@ const ModalItem = styled.div`
   @media (min-width: 80rem) {
     padding: 1vw 1.5vw;
   }
+`;
+
+const ConnectedChain = styled(ModalItem)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const StatusDot = styled.div<{ status: ConnectedStatus }>`
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: green;
+  ${(p) => {
+    switch (p.status) {
+      case ConnectedStatus.WrongNetwork:
+        return css`
+          background: red;
+        `;
+      case ConnectedStatus.SwitchingNetwork:
+        return css`
+          background: orange;
+        `;
+      case ConnectedStatus.Connected:
+        return css`
+          background: green;
+        `;
+      default:
+        return css`
+          background: gray;
+        `;
+    }
+  }}
 `;
 
 const ModalItemButton = styled.button`
@@ -107,13 +155,23 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
     addressOrName: account?.address,
     watch: true,
   });
+
   const { disconnect } = useDisconnect();
+  const { activeChain, switchNetwork } = useNetwork();
+  let connectedStatus = ConnectedStatus.NotConnected;
+  if (activeChain) {
+    connectedStatus = activeChain.unsupported
+      ? ConnectedStatus.WrongNetwork
+      : ConnectedStatus.Connected;
+  }
+
+  const etherscan = useEtherscanURL();
 
   return account ? (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      a11yLabel="Wallet connected options"
+      a11yLabel="Connected wallet information"
       size="sm"
     >
       <ModalContent>
@@ -123,12 +181,25 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
           </Subheading>
           {balance && <Mono subdued>{balance.formatted} ETH</Mono>}
         </ModalItem>
+        <ModalItemLink href={`${etherscan}/address/${account.address}`}>
+          <Mono>View on Etherscan</Mono>
+        </ModalItemLink>
         <ModalItem>
           <Divider />
         </ModalItem>
-        <ModalItemLink href={`https://etherscan.io/address/${account.address}`}>
-          <Mono>View on Etherscan</Mono>
-        </ModalItemLink>
+        {activeChain && (
+          <ConnectedChain>
+            <Body>Connected to {activeChain.name}</Body>
+            <StatusDot status={connectedStatus} />
+          </ConnectedChain>
+        )}
+        {connectedStatus === ConnectedStatus.WrongNetwork && (
+          <ModalItemButton
+            onClick={() => switchNetwork && switchNetwork(targetNetwork.id)}
+          >
+            <Mono>Switch to {targetNetwork.name}</Mono>
+          </ModalItemButton>
+        )}
         <ModalItemButton
           onClick={() => {
             disconnect();

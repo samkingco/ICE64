@@ -1,10 +1,7 @@
-import { useNetwork } from "wagmi";
-import { chainIdToName } from "../utils/contracts";
+import { targetNetwork } from "../utils/contracts";
 
 export function useEtherscanURL() {
-  const { activeChain } = useNetwork();
-  let chainId = activeChain?.id;
-  const chainName = chainIdToName(chainId);
+  const chainName = targetNetwork.name;
 
   const etherscan = `https://${
     chainName !== "mainnet" ? `${chainName}.` : ""

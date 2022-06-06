@@ -4,13 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback } from "react";
-import { useAccount, useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
 import { usePhotoByIdQuery } from "../graphql/subgraph";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { useOpenSeaURL } from "../hooks/useOpenSeaURL";
 import { usePhotoPagination } from "../hooks/usePhotoPagination";
-import { chainIdToName, deployedAddress } from "../utils/contracts";
+import { deployedAddress, targetNetwork } from "../utils/contracts";
 import { getEditionId, getOriginalId, isEdition } from "../utils/tokenIds";
 import { MonoButton } from "./Button";
 import { Divider } from "./Divider";
@@ -200,10 +200,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
   const maxEditions = 32;
 
   const { data: account } = useAccount();
-  const { activeChain } = useNetwork();
-  const chainName = (activeChain && chainIdToName(activeChain.id)) || "rinkeby";
-
-  const contractAddress = deployedAddress("ICE64", chainName);
+  const contractAddress = deployedAddress("ICE64", targetNetwork);
   const etherscan = useEtherscanURL();
   const opensea = useOpenSeaURL();
   const openSeaLink = `${opensea}/${contractAddress}/${id}`;

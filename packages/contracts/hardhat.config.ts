@@ -24,7 +24,7 @@ export default {
   },
   networks: {
     hardhat: {
-      chainId: 1337,
+      chainId: 31337,
       blockGasLimit: 100000000,
       accounts: {
         count: 40,

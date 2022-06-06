@@ -1,16 +1,11 @@
 import { CallOverrides, ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
+import { useAccount, useContractWrite, useWaitForTransaction } from "wagmi";
 import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  useWaitForTransaction,
-} from "wagmi";
-import {
-  ChainName,
   ContractName,
   deployedAbi,
   deployedAddress,
+  targetNetwork,
 } from "../utils/contracts";
 
 export enum TxState {
@@ -39,10 +34,7 @@ export function useContractTransaction(
   const [errorMessage, setErrorMessage] = useState("");
 
   const { data: account } = useAccount();
-  const { activeChain } = useNetwork();
-  const chainName =
-    activeChain && (activeChain.name.toLowerCase() as ChainName);
-  const contractAddress = deployedAddress(contractName, chainName);
+  const contractAddress = deployedAddress(contractName, targetNetwork);
   const contractAbi = deployedAbi(contractName);
 
   useEffect(() => {
