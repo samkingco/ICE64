@@ -1,6 +1,23 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.14;
 
+/*
+
+          ^JJ~     .::^~!!77~.  .?JJ~:^~?Y!      .:::..        7Y!              
+          :@@^  .!~..    .:~5#Y  Y@Y   .:7?    ~?!:.          ~@G:              
+           B#  ~P^           ~P  ~@P:        :PY.            ~&5                
+           B# ^@7             :  ^@Y::~?5!  ^&P::^~!J?^     ~#7  .              
+           B# 5@^                ^@J   .!~ .B&^     .?&P.  7P^  5J              
+           B# J@?                ^@J       ^@B        ~@P.77   .@5 .^~          
+           B# .B@!             . ^@J       :&@:        B&!~.:::^@P^7YJ          
+           B&. .5@P^         :^: !@J        7@B:      ^#?      :@5              
+          ^@@!   ^YGPY?7!!!7!^.  P@J.:^~7YB? ^5G?^...^?~       J@&^             
+          :^^:      :^~!~~^.    .^^::^^^~~~.   .^~^:..         ^^^:
+
+          O W N E R S H I P   C O N T R A C T
+
+*/
+
 import {Owned} from "@rari-capital/solmate/src/auth/Owned.sol";
 import {ICE1155} from "./ICE1155.sol";
 
@@ -15,12 +32,9 @@ import {IICE64} from "./interfaces/IICE64.sol";
 
 /// @title ICE64, a photo collection by Sam King
 /// @author Sam King (samkingstudio.eth)
-/// @notice This contract stores token ownership, and allows minting.
-/// @dev It uses a slightly modified Solmate ERC1155 implementation for more efficient storage.
-///      TLDR:
-///        - Bitpacked `balanceOf` since we have a small number of tokens.
-///        - Allows for `ownerOf`-like functions to check if someone owns an original or edition.
-///      Check out the notes in `ICE1155` for more information.
+/// @notice This contract stores token ownership, and allows minting using the ERC1155 standard.
+///         Collectors can purchase 721-like photos as original 1 of 1's, but also collect
+///         smaller on-chain versions as editions.
 contract ICE64 is ICE1155, Owned, IICE64 {
     using Strings for uint256;
     using DynamicBuffer for bytes;
