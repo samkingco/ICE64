@@ -20,8 +20,6 @@ export interface IICE64Interface extends utils.Interface {
     "getEditionTokenId(uint256)": FunctionFragment;
     "getMaxEditions()": FunctionFragment;
     "getOriginalTokenId(uint256)": FunctionFragment;
-    "getOriginalsBaseURI()": FunctionFragment;
-    "getRawEditionPhotoData(uint256)": FunctionFragment;
     "isEdition(uint256)": FunctionFragment;
   };
 
@@ -35,14 +33,6 @@ export interface IICE64Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getOriginalTokenId",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getOriginalsBaseURI",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getRawEditionPhotoData",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -60,14 +50,6 @@ export interface IICE64Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getOriginalTokenId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getOriginalsBaseURI",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getRawEditionPhotoData",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isEdition", data: BytesLike): Result;
@@ -114,13 +96,6 @@ export interface IICE64 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    getOriginalsBaseURI(overrides?: CallOverrides): Promise<[string]>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     isEdition(id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
   };
 
@@ -136,13 +111,6 @@ export interface IICE64 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  getOriginalsBaseURI(overrides?: CallOverrides): Promise<string>;
-
-  getRawEditionPhotoData(
-    id: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   isEdition(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
   callStatic: {
@@ -157,13 +125,6 @@ export interface IICE64 extends BaseContract {
       editionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    getOriginalsBaseURI(overrides?: CallOverrides): Promise<string>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     isEdition(id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
   };
@@ -183,13 +144,6 @@ export interface IICE64 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getOriginalsBaseURI(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     isEdition(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
   };
 
@@ -203,15 +157,6 @@ export interface IICE64 extends BaseContract {
 
     getOriginalTokenId(
       editionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getOriginalsBaseURI(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

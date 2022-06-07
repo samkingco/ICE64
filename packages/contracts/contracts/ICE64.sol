@@ -2,10 +2,9 @@
 pragma solidity ^0.8.14;
 
 import {Owned} from "@rari-capital/solmate/src/auth/Owned.sol";
-import {ERC1155} from "@rari-capital/solmate/src/tokens/ERC1155.sol";
+import {ICE1155} from "./ICE1155.sol";
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {SSTORE2} from "@0xsequence/sstore2/contracts/SSTORE2.sol";
 import {DynamicBuffer} from "@divergencetech/ethier/contracts/utils/DynamicBuffer.sol";
 import {Base64} from "./Base64.sol";
 
@@ -16,7 +15,13 @@ import {IICE64} from "./interfaces/IICE64.sol";
 
 /// @title ICE64, a photo collection by Sam King
 /// @author Sam King (samkingstudio.eth)
-contract ICE64 is ERC1155, Owned, IICE64 {
+/// @notice This contract stores token ownership, and allows minting.
+/// @dev It uses a slightly modified Solmate ERC1155 implementation for more efficient storage.
+///      TLDR:
+///        - Bitpacked `balanceOf` since we have a small number of tokens.
+///        - Allows for `ownerOf`-like functions to check if someone owns an original or edition.
+///      Check out the notes in `ICE1155` for more information.
+contract ICE64 is ICE1155, Owned, IICE64 {
     using Strings for uint256;
     using DynamicBuffer for bytes;
 
@@ -24,23 +29,30 @@ contract ICE64 is ERC1155, Owned, IICE64 {
                                    S T O R A G E
     ------------------------------------------------------------------------ */
 
-    /* DEPENDENCIES -------------------------------------------------------- */
-
+    /// @dev Renderer contract for on-chain metadata
     IICE64Renderer public metadata;
+
+    /// @dev Roots project contract address for owner claims
     IERC721 public roots;
 
-    /* SALE DATA ----------------------------------------------------------- */
-
+    /// @dev uint256 to bool map for whether a Roots tokenId has used a free claim
     uint256 private _rootsClaims;
 
+    /// @dev Token constants
     uint256 private constant _maxTokenId = 16;
     uint256 private constant _editionStartId = 100;
     uint256 private constant _maxEditions = 32;
 
-    uint256 public constant priceOriginal = 0.0032 ether;
-    uint256 public constant priceEdition = 0.0002 ether;
+    /// @dev Token prices
+    uint256 public constant priceOriginal = 0.32 ether;
+    uint256 public constant priceEdition = 0.04 ether;
+
+    /// @dev Photo id (not token id) to packed uint256 with originals sold, editions sold,
+    ///      and whether the original has claimed the reserved edition or not.
+    ///      See `_encodeSalesData` and `_decodeSalesData`.
     mapping(uint256 => uint256) private _salesCount;
 
+    /// @dev Store info about token royalties
     struct RoyaltyInfo {
         address receiver;
         uint24 amount;
@@ -48,40 +60,20 @@ contract ICE64 is ERC1155, Owned, IICE64 {
 
     RoyaltyInfo private _royaltyInfo;
 
-    /* IMAGE DATA ---------------------------------------------------------- */
-
-    string private _originalsBaseURI;
-
-    uint256 private constant _photoDataByteSize = 4360;
-    uint256 private constant _photoDataChunkLength = 2;
-    mapping(uint256 => address) private _photoDataChunks;
-
     /* ------------------------------------------------------------------------
                                     E R R O R S
     ------------------------------------------------------------------------ */
 
-    /* MINT ---------------------------------------------------------------- */
-
-    error SaleNotActive();
-    error AlreadyOwnerOfEdition();
     error IncorrectEthAmount();
+    error InvalidToken();
+    error AlreadyOwnerOfEdition();
     error SoldOut();
-    error EditionForOriginalHolderStillReserved();
-    error NotOwnerOfOriginal();
-    error ReservedEditionAlreadyClaimed();
+    error EditionForOriginalStillReserved();
     error NotOwnerOfRootsPhoto();
     error RootsPhotoAlreadyUsedClaim();
-
-    /* ADMIN --------------------------------------------------------------- */
-
-    error InvalidPhotoData();
-    error InvalidToken();
+    error NotOwner();
     error NoMetadataYet();
     error PaymentFailed();
-
-    /* BURN ---------------------------------------------------------------- */
-
-    error NotOwner();
 
     /* ------------------------------------------------------------------------
                                  M O D I F I E R S
@@ -112,21 +104,16 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     ------------------------------------------------------------------------ */
 
     /// @param owner The owner of the contract upon deployment
-    /// @param originalsBaseURI_ The base URI for original photos (usually arweave or ipfs)
     /// @param roots_ The Roots collection address
     constructor(
         address owner,
         address royalties,
-        string memory originalsBaseURI_,
         IERC721 roots_
-    ) ERC1155() Owned(owner) {
-        // Set initial storage values
-        _originalsBaseURI = originalsBaseURI_;
+    ) ICE1155() Owned(owner) {
+        // Set Roots contract address
         roots = roots_;
-
         // Set the initial storage value to non-zero to save gas costs for first roots claimer
         _rootsClaims = _setBool(_rootsClaims, 0, true);
-
         // Set the default royalties to 6.4% for the owner
         _royaltyInfo = RoyaltyInfo(royalties, 640);
     }
@@ -142,7 +129,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
                                 P U R C H A S I N G
     ------------------------------------------------------------------------ */
 
-    /// @notice Purchase an original 1/1 photo and an on-chain edition
+    /// @notice Purchase an original 1/1 photo and the included on-chain edition
     /// @dev Mints a 1/1 and an on-chain edition of the same token, but only if the buyer
     ///      doesn't already own an edition
     /// @param id The id of the photo to purchase
@@ -188,7 +175,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     /// @notice Claim a free edition (whill supply lasts) if you hold a Roots photo. Check if the
     ///         Roots photo has been claimed with `hasEditionBeenClaimedForRootsPhoto`.
     /// @dev Requires holding a Roots photo that hasn't been previously used to claim an edition
-    /// @param id The id of the edition to claim
+    /// @param id The id of the photo to claim an edition for (use original photo's id)
     /// @param rootsId The id of the Roots photo to use when claiming
     function claimEditionAsRootsHolder(uint256 id, uint256 rootsId) external onlyValidToken(id) {
         if (roots.ownerOf(rootsId) != msg.sender) revert NotOwnerOfRootsPhoto();
@@ -198,7 +185,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     }
 
     /// @dev Internal function to mint an edition, checking if there's still supply
-    /// @param id The id of the edition to mint (use original photo's id: `getEditionId(id)`)
+    /// @param id The id of the photo to mint an edition for (use original photo's id)
     function _mintEdition(uint256 id) internal {
         uint256 editionId = getEditionTokenId(id);
         (, uint256 editionsSold, bool reservedEditionClaimed) = _decodeSalesCount(_salesCount[id]);
@@ -207,7 +194,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
             if (reservedEditionClaimed) {
                 revert SoldOut();
             } else {
-                revert EditionForOriginalHolderStillReserved();
+                revert EditionForOriginalStillReserved();
             }
         }
         if (balanceOf[msg.sender][editionId] > 0) revert AlreadyOwnerOfEdition();
@@ -272,18 +259,6 @@ contract ICE64 is ERC1155, Owned, IICE64 {
                                  O R I G I N A L S
     ------------------------------------------------------------------------ */
 
-    /// @notice Admin function to set the baseURI for original photos (arweave or ipfs)
-    /// @param baseURI The new baseURI to set
-    function setOriginalsBaseURI(string memory baseURI) external onlyOwner {
-        _originalsBaseURI = baseURI;
-    }
-
-    /// @notice Retrieve the currently set baseURI
-    /// @dev Used by the metadata contract to construct the tokenURI
-    function getOriginalsBaseURI() external view returns (string memory) {
-        return _originalsBaseURI;
-    }
-
     /// @notice Gets the original token id from an edition token id
     /// @param editionId The token id of the edition
     function getOriginalTokenId(uint256 editionId) public pure returns (uint256) {
@@ -300,70 +275,6 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     /* ------------------------------------------------------------------------
                                   E D I T I O N S
     ------------------------------------------------------------------------ */
-
-    /// @notice Admin function to store chunked photo data for on-chain editions
-    /// @dev Stores the data in chunks for more efficient storage and costs
-    /// @param chunkId The chunk id to save data for
-    /// @param data The packed data in .xqst format
-    function storeChunkedEditionPhotoData(uint256 chunkId, bytes calldata data) external onlyOwner {
-        if (data.length != _photoDataByteSize * _photoDataChunkLength) revert InvalidPhotoData();
-        _photoDataChunks[chunkId] = SSTORE2.write(data);
-    }
-
-    /// @notice Gets the raw .xqst data for a given photo
-    /// @dev Used by the metadata contract to read data from storage
-    /// @param id The id of the photo to get data for
-    function getRawEditionPhotoData(uint256 id)
-        external
-        view
-        onlyValidToken(id)
-        returns (bytes memory)
-    {
-        return _getRawEditionPhotoData(id);
-    }
-
-    /// @notice Gets a photo in SVG format
-    /// @dev Calls out to the metadata contract for rendering
-    /// @param id The id of the photo to render
-    function getEditionPhotoSVG(uint256 id)
-        external
-        view
-        onlyValidToken(id)
-        onlyWithMetadata
-        returns (string memory)
-    {
-        bytes memory data = _getRawEditionPhotoData(id);
-        return metadata.drawSVGToString(data);
-    }
-
-    /// @notice Gets a photo in Base64 encoded SVG format
-    /// @dev Calls out to the metadata contract for rendering
-    /// @param id The id of the photo to render
-    function getEditionPhotoBase64SVG(uint256 id)
-        external
-        view
-        onlyValidToken(id)
-        onlyWithMetadata
-        returns (string memory)
-    {
-        bytes memory data = _getRawEditionPhotoData(id);
-        bytes memory svg = metadata.drawSVGToBytes(data);
-        bytes memory svgBase64 = DynamicBuffer.allocate(2**19);
-
-        svgBase64.appendSafe("data:image/svg+xml;base64,");
-        svgBase64.appendSafe(bytes(Base64.encode(svg)));
-
-        return string(svgBase64);
-    }
-
-    /// @dev Gets the raw photo data from storage
-    /// @param id The id of the photo to render
-    function _getRawEditionPhotoData(uint256 id) internal view returns (bytes memory) {
-        uint256 chunkId = ((id - 1) / _photoDataChunkLength) + 1;
-        uint256 chunkIndex = (id - 1) % _photoDataChunkLength;
-        uint256 startBytes = chunkIndex * _photoDataByteSize;
-        return SSTORE2.read(_photoDataChunks[chunkId], startBytes, startBytes + _photoDataByteSize);
-    }
 
     /// @notice Gets the edition token id from the original token id
     /// @param id The id of the original photo

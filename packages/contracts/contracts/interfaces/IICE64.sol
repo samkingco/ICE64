@@ -2,11 +2,7 @@
 pragma solidity ^0.8.14;
 
 interface IICE64 {
-    function getOriginalsBaseURI() external view returns (string memory);
-
     function getOriginalTokenId(uint256 editionId) external pure returns (uint256);
-
-    function getRawEditionPhotoData(uint256 id) external view returns (bytes memory);
 
     function getEditionTokenId(uint256 id) external pure returns (uint256);
 

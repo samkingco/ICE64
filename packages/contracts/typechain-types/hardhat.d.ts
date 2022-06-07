@@ -69,9 +69,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721TokenReceiver__factory>;
     getContractFactory(
+      name: "ERC1155TokenReceiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155TokenReceiver__factory>;
+    getContractFactory(
+      name: "ICE1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ICE1155__factory>;
+    getContractFactory(
       name: "ICE64",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ICE64__factory>;
+    getContractFactory(
+      name: "ICE64DataStore",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ICE64DataStore__factory>;
     getContractFactory(
       name: "ICE64Renderer",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -80,6 +92,10 @@ declare module "hardhat/types/runtime" {
       name: "IICE64",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IICE64__factory>;
+    getContractFactory(
+      name: "IICE64DataStore",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IICE64DataStore__factory>;
     getContractFactory(
       name: "IICE64Renderer",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -168,10 +184,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721TokenReceiver>;
     getContractAt(
+      name: "ERC1155TokenReceiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155TokenReceiver>;
+    getContractAt(
+      name: "ICE1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ICE1155>;
+    getContractAt(
       name: "ICE64",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ICE64>;
+    getContractAt(
+      name: "ICE64DataStore",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ICE64DataStore>;
     getContractAt(
       name: "ICE64Renderer",
       address: string,
@@ -182,6 +213,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IICE64>;
+    getContractAt(
+      name: "IICE64DataStore",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IICE64DataStore>;
     getContractAt(
       name: "IICE64Renderer",
       address: string,
