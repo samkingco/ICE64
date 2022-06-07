@@ -91,7 +91,7 @@ export default function About() {
             </Mono>
             <Mono>
               <a href={`${etherscan}/address/${deployedAddress("ICE64")}`}>
-                ICE64 smart contract
+                ICE64.sol
               </a>
             </Mono>
             <Mono>
@@ -100,13 +100,11 @@ export default function About() {
                   "ICE64Renderer"
                 )}`}
               >
-                ICE64Renderer smart contract
+                ICE64Renderer.sol
               </a>
             </Mono>
             <Mono>
-              <a href={`${etherscan}/address/${xqstgfx}`}>
-                XQSTGFX smart contract
-              </a>
+              <a href={`${etherscan}/address/${xqstgfx}`}>XQSTGFX.sol</a>
             </Mono>
           </div>
 
