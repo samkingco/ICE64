@@ -4,6 +4,7 @@ import {
   bodyStyles,
   headingStyles,
   monoStyles,
+  subdued,
   subheadingStyles,
 } from "./Typography";
 import withMargin, { WithMarginProp } from "./withMargin";
@@ -56,6 +57,17 @@ export const Button = styled.button`
       rgba(var(--background-alpha), 0.24) 50%,
       rgba(var(--background-alpha), 0) 100%
     );
+
+    @media (prefers-color-scheme: dark) {
+      & {
+        background: linear-gradient(
+          to right,
+          rgba(var(--background-alpha), 0) 0%,
+          rgba(var(--background-alpha), 0.16) 50%,
+          rgba(var(--background-alpha), 0) 100%
+        );
+      }
+    }
   }
 
   &:hover&:not(:disabled):after {
@@ -63,7 +75,7 @@ export const Button = styled.button`
   }
 
   &:disabled {
-    background: rgba(var(--foreground-alpha), 0.04);
+    background: var(--background-emphasis);
     color: rgba(var(--foreground-alpha), 0.48);
     cursor: not-allowed;
   }
@@ -93,13 +105,8 @@ interface BaseTextButtonProps extends WithMarginProp {
 export const BodyButton = styled.button<BaseTextButtonProps>`
   ${buttonReset};
   ${bodyStyles};
+  ${(p) => p.subdued && subdued};
   ${withMargin};
-
-  ${(p) =>
-    p.subdued &&
-    css`
-      opacity: 0.48;
-    `}
 
   &:hover {
     text-decoration: underline;
@@ -109,12 +116,7 @@ export const BodyButton = styled.button<BaseTextButtonProps>`
 export const MonoButton = styled(BodyButton)<BaseTextButtonProps>`
   ${buttonReset};
   ${monoStyles};
-
-  ${(p) =>
-    p.subdued &&
-    css`
-      opacity: 0.48;
-    `}
+  ${(p) => p.subdued && subdued};
 
   &:hover {
     opacity: 1;

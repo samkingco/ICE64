@@ -3,7 +3,7 @@ import createStore from "zustand";
 import { persist } from "zustand/middleware";
 import { cachedFetch } from "../utils/cachedFetch";
 
-function addressDisplayName(address: string) {
+export function addressDisplayName(address: string) {
   const match = address.match(
     /^(0x[a-zA-Z0-9]{3})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/
   );

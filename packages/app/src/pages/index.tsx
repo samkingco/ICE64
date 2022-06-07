@@ -5,10 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { ConnectWalletButton } from "../components/ConnectWalletButton";
 import { Cursor } from "../components/Cursor";
 import { Modal } from "../components/Modal";
+import { Navigation } from "../components/Navigation";
 import { PhotoDetail } from "../components/PhotoDetail";
+import { Mono } from "../components/Typography";
 import { useCursorPosition } from "../hooks/useCursorPosition";
 import { allIds, getEditionId, originalIds } from "../utils/tokenIds";
 
@@ -16,7 +17,17 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 6rem;
-  padding: 4vw;
+  padding: 3rem 4vw;
+
+  @media (min-width: 32rem) {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
+  @media (min-width: 80rem) {
+    padding-top: 6vw;
+    padding-bottom: 6vw;
+  }
 `;
 
 const TokenGroup = styled.div`
@@ -37,17 +48,6 @@ const TokenImage = styled.figure`
   @media (orientation: landscape) {
     max-width: 100vh;
   }
-`;
-
-const ConnectNav = styled.nav`
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 10;
-  padding: 0.5vw 2vw;
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  line-height: 1;
 `;
 
 export default function Index() {
@@ -106,6 +106,11 @@ export default function Index() {
         <title>ICE64</title>
       </Head>
 
+      <Navigation
+        onNavMouseEnter={() => setCursorVisible(false)}
+        onNavMouseLeave={() => setCursorVisible(true)}
+      />
+
       <Cursor
         text={
           cursorVisible
@@ -115,13 +120,6 @@ export default function Index() {
             : ""
         }
       />
-
-      <ConnectNav
-        onMouseEnter={() => setCursorVisible(false)}
-        onMouseLeave={() => setCursorVisible(true)}
-      >
-        <ConnectWalletButton />
-      </ConnectNav>
 
       <Grid>
         {originalIds.map((id, idx) => (
@@ -138,6 +136,7 @@ export default function Index() {
                     width={2800}
                     height={2800}
                     layout="responsive"
+                    alt=""
                   />
                 </a>
               </Link>
@@ -154,6 +153,7 @@ export default function Index() {
                     width={2800}
                     height={2800}
                     layout="responsive"
+                    alt=""
                   />
                 </a>
               </Link>
@@ -161,6 +161,12 @@ export default function Index() {
           </TokenGroup>
         ))}
       </Grid>
+
+      <nav>
+        <Mono>
+          <a href="https://samking.studio">A Sam King Studio project</a>
+        </Mono>
+      </nav>
 
       <Modal
         a11yLabel={`Detail view of photo #${modalId}`}

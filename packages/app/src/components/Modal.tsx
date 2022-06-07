@@ -21,7 +21,7 @@ const ModalOverlay = styled(MotionDialogOverlay)`
     right: 0;
     bottom: 0;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.92) !important;
+    background: rgba(var(--background-alpha), 0.92) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     overflow-y: auto;

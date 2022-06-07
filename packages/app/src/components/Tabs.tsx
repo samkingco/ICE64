@@ -14,7 +14,7 @@ import { monoStyles } from "./Typography";
 
 const TabsWrapper = styled.div`
   position: relative;
-  background: rgba(var(--foreground-alpha), 0.04);
+  background: var(--background-emphasis);
   border-radius: 1rem;
   position: relative;
   margin-bottom: 1.5rem;
@@ -41,8 +41,14 @@ const TabIndicators = styled.div`
   display: flex;
 `;
 
+const TabIndicatorWrapper = styled.div`
+  position: relative;
+  height: 100%;
+  flex: 1;
+`;
+
 const TabIndicator = styled(motion.div)`
-  background: rgba(var(--foreground-alpha), 0.04);
+  background: var(--background-emphasis);
   position: absolute;
   top: 0;
   left: 0;
@@ -54,11 +60,6 @@ const TabIndicator = styled(motion.div)`
   @media (min-width: 80rem) {
     border-radius: 1vw;
   }
-`;
-
-const TabIndicatorWrapper = styled.div`
-  position: relative;
-  flex: 1;
 `;
 
 const Tab = styled(ReachTab)`

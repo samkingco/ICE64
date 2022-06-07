@@ -2,20 +2,27 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import withMargin, { WithMarginProp } from "./withMargin";
 
+interface BaseTextProps extends WithMarginProp {
+  subdued?: boolean;
+}
+
+export const subdued = css`
+  opacity: 0.48;
+`;
+
 export const titleStyles = css`
   font-family: var(--font-heading);
   font-weight: normal;
   font-size: 2.4rem;
-  @media (min-width: 32rem) {
-    font-size: 3.2rem;
-  }
+  font-size: 3.2rem;
   @media (min-width: 80rem) {
     font-size: 4vw;
   }
 `;
 
-export const Title = styled.h1`
+export const Title = styled.h1<BaseTextProps>`
   ${titleStyles};
+  ${(p) => p.subdued && subdued};
   ${withMargin};
 `;
 
@@ -23,16 +30,15 @@ export const headingStyles = css`
   font-family: var(--font-heading);
   font-weight: normal;
   font-size: 1.6rem;
-  @media (min-width: 32rem) {
-    font-size: 2.4rem;
-  }
+  font-size: 2.4rem;
   @media (min-width: 80rem) {
     font-size: 3vw;
   }
 `;
 
-export const Heading = styled.h2`
+export const Heading = styled.h2<BaseTextProps>`
   ${headingStyles};
+  ${(p) => p.subdued && subdued};
   ${withMargin};
 `;
 
@@ -40,22 +46,17 @@ export const subheadingStyles = css`
   font-family: var(--font-heading);
   font-weight: normal;
   font-size: 1.4rem;
-  @media (min-width: 32rem) {
-    font-size: 1.6rem;
-  }
+  font-size: 1.6rem;
   @media (min-width: 80rem) {
     font-size: 2vw;
   }
 `;
 
-export const Subheading = styled.h3`
+export const Subheading = styled.h3<BaseTextProps>`
   ${subheadingStyles};
+  ${(p) => p.subdued && subdued};
   ${withMargin};
 `;
-
-interface BaseTextProps extends WithMarginProp {
-  subdued?: boolean;
-}
 
 export const bodyStyles = css`
   margin: 0;
@@ -68,12 +69,8 @@ export const bodyStyles = css`
 
 export const Body = styled.p<BaseTextProps>`
   ${bodyStyles};
+  ${(p) => p.subdued && subdued};
   ${withMargin};
-  ${(p) =>
-    p.subdued &&
-    css`
-      opacity: 0.64;
-    `}
 `;
 
 export const monoStyles = css`
@@ -87,10 +84,6 @@ export const monoStyles = css`
 
 export const Mono = styled.p<BaseTextProps>`
   ${monoStyles};
+  ${(p) => p.subdued && subdued};
   ${withMargin};
-  ${(p) =>
-    p.subdued &&
-    css`
-      opacity: 0.48;
-    `}
 `;

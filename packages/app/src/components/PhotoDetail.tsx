@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import { usePhotoByIdQuery } from "../graphql/subgraph";
+import { addressDisplayName } from "../hooks/useENS";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { useOpenSeaURL } from "../hooks/useOpenSeaURL";
@@ -13,6 +14,7 @@ import { usePhotoPagination } from "../hooks/usePhotoPagination";
 import { deployedAddress, targetNetwork } from "../utils/contracts";
 import { getEditionId, getOriginalId, isEdition } from "../utils/tokenIds";
 import { MonoButton } from "./Button";
+import { CopyToClipboard } from "./CopyToClipboard";
 import { Divider } from "./Divider";
 import { ENSAddress } from "./ENSAddress";
 import { LoadingIndicator, LoadingIndicatorWrapper } from "./LoadingIndicator";
@@ -23,20 +25,24 @@ import { Body, Mono, Subheading, Title } from "./Typography";
 const Container = styled.article`
   display: grid;
   grid-template-areas: "image" "sidebar";
-  grid-template-rows: 64vh max-content;
+  grid-template-rows: 100vw max-content;
   grid-template-columns: 1fr;
   overflow-y: auto;
   background: var(--background);
 
-  @media (min-width: 32rem) {
-    grid-template-rows: 80vh max-content;
+  @media (min-width: 40rem) {
+    grid-template-rows: 70vh max-content;
   }
 
   @media (min-width: 64rem) {
     height: 100vh;
     grid-template-areas: "image sidebar";
-    grid-template-columns: 1fr 30vw;
+    grid-template-columns: 1fr 40vw;
     grid-template-rows: 1fr;
+  }
+
+  @media (min-width: 80rem) {
+    grid-template-columns: 1fr 30vw;
   }
 `;
 
@@ -44,27 +50,18 @@ const Sidebar = styled.section`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
-  background: var(--color-bg-alt);
-  color: var(--color-fg);
   grid-area: sidebar;
-  padding: 1vw 1vw 6vw;
+  padding: 4vw 4vw 6vw;
   overflow-y: auto;
 
-  @media (min-width: 32rem) {
-    & > * {
-      width: 100%;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 
   @media (min-width: 64rem) {
-    padding-bottom: 2vw;
-    & > * {
-      max-width: none;
-    }
+    max-width: none;
+    padding: 1vw 1vw 2vw;
   }
 `;
 
@@ -90,8 +87,9 @@ const CloseLink = styled.a`
   }
 `;
 
-const TabsWrapper = styled.div`
+const MainContent = styled.div`
   flex: 1;
+  margin-bottom: 3rem;
 `;
 
 const Description = styled.div`
@@ -120,7 +118,7 @@ const SaleInfoArea = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  background: rgba(var(--foreground-alpha), 0.04);
+  background: var(--background-emphasis);
   border-radius: 1rem;
   min-width: 100%;
   min-height: 6.4rem;
@@ -173,6 +171,29 @@ const OwnedBy = styled.div`
       rgba(var(--background-alpha), 0) 100%
     );
   }
+`;
+
+const ContractInfo = styled.dl`
+  display: grid;
+  grid-template-columns: 1fr max-content;
+`;
+
+const ContractKey = styled(Mono)`
+  opacity: 0.48;
+`;
+
+const ContractValue = styled(Mono)`
+  text-align: right;
+`;
+
+const OwnersList = styled.ul`
+  list-style: square;
+  margin: 0;
+  padding-left: 1rem;
+`;
+
+const Owner = styled.li`
+  margin: 0;
 `;
 
 const MediaWrapper = styled.div`
@@ -273,7 +294,10 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
       width="24"
       aria-hidden="true"
     >
-      <path d="M12 13.4 7.1 18.3Q6.825 18.575 6.4 18.575Q5.975 18.575 5.7 18.3Q5.425 18.025 5.425 17.6Q5.425 17.175 5.7 16.9L10.6 12L5.7 7.1Q5.425 6.825 5.425 6.4Q5.425 5.975 5.7 5.7Q5.975 5.425 6.4 5.425Q6.825 5.425 7.1 5.7L12 10.6L16.9 5.7Q17.175 5.425 17.6 5.425Q18.025 5.425 18.3 5.7Q18.575 5.975 18.575 6.4Q18.575 6.825 18.3 7.1L13.4 12L18.3 16.9Q18.575 17.175 18.575 17.6Q18.575 18.025 18.3 18.3Q18.025 18.575 17.6 18.575Q17.175 18.575 16.9 18.3Z" />
+      <path
+        d="M12 13.4 7.1 18.3Q6.825 18.575 6.4 18.575Q5.975 18.575 5.7 18.3Q5.425 18.025 5.425 17.6Q5.425 17.175 5.7 16.9L10.6 12L5.7 7.1Q5.425 6.825 5.425 6.4Q5.425 5.975 5.7 5.7Q5.975 5.425 6.4 5.425Q6.825 5.425 7.1 5.7L12 10.6L16.9 5.7Q17.175 5.425 17.6 5.425Q18.025 5.425 18.3 5.7Q18.575 5.975 18.575 6.4Q18.575 6.825 18.3 7.1L13.4 12L18.3 16.9Q18.575 17.175 18.575 17.6Q18.575 18.025 18.3 18.3Q18.025 18.575 17.6 18.575Q17.175 18.575 16.9 18.3Z"
+        fill="currentColor"
+      />
     </svg>
   );
 
@@ -307,7 +331,10 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                 width="24"
                 aria-hidden="true"
               >
-                <path d="M10.875 19.3 4.275 12.7Q4.125 12.55 4.062 12.375Q4 12.2 4 12Q4 11.8 4.062 11.625Q4.125 11.45 4.275 11.3L10.875 4.7Q11.15 4.425 11.562 4.412Q11.975 4.4 12.275 4.7Q12.575 4.975 12.588 5.387Q12.6 5.8 12.3 6.1L7.4 11H18.575Q19 11 19.288 11.287Q19.575 11.575 19.575 12Q19.575 12.425 19.288 12.712Q19 13 18.575 13H7.4L12.3 17.9Q12.575 18.175 12.588 18.6Q12.6 19.025 12.3 19.3Q12.025 19.6 11.6 19.6Q11.175 19.6 10.875 19.3Z" />
+                <path
+                  d="M10.875 19.3 4.275 12.7Q4.125 12.55 4.062 12.375Q4 12.2 4 12Q4 11.8 4.062 11.625Q4.125 11.45 4.275 11.3L10.875 4.7Q11.15 4.425 11.562 4.412Q11.975 4.4 12.275 4.7Q12.575 4.975 12.588 5.387Q12.6 5.8 12.3 6.1L7.4 11H18.575Q19 11 19.288 11.287Q19.575 11.575 19.575 12Q19.575 12.425 19.288 12.712Q19 13 18.575 13H7.4L12.3 17.9Q12.575 18.175 12.588 18.6Q12.6 19.025 12.3 19.3Q12.025 19.6 11.6 19.6Q11.175 19.6 10.875 19.3Z"
+                  fill="currentColor"
+                />
               </svg>
             </MonoButton>
             <MonoButton onClick={goToNext} subdued aria-label="Next photo">
@@ -317,7 +344,10 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                 width="24"
                 aria-hidden="true"
               >
-                <path d="M11.3 19.3Q11.025 19.025 11.012 18.6Q11 18.175 11.275 17.9L16.175 13H5Q4.575 13 4.287 12.712Q4 12.425 4 12Q4 11.575 4.287 11.287Q4.575 11 5 11H16.175L11.275 6.1Q11 5.825 11.012 5.4Q11.025 4.975 11.3 4.7Q11.575 4.425 12 4.425Q12.425 4.425 12.7 4.7L19.3 11.3Q19.45 11.425 19.513 11.612Q19.575 11.8 19.575 12Q19.575 12.2 19.513 12.375Q19.45 12.55 19.3 12.7L12.7 19.3Q12.425 19.575 12 19.575Q11.575 19.575 11.3 19.3Z" />
+                <path
+                  d="M11.3 19.3Q11.025 19.025 11.012 18.6Q11 18.175 11.275 17.9L16.175 13H5Q4.575 13 4.287 12.712Q4 12.425 4 12Q4 11.575 4.287 11.287Q4.575 11 5 11H16.175L11.275 6.1Q11 5.825 11.012 5.4Q11.025 4.975 11.3 4.7Q11.575 4.425 12 4.425Q12.425 4.425 12.7 4.7L19.3 11.3Q19.45 11.425 19.513 11.612Q19.575 11.8 19.575 12Q19.575 12.2 19.513 12.375Q19.45 12.55 19.3 12.7L12.7 19.3Q12.425 19.575 12 19.575Q11.575 19.575 11.3 19.3Z"
+                  fill="currentColor"
+                />
               </svg>
             </MonoButton>
           </Pagination>
@@ -333,7 +363,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
 
         <Divider />
 
-        <TabsWrapper>
+        <MainContent>
           <Tabs
             onChange={handleTabChange}
             defaultIndex={edition ? 1 : 0}
@@ -436,26 +466,40 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                         ({currentEditionOwners.length})
                       </Mono>
                     </Mono>
-                    {currentEditionOwners.map((owner) => (
-                      <Mono key={owner.address}>
-                        <ENSAddress address={owner.address} />
-                      </Mono>
-                    ))}
+                    <OwnersList>
+                      {currentEditionOwners.map((owner) => (
+                        <li key={owner.address}>
+                          <Mono>
+                            <CopyToClipboard copyText={owner.address}>
+                              <ENSAddress address={owner.address} />
+                            </CopyToClipboard>
+                          </Mono>
+                        </li>
+                      ))}
+                    </OwnersList>
                   </div>
                 )}
               </Description>,
             ]}
           />
-        </TabsWrapper>
 
-        <FooterLinks>
-          <Mono subdued>
-            <a href={openSeaLink}>OpenSea</a>
-          </Mono>
-          <Mono subdued>
-            <a href={`${etherscan}/address/${contractAddress}`}>Etherscan</a>
-          </Mono>
-        </FooterLinks>
+          <Divider margin="32 0" />
+
+          <ContractInfo>
+            <ContractKey as="dt">Token ID</ContractKey>
+            <ContractValue as="dd">{id}</ContractValue>
+            <ContractKey as="dt">Contract</ContractKey>
+            <ContractValue as="dd">
+              <Link href={`${etherscan}/address/${contractAddress}`}>
+                <a>{addressDisplayName(contractAddress)}</a>
+              </Link>
+            </ContractValue>
+            <ContractKey as="dt">Token standard</ContractKey>
+            <ContractValue as="dd">ERC1155</ContractValue>
+            <ContractKey as="dt">Royalties</ContractKey>
+            <ContractValue as="dd">6.4%</ContractValue>
+          </ContractInfo>
+        </MainContent>
       </Sidebar>
 
       <MediaWrapper>

@@ -11,6 +11,15 @@ export const globalStyle = css`
   }
 
   @font-face {
+    font-family: "Text";
+    font-display: fallback;
+    src: url("/fonts/Text.woff") format("woff"),
+      url("/fonts/Text.woff2") format("woff2");
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  @font-face {
     font-family: "Mono";
     font-display: fallback;
     src: url("/fonts/Mono.woff") format("woff"),
@@ -25,11 +34,22 @@ export const globalStyle = css`
     --foreground-alpha: 0, 0, 0;
     --background: rgb(255, 255, 255);
     --background-alpha: 255, 255, 255;
+    --background-emphasis: rgba(0, 0, 0, 0.04);
     --font-heading: "Dahlia", sans-serif;
-    --font-sans: system, -apple-system, "Helvetica Neue", Helvetica, "Segoe UI",
-      Roboto, sans-serif;
+    --font-sans: "Text", system, -apple-system, "Helvetica Neue", Helvetica,
+      "Segoe UI", Roboto, sans-serif;
     --font-mono: "Mono", SFMono-Regular, SF Mono, Menlo, Consolas,
       Liberation Mono, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground: rgb(255, 255, 255);
+      --foreground-alpha: 255, 255, 255;
+      --background: rgb(0, 0, 0);
+      --background-alpha: 0, 0, 0;
+      --background-emphasis: rgba(255, 255, 255, 0.1);
+    }
   }
 
   *,

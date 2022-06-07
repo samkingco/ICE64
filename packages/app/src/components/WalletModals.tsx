@@ -43,7 +43,7 @@ const modalItemStyles = css`
   border-radius: 0.5rem;
   padding: 8px 12px;
   &:hover {
-    background: rgba(var(--foreground-alpha), 0.04);
+    background: var(--background-emphasis);
     text-decoration: none;
   }
   @media (min-width: 80rem) {
