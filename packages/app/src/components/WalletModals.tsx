@@ -7,20 +7,18 @@ import {
   useDisconnect,
   useNetwork,
 } from "wagmi";
+import {
+  ConnectedStatus,
+  useConnectedStatus,
+} from "../hooks/useConnectedStatus";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { targetNetwork } from "../utils/contracts";
 import { buttonReset } from "./Button";
+import { CopyToClipboard } from "./CopyToClipboard";
 import { Divider } from "./Divider";
 import { ENSAddress } from "./ENSAddress";
 import { Modal } from "./Modal";
 import { Body, Mono, Subheading } from "./Typography";
-
-enum ConnectedStatus {
-  NotConnected,
-  WrongNetwork,
-  SwitchingNetwork,
-  Connected,
-}
 
 const ModalContent = styled.div`
   width: 100%;
@@ -94,7 +92,7 @@ const StatusDot = styled.div<{ status: ConnectedStatus }>`
         `;
       default:
         return css`
-          background: gray;
+          background: rgba(var(--foreground-alpha), 0.48);
         `;
     }
   }}
@@ -158,12 +156,7 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
 
   const { disconnect } = useDisconnect();
   const { activeChain, switchNetwork } = useNetwork();
-  let connectedStatus = ConnectedStatus.NotConnected;
-  if (activeChain) {
-    connectedStatus = activeChain.unsupported
-      ? ConnectedStatus.WrongNetwork
-      : ConnectedStatus.Connected;
-  }
+  const { connectedStatus } = useConnectedStatus();
 
   const etherscan = useEtherscanURL();
 
@@ -177,7 +170,12 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
       <ModalContent>
         <ModalItem>
           <Subheading>
-            <ENSAddress address={account.address || ""} />
+            <CopyToClipboard
+              copyText={account.address || ""}
+              success="Copied to clipboard"
+            >
+              <ENSAddress address={account.address || ""} />
+            </CopyToClipboard>
           </Subheading>
           {balance && <Mono subdued>{balance.formatted} ETH</Mono>}
         </ModalItem>

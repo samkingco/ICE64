@@ -15,9 +15,10 @@ const CopiedMessaged = styled.span`
 interface Props {
   children: React.ReactNode;
   copyText: string;
+  success?: string;
 }
 
-export function CopyToClipboard({ children, copyText }: Props) {
+export function CopyToClipboard({ children, copyText, success }: Props) {
   const isMounted = useIsMounted();
   const [copied, setCopied] = useState(false);
 
@@ -44,7 +45,7 @@ export function CopyToClipboard({ children, copyText }: Props) {
   }
 
   return copied ? (
-    <CopiedMessaged>Copied</CopiedMessaged>
+    <CopiedMessaged>{success || "Copied"}</CopiedMessaged>
   ) : (
     <CopyButton onClick={copy}>{children}</CopyButton>
   );

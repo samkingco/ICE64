@@ -42,7 +42,7 @@ export const globalStyle = css`
       Liberation Mono, monospace;
   }
 
-  @media (prefers-color-scheme: dark) {
+  /* @media (prefers-color-scheme: dark) {
     :root {
       --foreground: rgb(255, 255, 255);
       --foreground-alpha: 255, 255, 255;
@@ -50,7 +50,7 @@ export const globalStyle = css`
       --background-alpha: 0, 0, 0;
       --background-emphasis: rgba(255, 255, 255, 0.1);
     }
-  }
+  } */
 
   *,
   *:before,

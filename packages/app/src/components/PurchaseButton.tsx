@@ -1,12 +1,17 @@
 import styled from "@emotion/styled";
 import { ethers } from "ethers";
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
+import {
+  ConnectedStatus,
+  useConnectedStatus,
+} from "../hooks/useConnectedStatus";
 import {
   TxState,
   useContractTransaction,
 } from "../hooks/useContractTransaction";
 import { useIsMounted } from "../hooks/useIsMounted";
+import { targetNetwork } from "../utils/contracts";
 import { getOriginalId, isEdition } from "../utils/tokenIds";
 import { Button, MonoButton } from "./Button";
 import { ENSAddress } from "./ENSAddress";
@@ -64,7 +69,10 @@ export function PurchaseButton({ id, onConfirmed }: Props) {
   const originalId = getOriginalId(id);
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showWalletInfoModal, setShowWalletInfoModal] = useState(false);
+
   const { data: account } = useAccount();
+  const { activeChain, switchNetwork } = useNetwork();
+  const { connectedStatus } = useConnectedStatus();
 
   // TODO: Update with live prices
   const price = ethers.utils.parseEther(edition ? "0.0002" : "0.0032");
@@ -102,69 +110,96 @@ export function PurchaseButton({ id, onConfirmed }: Props) {
         </ButtonWrapper>
       )}
 
-      {txState === TxState.Confirmed && (
-        <Thankyou>
-          <Subheading margin="-8 0 0">Purchase successful</Subheading>
-          <Mono subdued>Thank you!</Mono>
-        </Thankyou>
-      )}
-
-      {isMounted && account && txState !== TxState.Confirmed && (
-        <ButtonWrapper>
-          <Button
-            onClick={() => purchase()}
-            disabled={[TxState.Broadcasted, TxState.WaitingOnWallet].includes(
-              txState
-            )}
-          >
-            {[TxState.Ready, TxState.Error].includes(txState) && (
-              <>
-                Buy
-                <Mono as="span" subdued>
-                  {" "}
-                  &bull; {ethers.utils.formatEther(price)} ETH
-                </Mono>
-              </>
-            )}
-            {txState === TxState.WaitingOnWallet && <>Confirming in wallet</>}
-            {txState === TxState.Broadcasted && <LoadingIndicator />}
-          </Button>
-          <SecondaryInfo>
-            {txState === TxState.Ready && (
-              <MonoButton onClick={() => setShowWalletInfoModal(true)} subdued>
-                Connected as <ENSAddress address={account.address || ""} />
-              </MonoButton>
-            )}
-            {txState === TxState.WaitingOnWallet && <LoadingIndicator />}
-            {txState === TxState.Broadcasted && (
-              <>
-                {purchaseData && purchaseData.hash ? (
-                  <a href={`https://etherscan.io/tx/${purchaseData.hash}`}>
-                    <Mono subdued>View transaction info</Mono>
-                  </a>
-                ) : (
-                  <Mono subdued>Sending transaction</Mono>
-                )}
-              </>
-            )}
-            {txState === TxState.Error && (
+      {isMounted &&
+        account &&
+        connectedStatus === ConnectedStatus.WrongNetwork && (
+          <ButtonWrapper>
+            <Button
+              key="connect_button"
+              onClick={() => switchNetwork && switchNetwork(targetNetwork.id)}
+            >
+              Switch to {targetNetwork.name}
+            </Button>
+            <SecondaryInfo>
               <Mono subdued>
-                {errorMessage || "Something went wrong"}
-                {purchaseData && purchaseData.hash && (
-                  <>
-                    <br />
-                    <a href={`https://etherscan.io/tx/${purchaseData.hash}`}>
-                      <Mono as="span" subdued>
-                        View transaction info
-                      </Mono>
-                    </a>
-                  </>
-                )}
+                {activeChain
+                  ? `Connected to ${activeChain?.name}`
+                  : "Wrong network selected"}
               </Mono>
-            )}
-          </SecondaryInfo>
-        </ButtonWrapper>
-      )}
+            </SecondaryInfo>
+          </ButtonWrapper>
+        )}
+
+      {txState === TxState.Confirmed &&
+        connectedStatus === ConnectedStatus.Connected && (
+          <Thankyou>
+            <Subheading margin="-8 0 0">Purchase successful</Subheading>
+            <Mono subdued>Thank you!</Mono>
+          </Thankyou>
+        )}
+
+      {isMounted &&
+        account &&
+        txState !== TxState.Confirmed &&
+        connectedStatus === ConnectedStatus.Connected && (
+          <ButtonWrapper>
+            <Button
+              onClick={() => purchase()}
+              disabled={[TxState.Broadcasted, TxState.WaitingOnWallet].includes(
+                txState
+              )}
+            >
+              {[TxState.Ready, TxState.Error].includes(txState) && (
+                <>
+                  Buy
+                  <Mono as="span" subdued>
+                    {" "}
+                    &bull; {ethers.utils.formatEther(price)} ETH
+                  </Mono>
+                </>
+              )}
+              {txState === TxState.WaitingOnWallet && <>Confirming in wallet</>}
+              {txState === TxState.Broadcasted && <LoadingIndicator />}
+            </Button>
+            <SecondaryInfo>
+              {txState === TxState.Ready && (
+                <MonoButton
+                  onClick={() => setShowWalletInfoModal(true)}
+                  subdued
+                >
+                  Connected as <ENSAddress address={account.address || ""} />
+                </MonoButton>
+              )}
+              {txState === TxState.WaitingOnWallet && <LoadingIndicator />}
+              {txState === TxState.Broadcasted && (
+                <>
+                  {purchaseData && purchaseData.hash ? (
+                    <a href={`https://etherscan.io/tx/${purchaseData.hash}`}>
+                      <Mono subdued>View transaction info</Mono>
+                    </a>
+                  ) : (
+                    <Mono subdued>Sending transaction</Mono>
+                  )}
+                </>
+              )}
+              {txState === TxState.Error && (
+                <Mono subdued>
+                  {errorMessage || "Something went wrong"}
+                  {purchaseData && purchaseData.hash && (
+                    <>
+                      <br />
+                      <a href={`https://etherscan.io/tx/${purchaseData.hash}`}>
+                        <Mono as="span" subdued>
+                          View transaction info
+                        </Mono>
+                      </a>
+                    </>
+                  )}
+                </Mono>
+              )}
+            </SecondaryInfo>
+          </ButtonWrapper>
+        )}
 
       <WalletInfoModal
         isOpen={showWalletInfoModal}
