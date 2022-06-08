@@ -47,6 +47,7 @@ const TokenImage = styled.figure`
 
   a {
     display: block;
+    cursor: inherit;
   }
 
   @media (orientation: landscape) {
