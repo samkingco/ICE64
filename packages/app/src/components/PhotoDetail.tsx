@@ -539,31 +539,29 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
             </FooterLinks>
           )}
 
-          {edition && (
+          {edition && currentEditionOwners.length > 0 && (
             <>
               <Divider margin="32 0" />
 
-              {currentEditionOwners.length > 0 && (
-                <div>
-                  <Mono>
-                    Current owners{" "}
-                    <Mono as="span" subdued>
-                      ({currentEditionOwners.length})
-                    </Mono>
+              <div>
+                <Mono>
+                  Current owners{" "}
+                  <Mono as="span" subdued>
+                    ({currentEditionOwners.length})
                   </Mono>
-                  <OwnersList>
-                    {currentEditionOwners.map((owner) => (
-                      <li key={owner.address}>
-                        <Mono>
-                          <CopyToClipboard copyText={owner.address}>
-                            <ENSAddress address={owner.address} />
-                          </CopyToClipboard>
-                        </Mono>
-                      </li>
-                    ))}
-                  </OwnersList>
-                </div>
-              )}
+                </Mono>
+                <OwnersList>
+                  {currentEditionOwners.map((owner) => (
+                    <li key={owner.address}>
+                      <Mono>
+                        <CopyToClipboard copyText={owner.address}>
+                          <ENSAddress address={owner.address} />
+                        </CopyToClipboard>
+                      </Mono>
+                    </li>
+                  ))}
+                </OwnersList>
+              </div>
             </>
           )}
         </MainContent>
