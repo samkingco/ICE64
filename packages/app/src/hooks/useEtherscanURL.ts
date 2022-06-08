@@ -1,11 +1,7 @@
 import { targetNetwork } from "../utils/contracts";
 
 export function useEtherscanURL() {
-  const chainName = targetNetwork.name;
-
-  const etherscan = `https://${
-    chainName !== "mainnet" ? `${chainName}.` : ""
-  }etherscan.io`;
-
+  const chainId = targetNetwork.id;
+  const etherscan = `https://${chainId !== 1 ? `${chainId}.` : ""}etherscan.io`;
   return etherscan;
 }

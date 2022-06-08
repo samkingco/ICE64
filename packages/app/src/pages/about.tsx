@@ -61,7 +61,7 @@ export default function About() {
   const opensea = useOpenSeaURL();
   const etherscan = useEtherscanURL();
 
-  const xqstgfx = "0xf9041442f7bf48f6b1134d332633aa853c6a0c69";
+  const xqstgfx = "0xDf01A4040493B514605392620B3a0a05Eb8Cd295";
 
   return (
     <main>
