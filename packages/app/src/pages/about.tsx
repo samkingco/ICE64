@@ -63,6 +63,7 @@ const MetaLinks = styled.nav`
 export default function About() {
   const opensea = useOpenSeaURL();
   const etherscan = useEtherscanURL();
+
   const xqstgfx = "0xDf01A4040493B514605392620B3a0a05Eb8Cd295";
 
   return (
@@ -100,7 +101,7 @@ export default function About() {
               <a href="https://twitter.com/samkingco">Twitter</a>
             </Mono>
             <Mono>
-              <a href={`${opensea}/collections/ice64`}>OpenSea</a>
+              <a href={opensea}>OpenSea</a>
             </Mono>
           </MetaLinks>
         </MainBody>

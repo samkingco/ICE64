@@ -239,9 +239,9 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
   });
 
   const onPurchaseOrClaimSuccessful = () => {
-    setTimeout(() => {
-      refreshQuery();
-    }, 5000);
+    refreshQuery();
+    // setTimeout(() => {
+    // }, 5000);
   };
 
   const { data: photo, fetching: isFetchingPhoto } = photoByIdQuery;
