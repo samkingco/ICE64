@@ -144,11 +144,11 @@ export enum OrderDirection {
 
 export type OriginalPhoto = {
   readonly __typename?: 'OriginalPhoto';
-  readonly currentOwner: Wallet;
+  readonly currentOwner?: Maybe<Wallet>;
   readonly editionId: Scalars['BigInt'];
   readonly id: Scalars['ID'];
-  readonly purchasedAt: Scalars['BigInt'];
-  readonly purchasedBy: Wallet;
+  readonly purchasedAt?: Maybe<Scalars['BigInt']>;
+  readonly purchasedBy?: Maybe<Wallet>;
   readonly uri?: Maybe<Scalars['String']>;
 };
 
@@ -682,7 +682,7 @@ export type PhotoByIdQueryVariables = Exact<{
 }>;
 
 
-export type PhotoByIdQuery = { readonly __typename?: 'Query', readonly originalPhoto?: { readonly __typename?: 'OriginalPhoto', readonly id: string, readonly uri?: string | null, readonly currentOwner: { readonly __typename?: 'Wallet', readonly address: any } } | null, readonly editionPhoto?: { readonly __typename?: 'EditionPhoto', readonly id: string, readonly totalPurchased: any, readonly currentOwners: ReadonlyArray<{ readonly __typename?: 'Wallet', readonly address: any }> } | null, readonly wallet?: { readonly __typename?: 'Wallet', readonly roots: ReadonlyArray<{ readonly __typename?: 'RootsPhoto', readonly id: string, readonly hasClaimedEdition: boolean }> } | null };
+export type PhotoByIdQuery = { readonly __typename?: 'Query', readonly originalPhoto?: { readonly __typename?: 'OriginalPhoto', readonly id: string, readonly uri?: string | null, readonly currentOwner?: { readonly __typename?: 'Wallet', readonly address: any } | null } | null, readonly editionPhoto?: { readonly __typename?: 'EditionPhoto', readonly id: string, readonly totalPurchased: any, readonly currentOwners: ReadonlyArray<{ readonly __typename?: 'Wallet', readonly address: any }> } | null, readonly wallet?: { readonly __typename?: 'Wallet', readonly roots: ReadonlyArray<{ readonly __typename?: 'RootsPhoto', readonly id: string, readonly hasClaimedEdition: boolean }> } | null };
 
 
 export const PhotoByIdDocument = gql`

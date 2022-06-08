@@ -89,6 +89,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     ------------------------------------------------------------------------ */
 
     event ICE64Emerges();
+    event SetMetadataAddress(address indexed metadata);
     event RootsClaim(uint256 indexed rootsId, uint256 indexed originalId, uint256 editionId);
 
     /* ------------------------------------------------------------------------
@@ -155,6 +156,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     /// @param metadataAddr The address of the metadata contract
     function setMetadata(IICE64Renderer metadataAddr) external onlyOwner {
         metadata = metadataAddr;
+        emit SetMetadataAddress(address(metadataAddr));
     }
 
     /* ------------------------------------------------------------------------

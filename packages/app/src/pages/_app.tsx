@@ -14,7 +14,7 @@ import { globalStyle } from "../components/GlobalStyle";
 import { targetNetwork } from "../utils/contracts";
 
 export const graphClient = createGraphClient({
-  url: "https://api.studio.thegraph.com/query/19218/ice64-testing/v0.0.11",
+  url: "https://api.studio.thegraph.com/query/19218/ice64-testing/v0.0.13",
 });
 
 const { chains, provider, webSocketProvider } = configureChains(

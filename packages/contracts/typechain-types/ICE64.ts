@@ -254,6 +254,7 @@ export interface ICE64Interface extends utils.Interface {
     "ICE64Emerges()": EventFragment;
     "OwnerUpdated(address,address)": EventFragment;
     "RootsClaim(uint256,uint256,uint256)": EventFragment;
+    "SetMetadataAddress(address)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
@@ -263,6 +264,7 @@ export interface ICE64Interface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ICE64Emerges"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnerUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RootsClaim"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMetadataAddress"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -292,6 +294,14 @@ export type RootsClaimEvent = TypedEvent<
 >;
 
 export type RootsClaimEventFilter = TypedEventFilter<RootsClaimEvent>;
+
+export type SetMetadataAddressEvent = TypedEvent<
+  [string],
+  { metadata: string }
+>;
+
+export type SetMetadataAddressEventFilter =
+  TypedEventFilter<SetMetadataAddressEvent>;
 
 export type TransferBatchEvent = TypedEvent<
   [string, string, string, BigNumber[], BigNumber[]],
@@ -802,6 +812,11 @@ export interface ICE64 extends BaseContract {
       originalId?: BigNumberish | null,
       editionId?: null
     ): RootsClaimEventFilter;
+
+    "SetMetadataAddress(address)"(
+      metadata?: string | null
+    ): SetMetadataAddressEventFilter;
+    SetMetadataAddress(metadata?: string | null): SetMetadataAddressEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,

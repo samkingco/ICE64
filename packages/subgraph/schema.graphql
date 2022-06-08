@@ -9,9 +9,9 @@ type OriginalPhoto @entity {
   id: ID!
   editionId: BigInt!
   uri: String
-  purchasedBy: Wallet!
-  purchasedAt: BigInt!
-  currentOwner: Wallet!
+  purchasedBy: Wallet
+  purchasedAt: BigInt
+  currentOwner: Wallet
 }
 
 type EditionPhoto @entity {

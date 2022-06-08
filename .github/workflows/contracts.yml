@@ -33,18 +33,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Install node dependencies
         run: pnpm install
       - name: Run build step (compile contracts, generate types, etc.)
         run: pnpm build
-      - name: Outdated files detected, run `pnpm build` and commit them
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git status
-            git --no-pager diff
-            exit 1
-          fi
   test:
     defaults:
       run:
@@ -73,7 +66,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
       - name: Install node dependencies
         run: pnpm install
       - name: Run tests

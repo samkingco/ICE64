@@ -250,7 +250,9 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
 
   const originalPhoto = photo && photo.originalPhoto;
   const editionPhoto = photo && photo.editionPhoto;
-  const hasOriginalBeenPurchased = Boolean(originalPhoto);
+  const hasOriginalBeenPurchased = Boolean(
+    originalPhoto && originalPhoto.currentOwner
+  );
   const currentOriginalOwner =
     (originalPhoto && originalPhoto.currentOwner) || null;
   const isOwnerOfOriginal =

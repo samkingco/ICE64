@@ -1,7 +1,9 @@
 import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   ICE64,
+  ICE64Emerges,
   RootsClaim,
+  SetMetadataAddress,
   TransferBatch,
   TransferSingle,
 } from "../generated/ICE64/ICE64";
@@ -14,7 +16,7 @@ import {
   Wallet,
 } from "../generated/schema";
 
-export function handleTransfer(event: TransferSingle): void {
+export function handleInit(event: ICE64Emerges): void {
   const contract = ICE64.bind(event.address);
 
   let settings = Settings.load("ICE64:settings");
@@ -24,6 +26,55 @@ export function handleTransfer(event: TransferSingle): void {
     settings.priceEdition = contract.priceEdition();
     settings.maxEditions = contract.getMaxEditions();
   }
+  settings.save();
+}
+
+export function handleSetMetadata(event: SetMetadataAddress): void {
+  const contract = ICE64.bind(event.address);
+  const maxTokenId = 16;
+
+  if (event.params.metadata) {
+    for (let i = 0; i < maxTokenId; i++) {
+      const id = BigInt.fromI32(i + 1);
+      const editionId = contract.getEditionTokenId(id);
+
+      let original = OriginalPhoto.load(id.toString());
+      let edition = EditionPhoto.load(editionId.toString());
+
+      if (!original) {
+        original = new OriginalPhoto(id.toString());
+        original.editionId = editionId;
+      }
+
+      if (!edition) {
+        edition = new EditionPhoto(editionId.toString());
+        edition.originalId = id;
+        edition.totalPurchased = BigInt.fromI32(0);
+        edition.maxEditions = contract.getMaxEditions();
+      }
+
+      const originalUri = contract.try_uri(id);
+      if (originalUri.reverted) {
+        log.info("URI reverted", [id.toString()]);
+      } else {
+        original.uri = originalUri.value;
+      }
+
+      const editionUri = contract.try_uri(id);
+      if (editionUri.reverted) {
+        log.info("URI reverted", [id.toString()]);
+      } else {
+        edition.uri = editionUri.value;
+      }
+
+      original.save();
+      edition.save();
+    }
+  }
+}
+
+export function handleTransfer(event: TransferSingle): void {
+  const contract = ICE64.bind(event.address);
 
   const id = event.params.id;
   const fromAddress = event.params.from;

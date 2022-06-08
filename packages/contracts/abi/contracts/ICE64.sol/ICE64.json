@@ -151,6 +151,19 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "metadata",
+        "type": "address"
+      }
+    ],
+    "name": "SetMetadataAddress",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "operator",
         "type": "address"
       },
