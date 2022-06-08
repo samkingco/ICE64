@@ -276,8 +276,16 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
     }
   });
 
-  const rootsPhotos = (photo && photo.wallet && photo.wallet.roots) || [];
-  const hasRootsTokens = Boolean(rootsPhotos && rootsPhotos.length > 0);
+  const roots = (photo && photo.wallet && photo.wallet.roots) || [];
+  const rootsPhotos = roots.map((i) => ({
+    id: i.id,
+    hasClaimedEdition: i.hasClaimedEdition,
+  }));
+  const rootsClaimable = rootsPhotos.reduce(
+    (c, i) => (!i.hasClaimedEdition ? c + 1 : c),
+    0
+  );
+  const hasRootsClaims = rootsClaimable > 0;
 
   const { goToOriginal, goToEdition, goToPrev, goToNext } = usePhotoPagination({
     id,
@@ -465,14 +473,11 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
                 {!editionsSoldOut &&
                   !lastEditionReserved &&
                   !isOwnerOfEdition &&
-                  hasRootsTokens && (
+                  hasRootsClaims && (
                     <SaleInfoArea>
                       <ClaimRootsButton
                         id={originalId}
-                        rootsPhotos={rootsPhotos.map((i) => ({
-                          id: i.id,
-                          hasClaimedEdition: i.hasClaimedEdition,
-                        }))}
+                        rootsPhotos={rootsPhotos}
                         onConfirmed={onPurchaseOrClaimSuccessful}
                       />
                     </SaleInfoArea>
