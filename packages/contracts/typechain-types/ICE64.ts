@@ -251,6 +251,7 @@ export interface ICE64Interface extends utils.Interface {
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "ICE64Emerges()": EventFragment;
     "OwnerUpdated(address,address)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
@@ -258,6 +259,7 @@ export interface ICE64Interface extends utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ICE64Emerges"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnerUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
@@ -270,6 +272,10 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export type ICE64EmergesEvent = TypedEvent<[], {}>;
+
+export type ICE64EmergesEventFilter = TypedEventFilter<ICE64EmergesEvent>;
 
 export type OwnerUpdatedEvent = TypedEvent<
   [string, string],
@@ -764,6 +770,9 @@ export interface ICE64 extends BaseContract {
       operator?: string | null,
       approved?: null
     ): ApprovalForAllEventFilter;
+
+    "ICE64Emerges()"(): ICE64EmergesEventFilter;
+    ICE64Emerges(): ICE64EmergesEventFilter;
 
     "OwnerUpdated(address,address)"(
       user?: string | null,

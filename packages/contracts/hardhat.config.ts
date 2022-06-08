@@ -47,6 +47,6 @@ export default {
   },
   abiExporter: {
     runOnCompile: true,
-    only: ["ICE64.sol", "ICE64Renderer.sol"],
+    only: ["ICE64.sol", "ICE64DataStore.sol", "ICE64Renderer.sol"],
   },
 };

@@ -1,0 +1,50 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ICE64
+    network: mainnet
+    source:
+      address: "0x76b756438477c770AE02297346B69452ca1A2913"
+      abi: ICE64
+      startBlock: 10812277
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TransferSingle
+        - TransferBatch
+      abis:
+        - name: ICE64
+          file: ./abis/ICE64.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransfer
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+      callHandlers:
+        - function: claimEditionAsRootsHolder(uint256,uint256)
+          handler: handleRootsClaim
+      file: ./src/mapping.ts
+  - kind: ethereum
+    name: Roots
+    network: mainnet
+    source:
+      address: "0xd0c2A3C9127966E9dfED75E04a4341fBaBD77e43"
+      abi: Roots
+      startBlock: 14017669
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: Roots
+          file: ./abis/Roots.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleRootsTransfer
+      file: ./src/mapping.ts

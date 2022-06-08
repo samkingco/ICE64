@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: CC0-1.0
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
 /*
@@ -19,11 +19,7 @@ pragma solidity ^0.8.14;
 */
 
 import {Owned} from "@rari-capital/solmate/src/auth/Owned.sol";
-import {ICE1155} from "./ICE1155.sol";
-
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
-import {DynamicBuffer} from "@divergencetech/ethier/contracts/utils/DynamicBuffer.sol";
-import {Base64} from "./Base64.sol";
+import {ERC1155} from "@rari-capital/solmate/src/tokens/ERC1155.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -35,10 +31,24 @@ import {IICE64} from "./interfaces/IICE64.sol";
 /// @notice This contract stores token ownership, and allows minting using the ERC1155 standard.
 ///         Collectors can purchase 721-like photos as original 1 of 1's, but also collect
 ///         smaller on-chain versions as editions.
-contract ICE64 is ICE1155, Owned, IICE64 {
-    using Strings for uint256;
-    using DynamicBuffer for bytes;
-
+///
+///         Code is licensed as MIT.
+///         https://spdx.org/licenses/MIT.html
+///
+///         Token metadata and images licensed as CC BY-NC 4.0
+///         https://creativecommons.org/licenses/by-nc/4.0/
+///         You are free to:
+///           - Share: copy and redistribute the material in any medium or format
+///           - Adapt: remix, transform, and build upon the material
+///         Under the following terms:
+///           - Attribution: You must give appropriate credit, provide a link to the license,
+///             and indicate if changes were made. You may do so in any reasonable manner, but not
+///             in any way that suggests the licensor endorses you or your use.
+///           - NonCommercial: You may not use the material for commercial purposes
+///           - No additional restrictions: You may not apply legal terms or technological measures
+///             that legally restrict others from doing anything the license permits.
+///
+contract ICE64 is ERC1155, Owned, IICE64 {
     /* ------------------------------------------------------------------------
                                    S T O R A G E
     ------------------------------------------------------------------------ */
@@ -73,6 +83,12 @@ contract ICE64 is ICE1155, Owned, IICE64 {
     }
 
     RoyaltyInfo private _royaltyInfo;
+
+    /* ------------------------------------------------------------------------
+                                    E V E N T S
+    ------------------------------------------------------------------------ */
+
+    event ICE64Emerges();
 
     /* ------------------------------------------------------------------------
                                     E R R O R S
@@ -123,7 +139,8 @@ contract ICE64 is ICE1155, Owned, IICE64 {
         address owner,
         address royalties,
         IERC721 roots_
-    ) ICE1155() Owned(owner) {
+    ) ERC1155() Owned(owner) {
+        emit ICE64Emerges();
         // Set Roots contract address
         roots = roots_;
         // Set the initial storage value to non-zero to save gas costs for first roots claimer

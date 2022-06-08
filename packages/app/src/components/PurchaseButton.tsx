@@ -74,8 +74,7 @@ export function PurchaseButton({ id, onConfirmed }: Props) {
   const { activeChain, switchNetwork } = useNetwork();
   const { connectedStatus } = useConnectedStatus();
 
-  // TODO: Update with live prices
-  const price = ethers.utils.parseEther(edition ? "0.0002" : "0.0032");
+  const price = ethers.utils.parseEther(edition ? "0.04" : "0.32");
 
   const {
     write: purchase,

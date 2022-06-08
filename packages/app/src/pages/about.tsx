@@ -9,7 +9,7 @@ import { deployedAddress } from "../utils/contracts";
 const Content = styled.article`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 6rem;
+  gap: 2rem;
   padding: 8rem 2vw;
 
   @media (min-width: 32rem) {
@@ -18,7 +18,8 @@ const Content = styled.article`
   }
 
   @media (min-width: 80rem) {
-    padding-top: 16vw;
+    gap: 6rem;
+    padding-top: 12vw;
     padding-bottom: 16vw;
   }
 `;
@@ -36,10 +37,23 @@ const MainBody = styled.div`
 const LinksAndCredits = styled.footer`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 6rem;
+  gap: 2rem;
 
   @media (min-width: 56rem) {
-    grid-template-columns: 1fr 2fr;
+    gap: 6rem;
+    grid-template-columns: 1fr 4fr;
+  }
+`;
+
+const MetaLinks = styled.nav`
+  display: flex;
+  gap: 1.5rem;
+  a {
+    opacity: 0.48;
+    text-decoration: none;
+    &:hover {
+      opacity: 1;
+    }
   }
 `;
 
@@ -72,30 +86,47 @@ export default function About() {
             being stored on Arweave, and the editions being stored directly on
             the Ethereum network with a custom smart contract.
           </Body>
-          <Body margin="16 0 0">
+          <Body margin="16 0 24">
             If you hold a <a href="https://roots.samking.photo">Roots NFT</a>,
             you may claim an edition of your choice, provided the Roots NFT has
             not already been used to claim, and while editions are still
             available.
           </Body>
-        </MainBody>
 
-        <LinksAndCredits>
-          <div>
-            <Subheading>Links</Subheading>
+          <MetaLinks>
             <Mono>
               <a href="https://twitter.com/samkingco">Twitter</a>
             </Mono>
             <Mono>
               <a href={opensea}>OpenSea</a>
             </Mono>
+          </MetaLinks>
+        </MainBody>
+
+        <LinksAndCredits>
+          <div>
+            <Subheading>Contracts</Subheading>
             <Mono>
-              <a href={`${etherscan}/address/${deployedAddress("ICE64")}`}>
+              <a
+                key="ICE64_contract"
+                href={`${etherscan}/address/${deployedAddress("ICE64")}`}
+              >
                 ICE64.sol
               </a>
             </Mono>
             <Mono>
               <a
+                key="ICE64DataStore_contract"
+                href={`${etherscan}/address/${deployedAddress(
+                  "ICE64DataStore"
+                )}`}
+              >
+                ICE64DataStore.sol
+              </a>
+            </Mono>
+            <Mono>
+              <a
+                key="ICE64Renderer_contract"
                 href={`${etherscan}/address/${deployedAddress(
                   "ICE64Renderer"
                 )}`}
@@ -104,7 +135,12 @@ export default function About() {
               </a>
             </Mono>
             <Mono>
-              <a href={`${etherscan}/address/${xqstgfx}`}>XQSTGFX.sol</a>
+              <a
+                key="XQSTGFX_contract"
+                href={`${etherscan}/address/${xqstgfx}`}
+              >
+                XQSTGFX.sol
+              </a>
             </Mono>
           </div>
 

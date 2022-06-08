@@ -1,7 +1,23 @@
-// SPDX-License-Identifier: CC0-1.0
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import {XQSTGFX} from "@exquisite-graphics/contracts/contracts/XQSTGFX.sol";
+/*
+
+          ^JJ~     .::^~!!77~.  .?JJ~:^~?Y!      .:::..        7Y!              
+          :@@^  .!~..    .:~5#Y  Y@Y   .:7?    ~?!:.          ~@G:              
+           B#  ~P^           ~P  ~@P:        :PY.            ~&5                
+           B# ^@7             :  ^@Y::~?5!  ^&P::^~!J?^     ~#7  .              
+           B# 5@^                ^@J   .!~ .B&^     .?&P.  7P^  5J              
+           B# J@?                ^@J       ^@B        ~@P.77   .@5 .^~          
+           B# .B@!             . ^@J       :&@:        B&!~.:::^@P^7YJ          
+           B&. .5@P^         :^: !@J        7@B:      ^#?      :@5              
+          ^@@!   ^YGPY?7!!!7!^.  P@J.:^~7YB? ^5G?^...^?~       J@&^             
+          :^^:      :^~!~~^.    .^^::^^^~~~.   .^~^:..         ^^^:
+
+          M E T A D A T A   &   R E N D E R I N G   C O N T R A C T
+
+*/
+
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {DynamicBuffer} from "@divergencetech/ethier/contracts/utils/DynamicBuffer.sol";
 import {Base64} from "./Base64.sol";
@@ -9,9 +25,28 @@ import {Base64} from "./Base64.sol";
 import {IICE64} from "./interfaces/IICE64.sol";
 import {IICE64DataStore} from "./interfaces/IICE64DataStore.sol";
 import {IICE64Renderer} from "./interfaces/IICE64Renderer.sol";
+import {IExquisiteGraphics} from "./interfaces/IExquisiteGraphics.sol";
 
 /// @title ICE64 Renderer
 /// @author Sam King (samkingstudio.eth)
+/// @notice Renders token metadata for the main ICE64 contract
+///
+///         Code is licensed as MIT.
+///         https://spdx.org/licenses/MIT.html
+///
+///         Token metadata and images licensed as CC BY-NC 4.0
+///         https://creativecommons.org/licenses/by-nc/4.0/
+///         You are free to:
+///           - Share: copy and redistribute the material in any medium or format
+///           - Adapt: remix, transform, and build upon the material
+///         Under the following terms:
+///           - Attribution: You must give appropriate credit, provide a link to the license,
+///             and indicate if changes were made. You may do so in any reasonable manner, but not
+///             in any way that suggests the licensor endorses you or your use.
+///           - NonCommercial: You may not use the material for commercial purposes
+///           - No additional restrictions: You may not apply legal terms or technological measures
+///             that legally restrict others from doing anything the license permits.
+///
 contract ICE64Renderer is IICE64Renderer {
     using Strings for uint256;
     using DynamicBuffer for bytes;
@@ -27,7 +62,7 @@ contract ICE64Renderer is IICE64Renderer {
     IICE64DataStore public dataStore;
 
     /// @dev The address of the xqstgfx public rendering contract
-    XQSTGFX public xqstgfx;
+    IExquisiteGraphics public xqstgfx;
 
     /* ------------------------------------------------------------------------
                                       I N I T
@@ -43,7 +78,7 @@ contract ICE64Renderer is IICE64Renderer {
     ) {
         ice64 = IICE64(ice64_);
         dataStore = IICE64DataStore(ice64DataStore_);
-        xqstgfx = XQSTGFX(xqstgfx_);
+        xqstgfx = IExquisiteGraphics(payable(xqstgfx_));
     }
 
     /* ------------------------------------------------------------------------
@@ -59,7 +94,7 @@ contract ICE64Renderer is IICE64Renderer {
     /// @notice Draws an SVG from data in the .xqst format to bytes
     /// @param data The photo data in .xqst format
     function drawSVGToBytes(bytes memory data) public view returns (bytes memory) {
-        string memory rects = xqstgfx.drawRects(data);
+        string memory rects = xqstgfx.drawPixelsUnsafe(data);
         bytes memory svg = DynamicBuffer.allocate(2**19);
 
         svg.appendSafe(
@@ -124,16 +159,16 @@ contract ICE64Renderer is IICE64Renderer {
 
         json.appendSafe(
             abi.encodePacked(
-                '{"symbol":"PHOTO","name":"Photo Collection #',
+                '{"symbol":"ICE64","name":"ICE64 #',
                 originalIdStr,
-                ' Edition","description":"A tiny edition of Photo Collection #',
+                ' (Edition)","description":"A fully on-chain edition of ICE64 #',
                 originalIdStr,
-                ". Edition of ",
+                ". Edition size of ",
                 ice64.getMaxEditions().toString(),
-                ', 64x64px in size, stored fully on-chain.","image":"',
+                '. Each edition is 64x64px in size with a 32px border, 64 colors, and stored on the Ethereum blockchain forever.","image":"',
                 string(svgBase64),
-                '","external_url":"https://samking.photo/photo/',
-                originalIdStr,
+                '","external_url":"https://ice64.com/photo/',
+                id.toString(),
                 '","attributes":[]}'
             )
         );

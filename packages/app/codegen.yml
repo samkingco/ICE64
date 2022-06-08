@@ -1,4 +1,4 @@
-schema: https://api.studio.thegraph.com/query/19218/ice64-test/v0.0.2
+schema: https://api.studio.thegraph.com/query/19218/ice64-testing/v0.0.2
 documents: "src/**/*.{ts,tsx,graphql}"
 generates:
   ./src/graphql/subgraph.ts:

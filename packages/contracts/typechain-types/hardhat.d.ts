@@ -49,6 +49,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Owned__factory>;
     getContractFactory(
+      name: "ERC1155",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155__factory>;
+    getContractFactory(
+      name: "ERC1155TokenReceiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC1155TokenReceiver__factory>;
+    getContractFactory(
       name: "ERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;
@@ -81,6 +89,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ICE64Renderer__factory>;
     getContractFactory(
+      name: "IExquisiteGraphics",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IExquisiteGraphics__factory>;
+    getContractFactory(
       name: "IICE64",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IICE64__factory>;
@@ -92,6 +104,10 @@ declare module "hardhat/types/runtime" {
       name: "IICE64Renderer",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IICE64Renderer__factory>;
+    getContractFactory(
+      name: "IThankYou",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IThankYou__factory>;
     getContractFactory(
       name: "MockERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -151,6 +167,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Owned>;
     getContractAt(
+      name: "ERC1155",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155>;
+    getContractAt(
+      name: "ERC1155TokenReceiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC1155TokenReceiver>;
+    getContractAt(
       name: "ERC20",
       address: string,
       signer?: ethers.Signer
@@ -191,6 +217,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ICE64Renderer>;
     getContractAt(
+      name: "IExquisiteGraphics",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IExquisiteGraphics>;
+    getContractAt(
       name: "IICE64",
       address: string,
       signer?: ethers.Signer
@@ -205,6 +236,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IICE64Renderer>;
+    getContractAt(
+      name: "IThankYou",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IThankYou>;
     getContractAt(
       name: "MockERC20",
       address: string,

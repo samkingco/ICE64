@@ -14,6 +14,7 @@ import { usePhotoPagination } from "../hooks/usePhotoPagination";
 import { deployedAddress, targetNetwork } from "../utils/contracts";
 import { getEditionId, getOriginalId, isEdition } from "../utils/tokenIds";
 import { MonoButton } from "./Button";
+import { ClaimRootsButton } from "./ClaimRootsButton";
 import { CopyToClipboard } from "./CopyToClipboard";
 import { Divider } from "./Divider";
 import { ENSAddress } from "./ENSAddress";
@@ -220,6 +221,8 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
   const editionId = getEditionId(id);
   const maxEditions = 32;
 
+  const hasRootsTokens = false;
+
   const { data: account } = useAccount();
   const contractAddress = deployedAddress("ICE64", targetNetwork);
   const etherscan = useEtherscanURL();
@@ -234,7 +237,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
     },
   });
 
-  const onPurchaseSuccessful = () => {
+  const onPurchaseOrClaimSuccessful = () => {
     setTimeout(() => {
       refreshQuery();
     }, 5000);
@@ -403,17 +406,14 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                       ) : (
                         <PurchaseButton
                           id={originalId}
-                          onConfirmed={onPurchaseSuccessful}
+                          onConfirmed={onPurchaseOrClaimSuccessful}
                         />
                       )}
                     </>
                   )}
                 </SaleInfoArea>
 
-                <Body>
-                  Each original comes with an on-chain edition. Metadata and
-                  image stored on IPFS.
-                </Body>
+                <Body>Description in progress</Body>
               </Description>,
               <Description key="tab-edition-of-32">
                 <SaleInfoArea>
@@ -451,12 +451,26 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                         !isOwnerOfEdition && (
                           <PurchaseButton
                             id={editionId}
-                            onConfirmed={onPurchaseSuccessful}
+                            onConfirmed={onPurchaseOrClaimSuccessful}
                           />
                         )}
                     </>
                   )}
                 </SaleInfoArea>
+
+                {!editionsSoldOut &&
+                  !lastEditionReserved &&
+                  !isOwnerOfEdition &&
+                  hasRootsTokens && (
+                    <SaleInfoArea>
+                      <ClaimRootsButton
+                        id={originalId}
+                        onConfirmed={onPurchaseOrClaimSuccessful}
+                      />
+                    </SaleInfoArea>
+                  )}
+
+                <Body>Description in progress</Body>
 
                 {currentEditionOwners.length > 0 && (
                   <div>

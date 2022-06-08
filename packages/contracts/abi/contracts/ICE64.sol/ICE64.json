@@ -97,6 +97,12 @@
   },
   {
     "anonymous": false,
+    "inputs": [],
+    "name": "ICE64Emerges",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [
       {
         "indexed": true,

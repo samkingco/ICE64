@@ -9,7 +9,6 @@ import { Cursor } from "../components/Cursor";
 import { Modal } from "../components/Modal";
 import { Navigation } from "../components/Navigation";
 import { PhotoDetail } from "../components/PhotoDetail";
-import { Mono } from "../components/Typography";
 import { useCursorPosition } from "../hooks/useCursorPosition";
 import { allIds, getEditionId, originalIds } from "../utils/tokenIds";
 
@@ -162,11 +161,11 @@ export default function Index() {
         ))}
       </Grid>
 
-      <nav>
+      {/* <nav>
         <Mono>
           <a href="https://samking.studio">A Sam King Studio project</a>
         </Mono>
-      </nav>
+      </nav> */}
 
       <Modal
         a11yLabel={`Detail view of photo #${modalId}`}

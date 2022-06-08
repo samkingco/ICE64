@@ -1,4 +1,5 @@
 import ICE64Abi from "@ice64/contracts/abi/contracts/ICE64.sol/ICE64.json";
+import ICE64DataStoreAbi from "@ice64/contracts/abi/contracts/ICE64DataStore.sol/ICE64DataStore.json";
 import ICE64RendererAbi from "@ice64/contracts/abi/contracts/ICE64Renderer.sol/ICE64Renderer.json";
 import deploysJson from "@ice64/contracts/deploys.json";
 
@@ -29,7 +30,7 @@ const networks: Record<number, Network> = {
 
 export const targetNetwork = networks[chainId];
 
-export type ContractName = "ICE64" | "ICE64Renderer";
+export type ContractName = "ICE64" | "ICE64DataStore" | "ICE64Renderer";
 
 interface DeployedContract {
   address: string;
@@ -52,6 +53,8 @@ export function deployedAbi(contract: ContractName) {
   switch (contract) {
     case "ICE64":
       return ICE64Abi;
+    case "ICE64DataStore":
+      return ICE64DataStoreAbi;
     case "ICE64Renderer":
       return ICE64RendererAbi;
     default:

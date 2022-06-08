@@ -10,9 +10,9 @@ import {
 export function handleTransfer(event: TransferSingle): void {
   const contract = ICE64.bind(event.address);
 
-  let settings = Settings.load(event.address.toString());
+  let settings = Settings.load("ICE64:settings");
   if (!settings) {
-    settings = new Settings(event.address.toString());
+    settings = new Settings("ICE64:settings");
     settings.priceOriginal = contract.priceOriginal();
     settings.priceEdition = contract.priceEdition();
     settings.maxEditions = contract.getMaxEditions();
@@ -25,8 +25,6 @@ export function handleTransfer(event: TransferSingle): void {
   let isEdition = id.gt(BigInt.fromI32(100));
   let isMint =
     fromAddress.toHexString() == "0x0000000000000000000000000000000000000000";
-  let isBurn =
-    toAddress.toHexString() == "0x0000000000000000000000000000000000000000";
 
   let fromWallet = Wallet.load(fromAddress.toHexString());
   if (!fromWallet) {
@@ -108,3 +106,43 @@ export function handleTransfer(event: TransferSingle): void {
 }
 
 export function handleTransferBatch(event: TransferBatch): void {}
+
+// export function handleRootsClaim(event: ClaimEditionAsRootsHolderCall): void {
+//   const rootsId = event.inputs.rootsId;
+//   let rootsPhoto = RootsPhoto.load(rootsId.toString());
+//   // rootsPhoto _should_ be loaded since it has to be minted before claiming
+//   if (rootsPhoto) {
+//     rootsPhoto.hasClaimedEdition = true;
+//   }
+// }
+
+// export function handleRootsTransfer(event: Transfer): void {
+//   const id = event.params.id;
+//   const fromAddress = event.params.from;
+//   const toAddress = event.params.to;
+//   const contract = Roots.bind(event.address);
+
+//   let fromWallet = Wallet.load(fromAddress.toHexString());
+//   if (!fromWallet) {
+//     fromWallet = new Wallet(fromAddress.toHexString());
+//     fromWallet.address = fromAddress;
+//     fromWallet.save();
+//   }
+
+//   let toWallet = Wallet.load(toAddress.toHexString());
+//   if (!toWallet) {
+//     toWallet = new Wallet(toAddress.toHexString());
+//     toWallet.address = toAddress;
+//     toWallet.save();
+//   }
+
+//   let rootsPhoto = RootsPhoto.load(id.toString());
+//   if (!rootsPhoto) {
+//     rootsPhoto = new RootsPhoto(id.toString());
+//     rootsPhoto.tokenURI = contract.tokenURI(id);
+//   }
+
+//   rootsPhoto.currentOwner = toWallet.id;
+//   rootsPhoto.hasClaimedEdition = false;
+//   rootsPhoto.save();
+// }

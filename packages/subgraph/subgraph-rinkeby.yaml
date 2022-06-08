@@ -6,15 +6,16 @@ dataSources:
     name: ICE64
     network: rinkeby
     source:
-      address: "0x401995d4fd0b1bf94b286ca949af245af2dae3d3"
+      address: "0x3Cbe6562415d9f9c34094D83Ad2DA617AD66A5AF"
       abi: ICE64
-      startBlock: 10785253
+      startBlock: 10812801
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Transfer
+        - TransferSingle
+        - TransferBatch
       abis:
         - name: ICE64
           file: ./abis/ICE64.json
@@ -23,4 +24,27 @@ dataSources:
           handler: handleTransfer
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
+      # callHandlers:
+      #   - function: claimEditionAsRootsHolder(uint256,uint256)
+      #     handler: handleRootsClaim
       file: ./src/mapping.ts
+  # - kind: ethereum
+  #   name: Roots
+  #   network: rinkeby
+  #   source:
+  #     address: "0xD21b87f44C0dB9A9e4EA70ca893a838F1107CAAF"
+  #     abi: Roots
+  #     startBlock: 10812763
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.5
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Transfer
+  #     abis:
+  #       - name: Roots
+  #         file: ./abis/Roots.json
+  #     eventHandlers:
+  #       - event: Transfer(indexed address,indexed address,indexed uint256)
+  #         handler: handleRootsTransfer
+  #     file: ./src/mapping.ts

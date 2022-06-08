@@ -1,5 +1,22 @@
-// SPDX-License-Identifier: CC0-1.0
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
+
+/*
+
+          ^JJ~     .::^~!!77~.  .?JJ~:^~?Y!      .:::..        7Y!              
+          :@@^  .!~..    .:~5#Y  Y@Y   .:7?    ~?!:.          ~@G:              
+           B#  ~P^           ~P  ~@P:        :PY.            ~&5                
+           B# ^@7             :  ^@Y::~?5!  ^&P::^~!J?^     ~#7  .              
+           B# 5@^                ^@J   .!~ .B&^     .?&P.  7P^  5J              
+           B# J@?                ^@J       ^@B        ~@P.77   .@5 .^~          
+           B# .B@!             . ^@J       :&@:        B&!~.:::^@P^7YJ          
+           B&. .5@P^         :^: !@J        7@B:      ^#?      :@5              
+          ^@@!   ^YGPY?7!!!7!^.  P@J.:^~7YB? ^5G?^...^?~       J@&^             
+          :^^:      :^~!~~^.    .^^::^^^~~~.   .^~^:..         ^^^:
+
+          D A T A   S T O R A G E   C O N T R A C T
+
+*/
 
 import {Owned} from "@rari-capital/solmate/src/auth/Owned.sol";
 
@@ -12,8 +29,25 @@ import {IICE64} from "./interfaces/IICE64.sol";
 import {IICE64DataStore} from "./interfaces/IICE64DataStore.sol";
 
 /// @title ICE64 data store
-/// @dev Stores on-chain image data for ICE64 editions
 /// @author Sam King (samkingstudio.eth)
+/// @notice Stores on-chain image data for ICE64 editions
+///
+///         Code is licensed as MIT.
+///         https://spdx.org/licenses/MIT.html
+///
+///         Token metadata and images licensed as CC BY-NC 4.0
+///         https://creativecommons.org/licenses/by-nc/4.0/
+///         You are free to:
+///           - Share: copy and redistribute the material in any medium or format
+///           - Adapt: remix, transform, and build upon the material
+///         Under the following terms:
+///           - Attribution: You must give appropriate credit, provide a link to the license,
+///             and indicate if changes were made. You may do so in any reasonable manner, but not
+///             in any way that suggests the licensor endorses you or your use.
+///           - NonCommercial: You may not use the material for commercial purposes
+///           - No additional restrictions: You may not apply legal terms or technological measures
+///             that legally restrict others from doing anything the license permits.
+///
 contract ICE64DataStore is IICE64DataStore, Owned {
     /* ------------------------------------------------------------------------
                                    S T O R A G E
