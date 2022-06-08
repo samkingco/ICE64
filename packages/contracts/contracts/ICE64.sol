@@ -89,6 +89,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     ------------------------------------------------------------------------ */
 
     event ICE64Emerges();
+    event RootsClaim(uint256 indexed rootsId, uint256 indexed originalId, uint256 editionId);
 
     /* ------------------------------------------------------------------------
                                     E R R O R S
@@ -213,6 +214,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
         if (_getBool(_rootsClaims, rootsId)) revert RootsPhotoAlreadyUsedClaim();
         _mintEdition(id);
         _rootsClaims = _setBool(_rootsClaims, rootsId, true);
+        emit RootsClaim(rootsId, id, getEditionTokenId(id));
     }
 
     /// @dev Internal function to mint an edition, checking if there's still supply

@@ -69,7 +69,8 @@ interface ModalProps {
   a11yLabel: string;
   isOpen: boolean;
   size?: ModalSize;
-  onClose: () => void;
+  onClose?: () => void;
+  dangerouslyBypassFocusLock?: boolean;
 }
 
 export function Modal({
@@ -78,13 +79,16 @@ export function Modal({
   isOpen,
   size = "md",
   onClose,
+  dangerouslyBypassFocusLock,
 }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
         <ModalOverlay
+          isOpen={isOpen}
           onDismiss={onClose}
           allowPinchZoom={true}
+          dangerouslyBypassFocusLock={dangerouslyBypassFocusLock}
           variants={{
             visible: {
               opacity: 1,

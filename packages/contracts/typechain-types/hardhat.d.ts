@@ -105,10 +105,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IICE64Renderer__factory>;
     getContractFactory(
-      name: "IThankYou",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IThankYou__factory>;
-    getContractFactory(
       name: "MockERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockERC20__factory>;
@@ -236,11 +232,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IICE64Renderer>;
-    getContractAt(
-      name: "IThankYou",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IThankYou>;
     getContractAt(
       name: "MockERC20",
       address: string,

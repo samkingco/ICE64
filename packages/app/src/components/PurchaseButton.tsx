@@ -10,6 +10,7 @@ import {
   TxState,
   useContractTransaction,
 } from "../hooks/useContractTransaction";
+import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { targetNetwork } from "../utils/contracts";
 import { getOriginalId, isEdition } from "../utils/tokenIds";
@@ -65,6 +66,8 @@ interface Props {
 
 export function PurchaseButton({ id, onConfirmed }: Props) {
   const isMounted = useIsMounted();
+  const etherscan = useEtherscanURL();
+
   const edition = isEdition(id);
   const originalId = getOriginalId(id);
   const [showConnectModal, setShowConnectModal] = useState(false);
@@ -173,21 +176,25 @@ export function PurchaseButton({ id, onConfirmed }: Props) {
               {txState === TxState.Broadcasted && (
                 <>
                   {purchaseData && purchaseData.hash ? (
-                    <a href={`https://etherscan.io/tx/${purchaseData.hash}`}>
-                      <Mono subdued>View transaction info</Mono>
+                    <a href={`${etherscan}/tx/${purchaseData.hash}`}>
+                      <Mono as="span" subdued>
+                        View transaction info
+                      </Mono>
                     </a>
                   ) : (
-                    <Mono subdued>Sending transaction</Mono>
+                    <Mono as="span" subdued>
+                      Sending transaction
+                    </Mono>
                   )}
                 </>
               )}
               {txState === TxState.Error && (
-                <Mono subdued>
+                <Mono as="span" subdued>
                   {errorMessage || "Something went wrong"}
                   {purchaseData && purchaseData.hash && (
                     <>
                       <br />
-                      <a href={`https://etherscan.io/tx/${purchaseData.hash}`}>
+                      <a href={`${etherscan}/tx/${purchaseData.hash}`}>
                         <Mono as="span" subdued>
                           View transaction info
                         </Mono>

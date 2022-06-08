@@ -253,6 +253,7 @@ export interface ICE64Interface extends utils.Interface {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "ICE64Emerges()": EventFragment;
     "OwnerUpdated(address,address)": EventFragment;
+    "RootsClaim(uint256,uint256,uint256)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
@@ -261,6 +262,7 @@ export interface ICE64Interface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ICE64Emerges"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnerUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RootsClaim"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -283,6 +285,13 @@ export type OwnerUpdatedEvent = TypedEvent<
 >;
 
 export type OwnerUpdatedEventFilter = TypedEventFilter<OwnerUpdatedEvent>;
+
+export type RootsClaimEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber],
+  { rootsId: BigNumber; originalId: BigNumber; editionId: BigNumber }
+>;
+
+export type RootsClaimEventFilter = TypedEventFilter<RootsClaimEvent>;
 
 export type TransferBatchEvent = TypedEvent<
   [string, string, string, BigNumber[], BigNumber[]],
@@ -782,6 +791,17 @@ export interface ICE64 extends BaseContract {
       user?: string | null,
       newOwner?: string | null
     ): OwnerUpdatedEventFilter;
+
+    "RootsClaim(uint256,uint256,uint256)"(
+      rootsId?: BigNumberish | null,
+      originalId?: BigNumberish | null,
+      editionId?: null
+    ): RootsClaimEventFilter;
+    RootsClaim(
+      rootsId?: BigNumberish | null,
+      originalId?: BigNumberish | null,
+      editionId?: null
+    ): RootsClaimEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,

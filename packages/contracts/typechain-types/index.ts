@@ -23,7 +23,6 @@ export type { IExquisiteGraphics } from "./IExquisiteGraphics";
 export type { IICE64 } from "./IICE64";
 export type { IICE64DataStore } from "./IICE64DataStore";
 export type { IICE64Renderer } from "./IICE64Renderer";
-export type { IThankYou } from "./IThankYou";
 export type { MockERC20 } from "./MockERC20";
 export type { MockERC721 } from "./MockERC721";
 export type { MockXQSTGFX } from "./MockXQSTGFX";
@@ -50,7 +49,6 @@ export { IExquisiteGraphics__factory } from "./factories/IExquisiteGraphics__fac
 export { IICE64__factory } from "./factories/IICE64__factory";
 export { IICE64DataStore__factory } from "./factories/IICE64DataStore__factory";
 export { IICE64Renderer__factory } from "./factories/IICE64Renderer__factory";
-export { IThankYou__factory } from "./factories/IThankYou__factory";
 export { MockERC20__factory } from "./factories/MockERC20__factory";
 export { MockERC721__factory } from "./factories/MockERC721__factory";
 export { MockXQSTGFX__factory } from "./factories/MockXQSTGFX__factory";

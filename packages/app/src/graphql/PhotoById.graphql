@@ -1,6 +1,7 @@
-query PhotoById($originalId: ID!, $editionId: ID!) {
+query PhotoById($originalId: ID!, $editionId: ID!, $wallet: ID!) {
   originalPhoto(id: $originalId) {
     id
+    uri
     currentOwner {
       address
     }
@@ -10,6 +11,12 @@ query PhotoById($originalId: ID!, $editionId: ID!) {
     totalPurchased
     currentOwners {
       address
+    }
+  }
+  wallet(id: $wallet) {
+    roots {
+      id
+      hasClaimedEdition
     }
   }
 }

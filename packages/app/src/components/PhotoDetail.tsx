@@ -12,6 +12,7 @@ import { useIsMounted } from "../hooks/useIsMounted";
 import { useOpenSeaURL } from "../hooks/useOpenSeaURL";
 import { usePhotoPagination } from "../hooks/usePhotoPagination";
 import { deployedAddress, targetNetwork } from "../utils/contracts";
+import { gatewayURL } from "../utils/metadata";
 import { getEditionId, getOriginalId, isEdition } from "../utils/tokenIds";
 import { MonoButton } from "./Button";
 import { ClaimRootsButton } from "./ClaimRootsButton";
@@ -211,9 +212,10 @@ interface Props {
   id: number;
   onClose?: () => void;
   closeHref?: string;
+  onNavigate?: () => void;
 }
 
-export function PhotoDetail({ id, onClose, closeHref }: Props) {
+export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
   const isMounted = useIsMounted();
 
   const edition = isEdition(id);
@@ -221,26 +223,27 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
   const editionId = getEditionId(id);
   const maxEditions = 32;
 
-  const hasRootsTokens = false;
-
   const { data: account } = useAccount();
   const contractAddress = deployedAddress("ICE64", targetNetwork);
+  const rendererAddress = deployedAddress("ICE64Renderer", targetNetwork);
   const etherscan = useEtherscanURL();
   const opensea = useOpenSeaURL();
-  const openSeaLink = `${opensea}/${contractAddress}/${id}`;
+  const openSeaLink = `${opensea}/assets/${contractAddress}/${id}`;
 
   const [photoByIdQuery, refreshQuery] = usePhotoByIdQuery({
     requestPolicy: "cache-and-network",
     variables: {
       originalId: originalId.toString(),
       editionId: editionId.toString(),
+      wallet:
+        (account && account.address && account.address.toLowerCase()) || "",
     },
   });
 
   const onPurchaseOrClaimSuccessful = () => {
-    setTimeout(() => {
-      refreshQuery();
-    }, 5000);
+    refreshQuery();
+    // setTimeout(() => {
+    // }, 5000);
   };
 
   const { data: photo, fetching: isFetchingPhoto } = photoByIdQuery;
@@ -272,6 +275,9 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
       isOwnerOfEdition = true;
     }
   });
+
+  const rootsPhotos = (photo && photo.wallet && photo.wallet.roots) || [];
+  const hasRootsTokens = Boolean(rootsPhotos && rootsPhotos.length > 0);
 
   const { goToOriginal, goToEdition, goToPrev, goToNext } = usePhotoPagination({
     id,
@@ -306,7 +312,7 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
 
   if (closeHref) {
     closeContent = (
-      <Link href={closeHref} passHref>
+      <Link href={closeHref} passHref scroll={false}>
         <CloseLink>
           <Mono aria-label="Close">{closeCross}</Mono>
         </CloseLink>
@@ -465,6 +471,10 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
                     <SaleInfoArea>
                       <ClaimRootsButton
                         id={originalId}
+                        rootsPhotos={rootsPhotos.map((i) => ({
+                          id: i.id,
+                          hasClaimedEdition: i.hasClaimedEdition,
+                        }))}
                         onConfirmed={onPurchaseOrClaimSuccessful}
                       />
                     </SaleInfoArea>
@@ -502,14 +512,36 @@ export function PhotoDetail({ id, onClose, closeHref }: Props) {
           <ContractInfo>
             <ContractKey as="dt">Token ID</ContractKey>
             <ContractValue as="dd">{id}</ContractValue>
+            <ContractKey as="dt">Token standard</ContractKey>
+            <ContractValue as="dd">ERC1155</ContractValue>
             <ContractKey as="dt">Contract</ContractKey>
             <ContractValue as="dd">
               <Link href={`${etherscan}/address/${contractAddress}`}>
                 <a>{addressDisplayName(contractAddress)}</a>
               </Link>
             </ContractValue>
-            <ContractKey as="dt">Token standard</ContractKey>
-            <ContractValue as="dd">ERC1155</ContractValue>
+            {!edition && originalPhoto && originalPhoto.uri && (
+              <>
+                <ContractKey as="dt">Metadata</ContractKey>
+                <ContractValue as="dd">
+                  <a href={gatewayURL(originalPhoto.uri).url}>
+                    {gatewayURL(originalPhoto.uri).type}
+                  </a>
+                </ContractValue>
+              </>
+            )}
+            {edition && (
+              <>
+                <ContractKey as="dt">Metadata</ContractKey>
+                <ContractValue as="dd">
+                  <a
+                    href={`${etherscan}/address/${rendererAddress}#readContract`}
+                  >
+                    On-chain
+                  </a>
+                </ContractValue>
+              </>
+            )}
             <ContractKey as="dt">Royalties</ContractKey>
             <ContractValue as="dd">6.4%</ContractValue>
           </ContractInfo>

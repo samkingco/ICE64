@@ -3,6 +3,10 @@ export const originalIds = Array.from({ length: 16 }, (_, i) => i + 1);
 export const editionIds = Array.from({ length: 16 }, (_, i) => i + 101);
 
 export const allIds = [...originalIds, ...editionIds];
+export const modalIds = [
+  ...originalIds,
+  ...editionIds.map((i) => i - 100 + 16),
+];
 
 export const joinedIds = originalIds.reduce((list: number[], id) => {
   return [...list, id, id + 100];

@@ -9,6 +9,7 @@ import {
   TxState,
   useContractTransaction,
 } from "../hooks/useContractTransaction";
+import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { getOriginalId } from "../utils/tokenIds";
 import { Button } from "./Button";
@@ -56,24 +57,24 @@ const Thankyou = styled.div`
   }
 `;
 
-const rootsPhotos = [
-  { id: "1", hasClaimedEdition: false },
-  { id: "8", hasClaimedEdition: false },
-];
-
 interface Props {
   id: number;
+  rootsPhotos: Partial<{ id: string; hasClaimedEdition: boolean }>[];
   onConfirmed?: () => void;
 }
 
-export function ClaimRootsButton({ id, onConfirmed }: Props) {
+export function ClaimRootsButton({ id, onConfirmed, rootsPhotos }: Props) {
   const isMounted = useIsMounted();
+  const etherscan = useEtherscanURL();
+
   const originalId = getOriginalId(id);
   const [showWalletInfoModal, setShowWalletInfoModal] = useState(false);
   const [showClaimModal, setShowClaimModal] = useState(false);
 
   const { data: account } = useAccount();
   const { connectedStatus } = useConnectedStatus();
+
+  const eligible = rootsPhotos.filter((i) => !i.hasClaimedEdition);
 
   const {
     write: claim,
@@ -121,30 +122,34 @@ export function ClaimRootsButton({ id, onConfirmed }: Props) {
             </Button>
             <SecondaryInfo>
               {txState === TxState.Ready && (
-                <Mono subdued>
-                  {rootsPhotos.filter((i) => !i.hasClaimedEdition).length}{" "}
-                  eligible Roots photos
+                <Mono as="span" subdued>
+                  {eligible.length} eligible Roots photo
+                  {eligible.length === 1 ? "" : "s"}
                 </Mono>
               )}
               {txState === TxState.WaitingOnWallet && <LoadingIndicator />}
               {txState === TxState.Broadcasted && (
                 <>
                   {claimData && claimData.hash ? (
-                    <a href={`https://etherscan.io/tx/${claimData.hash}`}>
-                      <Mono subdued>View transaction info</Mono>
+                    <a href={`${etherscan}/tx/${claimData.hash}`}>
+                      <Mono as="span" subdued>
+                        View transaction info
+                      </Mono>
                     </a>
                   ) : (
-                    <Mono subdued>Sending transaction</Mono>
+                    <Mono as="span" subdued>
+                      Sending transaction
+                    </Mono>
                   )}
                 </>
               )}
               {txState === TxState.Error && (
-                <Mono subdued>
+                <Mono as="span" subdued>
                   {errorMessage || "Something went wrong"}
                   {claimData && claimData.hash && (
                     <>
                       <br />
-                      <a href={`https://etherscan.io/tx/${claimData.hash}`}>
+                      <a href={`${etherscan}/tx/${claimData.hash}`}>
                         <Mono as="span" subdued>
                           View transaction info
                         </Mono>

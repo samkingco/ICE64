@@ -10,7 +10,8 @@ import { Modal } from "../components/Modal";
 import { Navigation } from "../components/Navigation";
 import { PhotoDetail } from "../components/PhotoDetail";
 import { useCursorPosition } from "../hooks/useCursorPosition";
-import { allIds, getEditionId, originalIds } from "../utils/tokenIds";
+import { firstParam } from "../utils/firstParam";
+import { getEditionId, originalIds } from "../utils/tokenIds";
 
 const Grid = styled.div`
   display: grid;
@@ -44,6 +45,10 @@ const TokenImage = styled.figure`
   position: relative;
   margin: 0 auto;
 
+  a {
+    display: block;
+  }
+
   @media (orientation: landscape) {
     max-width: 100vh;
   }
@@ -58,44 +63,40 @@ export default function Index() {
     shouldRespond: Boolean(cursorVisible && !modalId),
   });
 
-  const refs = useRef<Array<HTMLAnchorElement | null>>([]);
+  const refs = useRef<Record<number, HTMLAnchorElement | null>>([]);
 
   // Setup refs to photo links for scrolling into view when the modal is closed
   useEffect(() => {
-    refs.current = refs.current.slice(0, allIds.length);
+    refs.current = {};
     return () => {
-      refs.current = [];
+      refs.current = {};
     };
   }, []);
 
   useEffect(() => {
-    const photo = allIds.find((i) => `${i}` === router.query.photo);
-    setModalId(photo);
+    const id = firstParam(router.query.id);
+    if (id) {
+      setModalId(parseInt(id, 10));
+    }
     return () => {
       setModalId(undefined);
     };
-  }, [router.query.photo]);
+  }, [router.query.id]);
 
   const onModalClose = () => {
-    router.push(returnHref, undefined, {
-      scroll: false,
-    });
+    router.push(returnHref, undefined, { scroll: false });
 
     if (modalId) {
-      const returnId = allIds.findIndex((i) => i === modalId) + 1;
       // Scroll to the image and set focus when the modal closes
-      // setTimeout hack because of focus locking in @reach/dialog
-      setTimeout(() => {
-        if (refs.current[returnId]) {
-          // @ts-ignore: Object is possibly 'null'.
-          refs.current[returnId].scrollIntoView({
-            block: "center",
-            inline: "center",
-          });
-          // @ts-ignore: Object is possibly 'null'.
-          refs.current[returnId].focus();
-        }
-      }, 10);
+      if (refs.current[modalId]) {
+        // @ts-ignore: Object is possibly 'null'.
+        refs.current[modalId].scrollIntoView({
+          block: "center",
+          inline: "center",
+        });
+        // @ts-ignore: Object is possibly 'null'.
+        refs.current[modalId].focus();
+      }
     }
   };
 
@@ -125,7 +126,7 @@ export default function Index() {
           <TokenGroup key={`tokenGroup_${id}`}>
             <TokenImage>
               <Link
-                href={makeContextualHref({ photo: id })}
+                href={makeContextualHref({ id })}
                 as={`/photo/${id}`}
                 scroll={false}
               >
@@ -142,11 +143,11 @@ export default function Index() {
             </TokenImage>
             <TokenImage>
               <Link
-                href={makeContextualHref({ photo: getEditionId(id) })}
+                href={makeContextualHref({ id: getEditionId(id) })}
                 as={`/photo/${getEditionId(id)}`}
                 scroll={false}
               >
-                <a ref={(el) => (refs.current[id + originalIds.length] = el)}>
+                <a ref={(el) => (refs.current[getEditionId(id)] = el)}>
                   <Image
                     src={`/tokens/${id}.svg`}
                     width={2800}
@@ -169,9 +170,10 @@ export default function Index() {
 
       <Modal
         a11yLabel={`Detail view of photo #${modalId}`}
-        isOpen={Boolean(!!router.query.photo && modalId)}
+        isOpen={Boolean(!!router.query.id && modalId)}
         onClose={onModalClose}
         size="full-screen"
+        dangerouslyBypassFocusLock
       >
         {modalId && <PhotoDetail id={modalId} onClose={onModalClose} />}
       </Modal>

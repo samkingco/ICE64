@@ -258,6 +258,8 @@ export type Query = {
   readonly editionPhotos: ReadonlyArray<EditionPhoto>;
   readonly originalPhoto?: Maybe<OriginalPhoto>;
   readonly originalPhotos: ReadonlyArray<OriginalPhoto>;
+  readonly rootsPhoto?: Maybe<RootsPhoto>;
+  readonly rootsPhotos: ReadonlyArray<RootsPhoto>;
   readonly settings: ReadonlyArray<Settings>;
   readonly wallet?: Maybe<Wallet>;
   readonly wallets: ReadonlyArray<Wallet>;
@@ -305,6 +307,24 @@ export type QueryOriginalPhotosArgs = {
 };
 
 
+export type QueryRootsPhotoArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryRootsPhotosArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<RootsPhoto_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<RootsPhoto_Filter>;
+};
+
+
 export type QuerySettingsArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
@@ -332,6 +352,78 @@ export type QueryWalletsArgs = {
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Wallet_Filter>;
 };
+
+export type RootsPhoto = {
+  readonly __typename?: 'RootsPhoto';
+  readonly currentOwner: Wallet;
+  readonly hasClaimedEdition: Scalars['Boolean'];
+  readonly id: Scalars['ID'];
+  readonly tokenURI: Scalars['String'];
+};
+
+export type RootsPhoto_Filter = {
+  /** Filter for the block changed event. */
+  readonly _change_block?: InputMaybe<BlockChangedFilter>;
+  readonly currentOwner?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_contains?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_contains_nocase?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_ends_with?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_gt?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_gte?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
+  readonly currentOwner_lt?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_lte?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not_contains?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
+  readonly currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_starts_with?: InputMaybe<Scalars['String']>;
+  readonly currentOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly hasClaimedEdition?: InputMaybe<Scalars['Boolean']>;
+  readonly hasClaimedEdition_in?: InputMaybe<ReadonlyArray<Scalars['Boolean']>>;
+  readonly hasClaimedEdition_not?: InputMaybe<Scalars['Boolean']>;
+  readonly hasClaimedEdition_not_in?: InputMaybe<ReadonlyArray<Scalars['Boolean']>>;
+  readonly id?: InputMaybe<Scalars['ID']>;
+  readonly id_gt?: InputMaybe<Scalars['ID']>;
+  readonly id_gte?: InputMaybe<Scalars['ID']>;
+  readonly id_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
+  readonly id_lt?: InputMaybe<Scalars['ID']>;
+  readonly id_lte?: InputMaybe<Scalars['ID']>;
+  readonly id_not?: InputMaybe<Scalars['ID']>;
+  readonly id_not_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
+  readonly tokenURI?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_contains?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_contains_nocase?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_ends_with?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_gt?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_gte?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
+  readonly tokenURI_lt?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_lte?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not_contains?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not_ends_with?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
+  readonly tokenURI_not_starts_with?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_starts_with?: InputMaybe<Scalars['String']>;
+  readonly tokenURI_starts_with_nocase?: InputMaybe<Scalars['String']>;
+};
+
+export enum RootsPhoto_OrderBy {
+  CurrentOwner = 'currentOwner',
+  HasClaimedEdition = 'hasClaimedEdition',
+  Id = 'id',
+  TokenUri = 'tokenURI'
+}
 
 export type Settings = {
   readonly __typename?: 'Settings';
@@ -393,6 +485,8 @@ export type Subscription = {
   readonly editionPhotos: ReadonlyArray<EditionPhoto>;
   readonly originalPhoto?: Maybe<OriginalPhoto>;
   readonly originalPhotos: ReadonlyArray<OriginalPhoto>;
+  readonly rootsPhoto?: Maybe<RootsPhoto>;
+  readonly rootsPhotos: ReadonlyArray<RootsPhoto>;
   readonly settings: ReadonlyArray<Settings>;
   readonly wallet?: Maybe<Wallet>;
   readonly wallets: ReadonlyArray<Wallet>;
@@ -440,6 +534,24 @@ export type SubscriptionOriginalPhotosArgs = {
 };
 
 
+export type SubscriptionRootsPhotoArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionRootsPhotosArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<RootsPhoto_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<RootsPhoto_Filter>;
+};
+
+
 export type SubscriptionSettingsArgs = {
   block?: InputMaybe<Block_Height>;
   first?: InputMaybe<Scalars['Int']>;
@@ -474,6 +586,7 @@ export type Wallet = {
   readonly editions: ReadonlyArray<EditionPhoto>;
   readonly id: Scalars['ID'];
   readonly originals: ReadonlyArray<OriginalPhoto>;
+  readonly roots: ReadonlyArray<RootsPhoto>;
 };
 
 
@@ -492,6 +605,15 @@ export type WalletOriginalsArgs = {
   orderDirection?: InputMaybe<OrderDirection>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<OriginalPhoto_Filter>;
+};
+
+
+export type WalletRootsArgs = {
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<RootsPhoto_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  where?: InputMaybe<RootsPhoto_Filter>;
 };
 
 export type Wallet_Filter = {
@@ -517,7 +639,8 @@ export enum Wallet_OrderBy {
   Address = 'address',
   Editions = 'editions',
   Id = 'id',
-  Originals = 'originals'
+  Originals = 'originals',
+  Roots = 'roots'
 }
 
 export type _Block_ = {
@@ -555,16 +678,18 @@ export enum _SubgraphErrorPolicy_ {
 export type PhotoByIdQueryVariables = Exact<{
   originalId: Scalars['ID'];
   editionId: Scalars['ID'];
+  wallet: Scalars['ID'];
 }>;
 
 
-export type PhotoByIdQuery = { readonly __typename?: 'Query', readonly originalPhoto?: { readonly __typename?: 'OriginalPhoto', readonly id: string, readonly currentOwner: { readonly __typename?: 'Wallet', readonly address: any } } | null, readonly editionPhoto?: { readonly __typename?: 'EditionPhoto', readonly id: string, readonly totalPurchased: any, readonly currentOwners: ReadonlyArray<{ readonly __typename?: 'Wallet', readonly address: any }> } | null };
+export type PhotoByIdQuery = { readonly __typename?: 'Query', readonly originalPhoto?: { readonly __typename?: 'OriginalPhoto', readonly id: string, readonly uri?: string | null, readonly currentOwner: { readonly __typename?: 'Wallet', readonly address: any } } | null, readonly editionPhoto?: { readonly __typename?: 'EditionPhoto', readonly id: string, readonly totalPurchased: any, readonly currentOwners: ReadonlyArray<{ readonly __typename?: 'Wallet', readonly address: any }> } | null, readonly wallet?: { readonly __typename?: 'Wallet', readonly roots: ReadonlyArray<{ readonly __typename?: 'RootsPhoto', readonly id: string, readonly hasClaimedEdition: boolean }> } | null };
 
 
 export const PhotoByIdDocument = gql`
-    query PhotoById($originalId: ID!, $editionId: ID!) {
+    query PhotoById($originalId: ID!, $editionId: ID!, $wallet: ID!) {
   originalPhoto(id: $originalId) {
     id
+    uri
     currentOwner {
       address
     }
@@ -574,6 +699,12 @@ export const PhotoByIdDocument = gql`
     totalPurchased
     currentOwners {
       address
+    }
+  }
+  wallet(id: $wallet) {
+    roots {
+      id
+      hasClaimedEdition
     }
   }
 }
