@@ -374,7 +374,7 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
           <Tabs
             onChange={handleTabChange}
             defaultIndex={edition ? 1 : 0}
-            tabHeadings={["1 of 1", "Edition of 32"]}
+            tabHeadings={["1 of 1", `Edition of ${maxEditions}`]}
             tabPanels={[
               <Description key="tab-1-of-1">
                 <SaleInfoArea>
