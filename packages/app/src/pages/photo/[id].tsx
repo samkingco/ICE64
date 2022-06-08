@@ -25,6 +25,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export default function ID(
   props: InferGetStaticPropsType<typeof getStaticProps>
 ) {
-  const { id } = props;
-  return <PhotoDetail id={id} closeHref="/" />;
+  return <PhotoDetail id={props.id} closeHref="/" />;
 }
