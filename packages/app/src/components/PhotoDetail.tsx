@@ -9,7 +9,7 @@ import { usePhotoByIdQuery } from "../graphql/subgraph";
 import { addressDisplayName } from "../hooks/useENS";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useIsMounted } from "../hooks/useIsMounted";
-import { useOpenSeaURL } from "../hooks/useOpenSeaURL";
+import { useMarketplaceTokenURL } from "../hooks/useMarketplaceUrl";
 import { usePhotoPagination } from "../hooks/usePhotoPagination";
 import { deployedAddress, targetNetwork } from "../utils/contracts";
 import { gatewayURL } from "../utils/metadata";
@@ -107,7 +107,7 @@ const Description = styled.div`
 
 const FooterLinks = styled.footer`
   display: flex;
-  gap: 1.5rem;
+  gap: 0.5rem;
 `;
 
 const slide = keyframes`
@@ -191,11 +191,10 @@ const ContractValue = styled(Mono)`
 const OwnersList = styled.ul`
   list-style: square;
   margin: 0;
-  padding-left: 1rem;
-`;
-
-const Owner = styled.li`
-  margin: 0;
+  padding-left: 1.5rem;
+  @media (min-width: 80rem) {
+    padding-left: 1.5vw;
+  }
 `;
 
 const MediaWrapper = styled.div`
@@ -227,8 +226,7 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
   const contractAddress = deployedAddress("ICE64", targetNetwork);
   const rendererAddress = deployedAddress("ICE64Renderer", targetNetwork);
   const etherscan = useEtherscanURL();
-  const opensea = useOpenSeaURL();
-  const openSeaLink = `${opensea}/assets/${contractAddress}/${id}`;
+  const { opensea, looksrare, gem } = useMarketplaceTokenURL(id);
 
   const [photoByIdQuery, refreshQuery] = usePhotoByIdQuery({
     requestPolicy: "cache-and-network",
@@ -372,8 +370,6 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
           </Title>
         </div>
 
-        <Divider />
-
         <MainContent>
           <Tabs
             onChange={handleTabChange}
@@ -396,7 +392,7 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
                               <Subheading margin="-8 0 0">
                                 You own this original
                               </Subheading>
-                              <a href={openSeaLink}>
+                              <a href={opensea}>
                                 <Mono subdued>View on OpenSea</Mono>
                               </a>
                             </OwnedBy>
@@ -437,7 +433,7 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
                           <Subheading margin="-8 0 0">
                             You own this edition
                           </Subheading>
-                          <a href={openSeaLink}>
+                          <a href={opensea}>
                             <Mono subdued>View on OpenSea</Mono>
                           </a>
                         </OwnedBy>
@@ -483,28 +479,6 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
                   )}
 
                 <Body>Description in progress</Body>
-
-                {currentEditionOwners.length > 0 && (
-                  <div>
-                    <Mono>
-                      Current owners{" "}
-                      <Mono as="span" subdued>
-                        ({currentEditionOwners.length})
-                      </Mono>
-                    </Mono>
-                    <OwnersList>
-                      {currentEditionOwners.map((owner) => (
-                        <li key={owner.address}>
-                          <Mono>
-                            <CopyToClipboard copyText={owner.address}>
-                              <ENSAddress address={owner.address} />
-                            </CopyToClipboard>
-                          </Mono>
-                        </li>
-                      ))}
-                    </OwnersList>
-                  </div>
-                )}
               </Description>,
             ]}
           />
@@ -547,6 +521,51 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
             <ContractKey as="dt">Royalties</ContractKey>
             <ContractValue as="dd">6.4%</ContractValue>
           </ContractInfo>
+
+          {((!edition && hasOriginalBeenPurchased) ||
+            (edition && currentEditionOwners.length > 0)) && (
+            <FooterLinks>
+              <Mono subdued>
+                <a href={opensea}>OpenSea</a>
+              </Mono>
+              <Mono subdued>&bull;</Mono>
+              <Mono subdued>
+                <a href={looksrare}>LooksRare</a>
+              </Mono>
+              <Mono subdued>&bull;</Mono>
+              <Mono subdued>
+                <a href={gem}>gem.xyz</a>
+              </Mono>
+            </FooterLinks>
+          )}
+
+          {edition && (
+            <>
+              <Divider margin="32 0" />
+
+              {currentEditionOwners.length > 0 && (
+                <div>
+                  <Mono>
+                    Current owners{" "}
+                    <Mono as="span" subdued>
+                      ({currentEditionOwners.length})
+                    </Mono>
+                  </Mono>
+                  <OwnersList>
+                    {currentEditionOwners.map((owner) => (
+                      <li key={owner.address}>
+                        <Mono>
+                          <CopyToClipboard copyText={owner.address}>
+                            <ENSAddress address={owner.address} />
+                          </CopyToClipboard>
+                        </Mono>
+                      </li>
+                    ))}
+                  </OwnersList>
+                </div>
+              )}
+            </>
+          )}
         </MainContent>
       </Sidebar>
 
