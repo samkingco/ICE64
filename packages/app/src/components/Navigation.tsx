@@ -15,18 +15,22 @@ const LogoNav = styled.header`
   ${baseNavStyle};
   top: 0;
   left: 0;
+  padding-right: 12vw;
 `;
 
 const AboutNav = styled.nav`
   ${baseNavStyle};
   bottom: 0;
   right: 0;
+  padding-top: 8vw;
+  padding-left: 12vw;
 `;
 
 const ConnectNav = styled.nav`
   ${baseNavStyle};
   top: 0;
   right: 0;
+  padding-left: 12vw;
 `;
 
 interface Props {
