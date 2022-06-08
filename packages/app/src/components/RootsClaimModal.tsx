@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { RootsPhoto } from "../graphql/subgraph";
 import { Button } from "./Button";
 import { Divider } from "./Divider";
 import { Modal } from "./Modal";
@@ -48,7 +47,7 @@ const ImageWrapper = styled.div`
 
 interface Props {
   originalId: number;
-  rootsPhotos: Partial<RootsPhoto>[];
+  rootsPhotos: Partial<{ id: string; hasClaimedEdition: boolean }>[];
   onClaim: (rootsId: number) => void;
   isOpen: boolean;
   onClose: () => void;
