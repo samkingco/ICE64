@@ -32,7 +32,9 @@ export default {
     },
     rinkeby: {
       url: process.env.ETHEREUM_RINKEBY_RPC_URL || "",
-      accounts: [process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY || ""],
+      accounts: process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY
+        ? [process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY]
+        : [],
     },
   },
   etherscan: {
