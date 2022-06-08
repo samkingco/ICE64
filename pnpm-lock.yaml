@@ -33,7 +33,7 @@ importers:
       debug: ^4.3.3
       eslint-config-next: ^12.1.6
       ethers: ^5.5.2
-      framer-motion: ^6.3.6
+      framer-motion: ^6.3.11
       graphql: ^16.2.0
       next: 12.1.0
       next-use-contextual-routing: ^2.3.0
@@ -55,7 +55,7 @@ importers:
       '@reach/tabs': 0.17.0_react-dom@17.0.2+react@17.0.2
       debug: 4.3.4
       ethers: 5.6.8
-      framer-motion: 6.3.6_react-dom@17.0.2+react@17.0.2
+      framer-motion: 6.3.11_react-dom@17.0.2+react@17.0.2
       graphql: 16.5.0
       next: 12.1.0_react-dom@17.0.2+react@17.0.2
       next-use-contextual-routing: 2.3.0_next@12.1.0+react@17.0.2
@@ -7709,8 +7709,8 @@ packages:
       map-cache: 0.2.2
     dev: true
 
-  /framer-motion/6.3.6_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-gaCmjkg8J72EBiSQAxjY0elzxVQL3GMPA4jQGIvrMa+kiVDyLG0WXQTwAQnJpsylIa/ySDz3djQt2YyD8AKZ7Q==}
+  /framer-motion/6.3.11_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-xQLk+ZSklNs5QNCUmdWPpKMOuWiB8ZETsvcIOWw8xvri9K3TamuifgCI/B6XpaEDR0/V2ZQF2Wm+gUAZrXo+rw==}
     peerDependencies:
       react: '>=16.8 || ^17.0.0 || ^18.0.0'
       react-dom: '>=16.8 || ^17.0.0 || ^18.0.0'
@@ -12257,6 +12257,7 @@ packages:
     resolution: {integrity: sha512-N9iVG+CGJsI4b4ZGazjwLnxErD2d9Pe4DPvvXSxYA9tFNu8ymXME4Qs5HIQ0LMJpNM7zj+m0NlNnNeqFpKzqnA==}
     deprecated: Unmaintained
     dev: false
+    bundledDependencies: []
 
   /prop-types/15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}

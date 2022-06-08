@@ -18,7 +18,7 @@ const Content = styled.article`
   }
 
   @media (min-width: 80rem) {
-    gap: 6rem;
+    gap: 4vw;
     padding-top: 12vw;
     padding-bottom: 16vw;
   }
@@ -42,6 +42,9 @@ const LinksAndCredits = styled.footer`
   @media (min-width: 56rem) {
     gap: 6rem;
     grid-template-columns: 1fr 4fr;
+  }
+  @media (min-width: 80rem) {
+    gap: 6vw;
   }
 `;
 
@@ -134,14 +137,6 @@ export default function About() {
                 ICE64Renderer.sol
               </a>
             </Mono>
-            <Mono>
-              <a
-                key="XQSTGFX_contract"
-                href={`${etherscan}/address/${xqstgfx}`}
-              >
-                XQSTGFX.sol
-              </a>
-            </Mono>
           </div>
 
           <div>
@@ -151,8 +146,13 @@ export default function About() {
               <a href="https://samking.studio">Sam King</a>.
             </Mono>
             <Mono>
-              On-chain rendering smart contract (XQSTGFX) by{" "}
-              <a href="https://cjpais.com/">CJ</a>.
+              <a
+                key="XQSTGFX_contract"
+                href={`${etherscan}/address/${xqstgfx}`}
+              >
+                ExquisiteGraphics.sol
+              </a>{" "}
+              by <a href="https://cjpais.com/">CJ</a>.
             </Mono>
             <Mono>
               Feedback from <a href="https://www.defdao.xyz/">Def DAO</a> and{" "}
@@ -161,11 +161,11 @@ export default function About() {
           </div>
         </LinksAndCredits>
 
-        <nav>
+        {/* <nav>
           <Mono subdued>
             <a href="https://samking.studio">A Sam King Studio project</a>
           </Mono>
-        </nav>
+        </nav> */}
       </Content>
     </main>
   );
