@@ -11,6 +11,7 @@ const ModalContent = styled.div`
   background: var(--background);
   display: grid;
   grid-template-columns: 1fr;
+  gap: 0.5rem;
   padding: 2rem;
   border-radius: 1.5rem;
   box-shadow: 0 1px 32px rgba(0, 0, 0, 0.08);
@@ -19,6 +20,7 @@ const ModalContent = styled.div`
   @media (min-width: 80rem) {
     padding: 2vw 2.5vw;
     border-radius: 2vw;
+    gap: 0.5vw;
   }
 `;
 
@@ -36,9 +38,14 @@ const RootsListItem = styled.li`
   & + & {
     margin-top: 1.5rem;
   }
+  @media (min-width: 80rem) {
+    grid-template-columns: 4vw 1fr max-content;
+    grid-gap: 1vw;
+  }
 `;
 
 const ImageWrapper = styled.div`
+  width: 100%;
   border-radius: 0.5rem;
   overflow: hidden;
   @media (min-width: 80rem) {
@@ -77,8 +84,8 @@ export function RootsClaimModal({
           you&apos;re eligible to claim a free edition. It&apos;s my way of
           saying thank you for supporting me!
         </Body>
-        <Mono margin="8 0 0" subdued>
-          Note: You can only claim editions that you don&apos;t already own.
+        <Mono subdued>
+          Note: You can only claim editions you don&apos;t currently own.
         </Mono>
 
         <Divider margin="24 0" />
@@ -98,7 +105,9 @@ export function RootsClaimModal({
               <div>
                 <Subheading>Roots #{i.id}</Subheading>
                 <Mono subdued>
-                  {i.hasClaimedEdition ? "Claim already used" : "Ready to use"}
+                  {i.hasClaimedEdition
+                    ? "Already claimed an edition"
+                    : "Ready to use"}
                 </Mono>
               </div>
               {!i.hasClaimedEdition && (
