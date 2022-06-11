@@ -169,21 +169,17 @@ const SecondaryInfo = styled(Mono)`
 `;
 
 const InfoShimmer = styled.div`
-  padding: 1rem 1.5rem;
+  padding: 1.5rem 1.5rem;
   position: relative;
   overflow: hidden;
   min-width: 0;
   height: 100%;
-  display: grid;
-  grid-template-cols: 1fr;
-  align-content: center;
 
   @media (min-width: 80rem) {
-    padding: 1vw 1.5vw;
+    padding: 1.25vw 1.5vw;
   }
 
   h3 {
-    display: inline;
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
