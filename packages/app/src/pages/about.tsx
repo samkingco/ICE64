@@ -86,8 +86,8 @@ export default function About() {
           </Body>
           <Body margin="16 0 0">
             All tokens are permanently stored on the internet. The originals
-            being stored on Arweave, and the editions being stored directly on
-            the Ethereum network with a custom smart contract.
+            being stored on IPFS and Arweave, and the editions being stored
+            directly on the Ethereum network with a custom smart contract.
           </Body>
           <Body margin="16 0 24">
             If you hold a <a href="https://roots.samking.photo">Roots NFT</a>,
