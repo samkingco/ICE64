@@ -346,7 +346,7 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
     <Container key={id}>
       <SocialMeta
         title={`ICE64 #${originalId}${isEdition ? " (edition)" : ""}`}
-        socialImage={`/social/og-image-${originalId}.png`}
+        socialImage={`/social/og-image-${originalId}.jpg`}
       />
 
       <Sidebar>
