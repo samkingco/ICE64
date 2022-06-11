@@ -1,8 +1,8 @@
 {
   "ICE64": {
     "rinkeby": {
-      "address": "0x29D37319c5e7Ed0FE62a8F9c578d66C03CE589Bb",
-      "blockNumber": 10816448
+      "address": "0x880614Bd83011Bf1ffB19744cF7590579F430014",
+      "blockNumber": 10829602
     },
     "localhost": {
       "address": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",

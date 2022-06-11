@@ -11,7 +11,7 @@ import { Navigation } from "../components/Navigation";
 import { PhotoDetail } from "../components/PhotoDetail";
 import { useCursorPosition } from "../hooks/useCursorPosition";
 import { firstParam } from "../utils/firstParam";
-import { getEditionId, originalIds } from "../utils/tokenIds";
+import { getEditionId, getOriginalId, originalIds } from "../utils/tokenIds";
 
 const Grid = styled.div`
   display: grid;
@@ -176,7 +176,9 @@ export default function Index() {
         size="full-screen"
         dangerouslyBypassFocusLock
       >
-        {modalId && <PhotoDetail id={modalId} onClose={onModalClose} />}
+        {modalId && (
+          <PhotoDetail key={getOriginalId(modalId)} onClose={onModalClose} />
+        )}
       </Modal>
     </main>
   );

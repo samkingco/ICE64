@@ -1,35 +1,44 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
+import { ethers } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback } from "react";
-import { useAccount } from "wagmi";
-import { usePhotoByIdQuery } from "../graphql/subgraph";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
+import { useAccount, useNetwork } from "wagmi";
 import { addressDisplayName } from "../hooks/useENS";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
-import { useIsMounted } from "../hooks/useIsMounted";
 import { useMarketplaceTokenURL } from "../hooks/useMarketplaceUrl";
 import { usePhotoPagination } from "../hooks/usePhotoPagination";
-import { deployedAddress, targetNetwork } from "../utils/contracts";
+import {
+  hasClaimableRoots,
+  usePurchaseMachine,
+} from "../machines/purchaseMachine";
+import {
+  deployedAddress,
+  ice64Settings,
+  targetNetwork,
+} from "../utils/contracts";
+import { firstParam } from "../utils/firstParam";
 import { gatewayURL } from "../utils/metadata";
-import { getEditionId, getOriginalId, isEdition } from "../utils/tokenIds";
-import { MonoButton } from "./Button";
-import { ClaimRootsButton } from "./ClaimRootsButton";
+import { getEditionId, getIsEdition, getOriginalId } from "../utils/tokenIds";
+import { Button, MonoButton } from "./Button";
 import { CopyToClipboard } from "./CopyToClipboard";
 import { Divider } from "./Divider";
 import { ENSAddress } from "./ENSAddress";
+import { scrollable } from "./GlobalStyle";
 import { LoadingIndicator, LoadingIndicatorWrapper } from "./LoadingIndicator";
-import { PurchaseButton } from "./PurchaseButton";
+import { RootsClaimModal } from "./RootsClaimModal";
 import { Tabs } from "./Tabs";
 import { Body, Mono, Subheading, Title } from "./Typography";
+import { ConnectWalletModal, WalletInfoModal } from "./WalletModals";
 
 const Container = styled.article`
   display: grid;
   grid-template-areas: "image" "sidebar";
   grid-template-rows: 100vw max-content;
   grid-template-columns: 1fr;
-  overflow-y: auto;
   background: var(--background);
 
   @media (min-width: 40rem) {
@@ -54,12 +63,11 @@ const Sidebar = styled.section`
   gap: 1rem;
   grid-area: sidebar;
   padding: 4vw 4vw 6vw;
-  overflow-y: auto;
-
   width: 100%;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  ${scrollable};
 
   @media (min-width: 64rem) {
     max-width: none;
@@ -135,21 +143,47 @@ const SaleInfoArea = styled.div`
   }
 `;
 
-const OwnedBy = styled.div`
+const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 1rem;
+
+  @media (min-width: 80rem) {
+    gap: 0.75vw;
+    padding-bottom: 1vw;
+  }
+`;
+
+const SecondaryInfo = styled(Mono)`
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  @media (min-width: 80rem) {
+    padding-left: 1.5vw;
+    padding-right: 1.5vw;
+  }
+`;
+
+const InfoShimmer = styled.div`
   padding: 1rem 1.5rem;
   position: relative;
   overflow: hidden;
-  min-width: 100%;
+  min-width: 0;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: grid;
+  grid-template-cols: 1fr;
+  align-content: center;
 
   @media (min-width: 80rem) {
     padding: 1vw 1.5vw;
   }
 
   h3 {
+    display: inline;
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -175,6 +209,12 @@ const OwnedBy = styled.div`
   }
 `;
 
+const ClaimButtonWrapper = styled.div`
+  border-bottom: 1px solid rgba(var(--foreground-alpha), 0.04);
+  padding-bottom: 1vw;
+  margin-bottom: 1vw;
+`;
+
 const ContractInfo = styled.dl`
   display: grid;
   grid-template-columns: 1fr max-content;
@@ -188,12 +228,16 @@ const ContractValue = styled(Mono)`
   text-align: right;
 `;
 
-const OwnersList = styled.ul`
+const UnorderedList = styled.ul`
   list-style: square;
   margin: 0;
-  padding-left: 1.5rem;
-  @media (min-width: 80rem) {
-    padding-left: 1.5vw;
+  padding: 0;
+  padding-left: 1.75rem;
+  li {
+    margin-top: 0.25rem 0;
+    @media (min-width: 80rem) {
+      margin-top: 0.25vw;
+    }
   }
 `;
 
@@ -208,91 +252,52 @@ const Media = styled(motion.div)`
 `;
 
 interface Props {
-  id: number;
   onClose?: () => void;
   closeHref?: string;
-  onNavigate?: () => void;
 }
 
-export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
-  const isMounted = useIsMounted();
+export function PhotoDetail({ onClose, closeHref }: Props) {
+  const router = useRouter();
+  const idStr = firstParam(router.query.id) || "1";
+  const id = parseInt(idStr, 10);
 
-  const edition = isEdition(id);
   const originalId = getOriginalId(id);
   const editionId = getEditionId(id);
-  const maxEditions = 32;
+  const isEdition = getIsEdition(id);
+  const maxEditions = ice64Settings.maxEditions;
+  const price = isEdition
+    ? ice64Settings.priceEdition
+    : ice64Settings.priceOriginal;
 
-  const { data: account } = useAccount();
   const contractAddress = deployedAddress("ICE64", targetNetwork);
   const rendererAddress = deployedAddress("ICE64Renderer", targetNetwork);
-  const etherscan = useEtherscanURL();
-  const { opensea, looksrare, gem } = useMarketplaceTokenURL(id);
 
-  const [photoByIdQuery, refreshQuery] = usePhotoByIdQuery({
-    requestPolicy: "cache-and-network",
-    variables: {
-      originalId: originalId.toString(),
-      editionId: editionId.toString(),
-      wallet:
-        (account && account.address && account.address.toLowerCase()) || "",
-    },
+  const { activeChain, switchNetwork } = useNetwork();
+  const { data: account } = useAccount();
+  const wallet =
+    (account && account.address && account.address.toLowerCase()) || "";
+
+  const [state, send] = usePurchaseMachine({
+    id: originalId,
+    activeId: id,
+    wallet,
+    maxEditions,
   });
 
-  const onPurchaseOrClaimSuccessful = () => {
-    setTimeout(() => {
-      refreshQuery();
-    }, 5000);
-  };
-
-  const { data: photo, fetching: isFetchingPhoto } = photoByIdQuery;
-
-  const originalPhoto = photo && photo.originalPhoto;
-  const editionPhoto = photo && photo.editionPhoto;
-  const hasOriginalBeenPurchased = Boolean(
-    originalPhoto && originalPhoto.currentOwner
-  );
-  const currentOriginalOwner =
-    (originalPhoto && originalPhoto.currentOwner) || null;
-  const isOwnerOfOriginal =
-    account &&
-    account.address &&
-    currentOriginalOwner &&
-    account.address.toLowerCase() ===
-      currentOriginalOwner.address.toLowerCase();
-
-  const currentEditionOwners =
-    (editionPhoto && editionPhoto.currentOwners) || [];
-  const editionsPurchased = (editionPhoto && editionPhoto.totalPurchased) || 0;
-  const lastEditionReserved = Boolean(
-    !hasOriginalBeenPurchased && editionsPurchased == maxEditions - 1
-  );
-  const editionsSoldOut = editionsPurchased == maxEditions;
-
-  let isOwnerOfEdition = false;
-  currentEditionOwners.forEach((i) => {
-    if (!account || !account.address) return;
-    if (account.address.toLowerCase() === i.address.toLowerCase()) {
-      isOwnerOfEdition = true;
-    }
-  });
-
-  const roots = (photo && photo.wallet && photo.wallet.roots) || [];
-  const rootsPhotos = roots.map((i) => ({
-    id: i.id,
-    hasClaimedEdition: i.hasClaimedEdition,
-  }));
-  const rootsClaimable = rootsPhotos.reduce(
-    (c, i) => (!i.hasClaimedEdition ? c + 1 : c),
-    0
-  );
-  const hasRootsClaims = rootsClaimable > 0;
+  const hasClaimsAvailable = hasClaimableRoots(state.context);
 
   const { goToOriginal, goToEdition, goToPrev, goToNext } = usePhotoPagination({
     id,
-    isEdition: edition,
     closeHref,
     onClose,
   });
+
+  const etherscan = useEtherscanURL();
+  const { opensea, looksrare, gem } = useMarketplaceTokenURL(id);
+
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [showWalletInfoModal, setShowWalletInfoModal] = useState(false);
+  const [showClaimModal, setShowClaimModal] = useState(false);
 
   const handleTabChange = useCallback(
     (index: number) => {
@@ -381,109 +386,331 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
         <MainContent>
           <Tabs
             onChange={handleTabChange}
-            defaultIndex={edition ? 1 : 0}
+            defaultIndex={isEdition ? 1 : 0}
             tabHeadings={["1 of 1", `Edition of ${maxEditions}`]}
             tabPanels={[
               <Description key="tab-1-of-1">
                 <SaleInfoArea>
-                  {isFetchingPhoto && (
+                  {["subgraphLoading", "idle"].some(state.matches) && (
                     <LoadingIndicatorWrapper>
                       <LoadingIndicator />
                     </LoadingIndicatorWrapper>
                   )}
-                  {!isFetchingPhoto && isMounted && (
-                    <>
-                      {currentOriginalOwner ? (
-                        <>
-                          {isOwnerOfOriginal ? (
-                            <OwnedBy>
-                              <Subheading margin="-8 0 0">
-                                You own this original
-                              </Subheading>
-                              <a href={opensea}>
-                                <Mono subdued>View on OpenSea</Mono>
-                              </a>
-                            </OwnedBy>
-                          ) : (
-                            <OwnedBy>
-                              <Mono subdued>Owned by</Mono>
-                              <Subheading margin="-4 0">
-                                <ENSAddress
-                                  address={currentOriginalOwner.address}
-                                />
-                              </Subheading>
-                            </OwnedBy>
-                          )}
-                        </>
-                      ) : (
-                        <PurchaseButton
-                          id={originalId}
-                          onConfirmed={onPurchaseOrClaimSuccessful}
+
+                  {state.matches("original.owned") && (
+                    <InfoShimmer>
+                      <Subheading margin="-8 0 0">
+                        You own this original
+                      </Subheading>
+                      <a href={opensea}>
+                        <Mono subdued>View on OpenSea</Mono>
+                      </a>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("original.sold") && (
+                    <InfoShimmer>
+                      <Mono subdued>Owned by</Mono>
+                      <Subheading margin="-4 0">
+                        <ENSAddress
+                          address={state.context.subgraphData.originalOwner}
                         />
-                      )}
-                    </>
+                      </Subheading>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("original.available.notConnected") && (
+                    <ButtonWrapper>
+                      <Button onClick={() => setShowConnectModal(true)}>
+                        Connect wallet
+                      </Button>
+                      <SecondaryInfo>
+                        <Mono subdued>
+                          {ethers.utils.formatEther(price)} ETH
+                        </Mono>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches(
+                    "original.available.connected.wrongNetwork"
+                  ) && (
+                    <ButtonWrapper>
+                      <Button
+                        onClick={() =>
+                          switchNetwork && switchNetwork(targetNetwork.id)
+                        }
+                      >
+                        Switch to {targetNetwork.name}
+                      </Button>
+                      <SecondaryInfo>
+                        <Mono subdued>
+                          {activeChain
+                            ? `Connected to ${activeChain?.name}`
+                            : "Wrong network selected"}
+                        </Mono>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("original.available.connected.ready") && (
+                    <ButtonWrapper>
+                      <Button onClick={() => send("TX_SUBMIT")}>
+                        Buy
+                        <Mono as="span" subdued>
+                          {" "}
+                          &bull; {ethers.utils.formatEther(price)} ETH
+                        </Mono>
+                      </Button>
+                      <SecondaryInfo>
+                        <MonoButton
+                          onClick={() => setShowWalletInfoModal(true)}
+                          subdued
+                        >
+                          Connected as{" "}
+                          <ENSAddress address={account?.address || ""} />
+                        </MonoButton>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("original.available.connected.initiated") && (
+                    <ButtonWrapper>
+                      <Button disabled>
+                        <LoadingIndicator />
+                      </Button>
+                      <SecondaryInfo subdued>
+                        Confirming in wallet
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("original.available.connected.broadcast") && (
+                    <ButtonWrapper>
+                      <Button disabled>
+                        <LoadingIndicator />
+                      </Button>
+                      <SecondaryInfo subdued>
+                        {state.context.txHash ? (
+                          <a href={`${etherscan}/tx/${state.context.txHash}`}>
+                            Sending transaction
+                          </a>
+                        ) : (
+                          "Sending transaction"
+                        )}
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("original.available.connected.thankyou") && (
+                    <InfoShimmer>
+                      <Subheading margin="-8 0 0">
+                        Purchase successful
+                      </Subheading>
+                      <Mono subdued>Thank you!</Mono>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("original.available.connected.error") && (
+                    <ButtonWrapper>
+                      <Button onClick={() => send("RETRY")}>Retry</Button>
+                      <SecondaryInfo>
+                        <Mono as="span" subdued>
+                          {state.context.errorMessage || "Something went wrong"}
+                          {state.context.txHash && (
+                            <>
+                              <br />
+                              <a
+                                href={`${etherscan}/tx/${state.context.txHash}`}
+                              >
+                                View transaction info
+                              </a>
+                            </>
+                          )}
+                        </Mono>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
                   )}
                 </SaleInfoArea>
 
-                <Body>Description in progress</Body>
+                <div>
+                  <Body>
+                    An original 1 of 1 artwork documenting the desolate
+                    landscape of Iceland during the winter.
+                  </Body>
+                  <Body margin="8 0 0">
+                    Each original also comes with an on-chain edition of the
+                    same photo.
+                  </Body>
+                </div>
               </Description>,
-              <Description key="tab-edition-of-32">
+              <Description key="tab-editions">
                 <SaleInfoArea>
-                  {isFetchingPhoto && (
+                  {["subgraphLoading", "idle"].some(state.matches) && (
                     <LoadingIndicatorWrapper>
                       <LoadingIndicator />
                     </LoadingIndicatorWrapper>
                   )}
-                  {!isFetchingPhoto && isMounted && (
-                    <>
-                      {isOwnerOfEdition && (
-                        <OwnedBy>
-                          <Subheading margin="-8 0 0">
-                            You own this edition
-                          </Subheading>
-                          <a href={opensea}>
-                            <Mono subdued>View on OpenSea</Mono>
-                          </a>
-                        </OwnedBy>
-                      )}
-                      {lastEditionReserved && (
-                        <OwnedBy>
-                          <Subheading margin="-8 0 0">Reserved</Subheading>
-                          <Mono subdued>For buyer of original</Mono>
-                        </OwnedBy>
-                      )}
-                      {editionsSoldOut && (
-                        <OwnedBy>
-                          <Subheading margin="-8 0 0">Sold out</Subheading>
-                          <Mono subdued>All 32 editions</Mono>
-                        </OwnedBy>
-                      )}
-                      {!editionsSoldOut &&
-                        !lastEditionReserved &&
-                        !isOwnerOfEdition && (
-                          <PurchaseButton
-                            id={editionId}
-                            onConfirmed={onPurchaseOrClaimSuccessful}
-                          />
+
+                  {state.matches("edition.owned") && (
+                    <InfoShimmer>
+                      <Subheading margin="-8 0 0">
+                        You own this edition
+                      </Subheading>
+                      <a href={opensea}>
+                        <Mono subdued>View on OpenSea</Mono>
+                      </a>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("edition.reserved") && (
+                    <InfoShimmer>
+                      <Subheading margin="-8 0 0">Reserved</Subheading>
+                      <Mono subdued>For buyer of original</Mono>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("edition.soldOut") && (
+                    <InfoShimmer>
+                      <Subheading margin="-8 0 0">Sold out</Subheading>
+                      <Mono subdued>All {maxEditions} editions</Mono>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("edition.available.notConnected") && (
+                    <ButtonWrapper>
+                      <Button onClick={() => setShowConnectModal(true)}>
+                        Connect wallet
+                      </Button>
+                      <SecondaryInfo>
+                        <Mono subdued>
+                          {ethers.utils.formatEther(price)} ETH
+                        </Mono>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches(
+                    "edition.available.connected.wrongNetwork"
+                  ) && (
+                    <ButtonWrapper>
+                      <Button
+                        onClick={() =>
+                          switchNetwork && switchNetwork(targetNetwork.id)
+                        }
+                      >
+                        Switch to {targetNetwork.name}
+                      </Button>
+                      <SecondaryInfo>
+                        <Mono subdued>
+                          {activeChain
+                            ? `Connected to ${activeChain?.name}`
+                            : "Wrong network selected"}
+                        </Mono>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("edition.available.connected.ready") && (
+                    <ButtonWrapper>
+                      <Button onClick={() => send("TX_SUBMIT")}>
+                        Buy
+                        <Mono as="span" subdued>
+                          {" "}
+                          &bull; {ethers.utils.formatEther(price)} ETH
+                        </Mono>
+                      </Button>
+                      <SecondaryInfo>
+                        {hasClaimsAvailable && (
+                          <ClaimButtonWrapper>
+                            <MonoButton onClick={() => setShowClaimModal(true)}>
+                              Or claim with Roots
+                            </MonoButton>
+                          </ClaimButtonWrapper>
                         )}
-                    </>
+                        <MonoButton
+                          onClick={() => setShowWalletInfoModal(true)}
+                          subdued
+                        >
+                          Connected as{" "}
+                          <ENSAddress address={account?.address || ""} />
+                        </MonoButton>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("edition.available.connected.initiated") && (
+                    <ButtonWrapper>
+                      <Button disabled>
+                        <LoadingIndicator />
+                      </Button>
+                      <SecondaryInfo subdued>
+                        Confirming in wallet
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("edition.available.connected.broadcast") && (
+                    <ButtonWrapper>
+                      <Button disabled>
+                        <LoadingIndicator />
+                      </Button>
+                      <SecondaryInfo subdued>
+                        {state.context.txHash ? (
+                          <a href={`${etherscan}/tx/${state.context.txHash}`}>
+                            Sending transaction
+                          </a>
+                        ) : (
+                          "Sending transaction"
+                        )}
+                      </SecondaryInfo>
+                    </ButtonWrapper>
+                  )}
+
+                  {state.matches("edition.available.connected.thankyou") && (
+                    <InfoShimmer>
+                      <Subheading margin="-8 0 0">
+                        {state.context.txType === "claim"
+                          ? "Claim"
+                          : "Purchase"}{" "}
+                        successful
+                      </Subheading>
+                      <Mono subdued>Thank you!</Mono>
+                    </InfoShimmer>
+                  )}
+
+                  {state.matches("edition.available.connected.error") && (
+                    <ButtonWrapper>
+                      <Button onClick={() => send("RETRY")}>Retry</Button>
+                      <SecondaryInfo>
+                        <Mono as="span" subdued>
+                          {state.context.errorMessage || "Something went wrong"}
+                          {state.context.txHash && (
+                            <>
+                              <br />
+                              <a
+                                href={`${etherscan}/tx/${state.context.txHash}`}
+                              >
+                                View transaction info
+                              </a>
+                            </>
+                          )}
+                        </Mono>
+                      </SecondaryInfo>
+                    </ButtonWrapper>
                   )}
                 </SaleInfoArea>
 
-                {!editionsSoldOut &&
-                  !lastEditionReserved &&
-                  !isOwnerOfEdition &&
-                  hasRootsClaims && (
-                    <SaleInfoArea>
-                      <ClaimRootsButton
-                        id={originalId}
-                        rootsPhotos={rootsPhotos}
-                        onConfirmed={onPurchaseOrClaimSuccessful}
-                      />
-                    </SaleInfoArea>
-                  )}
-
-                <Body>Description in progress</Body>
+                <div>
+                  <Body>Each edition&mdash;</Body>
+                  <UnorderedList>
+                    <li>is 64x64px in size</li>
+                    <li>is limited to 64 colors</li>
+                    <li>has a 32px white border</li>
+                    <li>is stored and rendered fully on-chain</li>
+                    <li>will be around as long as Ethereum is</li>
+                  </UnorderedList>
+                </div>
               </Description>,
             ]}
           />
@@ -501,17 +728,21 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
                 <a>{addressDisplayName(contractAddress)}</a>
               </Link>
             </ContractValue>
-            {!edition && originalPhoto && originalPhoto.uri && (
+            {!isEdition && state.context.subgraphData.originalURI && (
               <>
                 <ContractKey as="dt">Metadata</ContractKey>
                 <ContractValue as="dd">
-                  <a href={gatewayURL(originalPhoto.uri).url}>
-                    {gatewayURL(originalPhoto.uri).type}
+                  <a
+                    href={
+                      gatewayURL(state.context.subgraphData.originalURI).url
+                    }
+                  >
+                    {gatewayURL(state.context.subgraphData.originalURI).type}
                   </a>
                 </ContractValue>
               </>
             )}
-            {edition && (
+            {isEdition && (
               <>
                 <ContractKey as="dt">Metadata</ContractKey>
                 <ContractValue as="dd">
@@ -527,8 +758,8 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
             <ContractValue as="dd">6.4%</ContractValue>
           </ContractInfo>
 
-          {((!edition && hasOriginalBeenPurchased) ||
-            (edition && currentEditionOwners.length > 0)) && (
+          {((!isEdition && state.context.subgraphData.originalOwner) ||
+            (isEdition && state.context.subgraphData.editionsSold > 0)) && (
             <FooterLinks>
               <Mono subdued>
                 <a href={opensea}>OpenSea</a>
@@ -544,31 +775,52 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
             </FooterLinks>
           )}
 
-          {edition && currentEditionOwners.length > 0 && (
+          {isEdition && state.context.subgraphData.editionOwners.length > 0 && (
             <>
               <Divider margin="32 0" />
 
               <div>
                 <Mono>
-                  Current owners{" "}
-                  <Mono as="span" subdued>
-                    ({currentEditionOwners.length})
-                  </Mono>
+                  Collected by {state.context.subgraphData.editionOwners.length}{" "}
+                  {state.context.subgraphData.editionOwners.length === 1
+                    ? "person"
+                    : "people"}
                 </Mono>
-                <OwnersList>
-                  {currentEditionOwners.map((owner) => (
-                    <li key={owner.address}>
+                <UnorderedList>
+                  {state.context.subgraphData.editionOwners.map((owner) => (
+                    <li key={owner}>
                       <Mono>
-                        <CopyToClipboard copyText={owner.address}>
-                          <ENSAddress address={owner.address} />
+                        <CopyToClipboard copyText={owner}>
+                          <ENSAddress address={owner} />
                         </CopyToClipboard>
                       </Mono>
                     </li>
                   ))}
-                </OwnersList>
+                </UnorderedList>
               </div>
             </>
           )}
+
+          <WalletInfoModal
+            isOpen={showWalletInfoModal}
+            onClose={() => setShowWalletInfoModal(false)}
+          />
+
+          <ConnectWalletModal
+            isOpen={showConnectModal}
+            onClose={() => setShowConnectModal(false)}
+          />
+
+          <RootsClaimModal
+            originalId={originalId}
+            rootsPhotos={state.context.subgraphData.roots}
+            onClaim={(rootsId) => {
+              send("TX_SUBMIT", { txType: "claim", rootsId });
+              setShowClaimModal(false);
+            }}
+            isOpen={showClaimModal}
+            onClose={() => setShowClaimModal(false)}
+          />
         </MainContent>
       </Sidebar>
 
@@ -587,7 +839,7 @@ export function PhotoDetail({ id, onClose, closeHref, onNavigate }: Props) {
             <Image
               key={id}
               src={
-                edition
+                isEdition
                   ? `/tokens/${originalId}.svg`
                   : `/tokens/${originalId}.jpg`
               }

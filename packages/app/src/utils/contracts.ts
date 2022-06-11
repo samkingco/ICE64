@@ -2,6 +2,7 @@ import ICE64Abi from "@ice64/contracts/abi/contracts/ICE64.sol/ICE64.json";
 import ICE64DataStoreAbi from "@ice64/contracts/abi/contracts/ICE64DataStore.sol/ICE64DataStore.json";
 import ICE64RendererAbi from "@ice64/contracts/abi/contracts/ICE64Renderer.sol/ICE64Renderer.json";
 import deploysJson from "@ice64/contracts/deploys.json";
+import { ethers } from "ethers";
 
 export type ChainName = "mainnet" | "rinkeby" | "localhost";
 
@@ -68,3 +69,9 @@ export function isChainSupportedForContract(
 ) {
   return Boolean(deploys[contract][network.name]);
 }
+
+export const ice64Settings = {
+  priceOriginal: ethers.utils.parseEther("0.32"),
+  priceEdition: ethers.utils.parseEther("0.04"),
+  maxEditions: 64,
+};

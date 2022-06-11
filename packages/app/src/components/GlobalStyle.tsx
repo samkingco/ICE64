@@ -1,5 +1,23 @@
 import { css } from "@emotion/react";
 
+export const scrollable = css`
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border: solid 4px transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(var(--foreground-alpha), 0.2);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+  } */
+`;
+
 export const globalStyle = css`
   @font-face {
     font-family: "Dahlia";

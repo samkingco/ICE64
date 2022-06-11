@@ -2,13 +2,17 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useIsMounted } from "../hooks/useIsMounted";
 import { buttonReset } from "./Button";
+import { Ellipsis } from "./Typography";
 
 const CopyButton = styled.button`
   ${buttonReset};
   font: inherit;
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
-const CopiedMessaged = styled.span`
+const CopiedMessaged = styled(Ellipsis)`
   opacity: 0.48;
 `;
 
@@ -47,6 +51,8 @@ export function CopyToClipboard({ children, copyText, success }: Props) {
   return copied ? (
     <CopiedMessaged>{success || "Copied"}</CopiedMessaged>
   ) : (
-    <CopyButton onClick={copy}>{children}</CopyButton>
+    <CopyButton onClick={copy}>
+      <Ellipsis>{children}</Ellipsis>
+    </CopyButton>
   );
 }

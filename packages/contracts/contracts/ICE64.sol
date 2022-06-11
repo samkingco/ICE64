@@ -3,18 +3,20 @@ pragma solidity ^0.8.14;
 
 /*
 
-          ^JJ~     .::^~!!77~.  .?JJ~:^~?Y!      .:::..        7Y!              
-          :@@^  .!~..    .:~5#Y  Y@Y   .:7?    ~?!:.          ~@G:              
-           B#  ~P^           ~P  ~@P:        :PY.            ~&5                
-           B# ^@7             :  ^@Y::~?5!  ^&P::^~!J?^     ~#7  .              
-           B# 5@^                ^@J   .!~ .B&^     .?&P.  7P^  5J              
-           B# J@?                ^@J       ^@B        ~@P.77   .@5 .^~          
-           B# .B@!             . ^@J       :&@:        B&!~.:::^@P^7YJ          
-           B&. .5@P^         :^: !@J        7@B:      ^#?      :@5              
-          ^@@!   ^YGPY?7!!!7!^.  P@J.:^~7YB? ^5G?^...^?~       J@&^             
-          :^^:      :^~!~~^.    .^^::^^^~~~.   .^~^:..         ^^^:
 
-          O W N E R S H I P   C O N T R A C T
+        .++++++    .-=+**++=:  -+++++++++++-      .-=+**.     .++++:      
+         :@@@@. .+%@#++++#@@@@#=*@@@%++*@@@*   :*@@%+=-:      +@@@+       
+          %@@# +@@+        :#@@#.@@@=    :#+ .#@@*.          -@@@+        
+          #@@#*@@=           *@# @@@@-      -@@@*+*+=-      :@@@= =       
+          #@@@@@@             += @@@@@@%%%=:@@@@*++#@@@#:  :@@@--%#       
+          #@@@@@@                @@@= -*@@=#@@@     .*@@@--@@# +@@#   =   
+          #@@@@@@-               @@@=    :.@@@%       #@@@@@+..+@@%-*@@   
+          #@@#%@@@-           .%@@@@=      #@@@:      -@@@@@@@@@@@@@@@@   
+          %@@# #@@@#-       :+@%-@@@=     :%@@@%.     *@@+     +@@%       
+         :@@@@. :*@@@@%###%@@#= +@@@#++#%@@@**@@@#=-=%@%-     .@@@@-      
+        .*****+    :=*###*+-.  -************:  -*###*=:      :******=
+
+        O W N E R S H I P   C O N T R A C T
 
 */
 
@@ -26,28 +28,30 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {IICE64Renderer} from "./interfaces/IICE64Renderer.sol";
 import {IICE64} from "./interfaces/IICE64.sol";
 
-/// @title ICE64, a photo collection by Sam King
-/// @author Sam King (samkingstudio.eth)
-/// @notice This contract stores token ownership, and allows minting using the ERC1155 standard.
-///         Collectors can purchase 721-like photos as original 1 of 1's, but also collect
-///         smaller on-chain versions as editions.
-///
-///         Code is licensed as MIT.
-///         https://spdx.org/licenses/MIT.html
-///
-///         Token metadata and images licensed as CC BY-NC 4.0
-///         https://creativecommons.org/licenses/by-nc/4.0/
-///         You are free to:
-///           - Share: copy and redistribute the material in any medium or format
-///           - Adapt: remix, transform, and build upon the material
-///         Under the following terms:
-///           - Attribution: You must give appropriate credit, provide a link to the license,
-///             and indicate if changes were made. You may do so in any reasonable manner, but not
-///             in any way that suggests the licensor endorses you or your use.
-///           - NonCommercial: You may not use the material for commercial purposes
-///           - No additional restrictions: You may not apply legal terms or technological measures
-///             that legally restrict others from doing anything the license permits.
-///
+/** 
+@title ICE64, a photo collection by Sam King
+@author Sam King (samkingstudio.eth)
+@notice This contract stores token ownership, and allows minting using the ERC1155 standard.
+        Collectors can purchase 721-like photos as original 1 of 1's, but also collect
+        smaller on-chain versions as editions.
+
+        Code is licensed as MIT.
+        https://spdx.org/licenses/MIT.html
+
+        Token metadata and images licensed as CC BY-NC 4.0
+        https://creativecommons.org/licenses/by-nc/4.0/
+        You are free to:
+            - Share: copy and redistribute the material in any medium or format
+            - Adapt: remix, transform, and build upon the material
+        Under the following terms:
+            - Attribution: You must give appropriate credit, provide a link to the license,
+            and indicate if changes were made. You may do so in any reasonable manner, but not
+            in any way that suggests the licensor endorses you or your use.
+            - NonCommercial: You may not use the material for commercial purposes
+            - No additional restrictions: You may not apply legal terms or technological measures
+            that legally restrict others from doing anything the license permits.
+
+*/
 contract ICE64 is ERC1155, Owned, IICE64 {
     /* ------------------------------------------------------------------------
                                    S T O R A G E
@@ -65,7 +69,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
     /// @dev Token constants
     uint256 private constant _maxTokenId = 16;
     uint256 private constant _editionStartId = 100;
-    uint256 private constant _maxEditions = 32;
+    uint256 private constant _maxEditions = 64;
 
     /// @dev Token prices
     uint256 public constant priceOriginal = 0.32 ether;

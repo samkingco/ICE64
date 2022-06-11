@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import {
   getEditionId,
+  getIsEdition,
   getOriginalId,
   wrapEditions,
   wrapOriginals,
@@ -10,22 +11,17 @@ import {
 
 interface Options {
   id: number;
-  isEdition: boolean;
   closeHref?: string;
   onClose?: () => void;
 }
 
-export function usePhotoPagination({
-  id,
-  isEdition,
-  closeHref,
-  onClose,
-}: Options) {
+export function usePhotoPagination({ id, closeHref, onClose }: Options) {
   const router = useRouter();
   const { makeContextualHref } = useContextualRouting();
 
   const originalId = getOriginalId(id);
   const editionId = getEditionId(id);
+  const isEdition = getIsEdition(id);
 
   const prevId = isEdition
     ? wrapEditions(editionId - 1)

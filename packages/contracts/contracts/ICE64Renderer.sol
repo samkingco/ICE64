@@ -3,18 +3,20 @@ pragma solidity ^0.8.14;
 
 /*
 
-          ^JJ~     .::^~!!77~.  .?JJ~:^~?Y!      .:::..        7Y!              
-          :@@^  .!~..    .:~5#Y  Y@Y   .:7?    ~?!:.          ~@G:              
-           B#  ~P^           ~P  ~@P:        :PY.            ~&5                
-           B# ^@7             :  ^@Y::~?5!  ^&P::^~!J?^     ~#7  .              
-           B# 5@^                ^@J   .!~ .B&^     .?&P.  7P^  5J              
-           B# J@?                ^@J       ^@B        ~@P.77   .@5 .^~          
-           B# .B@!             . ^@J       :&@:        B&!~.:::^@P^7YJ          
-           B&. .5@P^         :^: !@J        7@B:      ^#?      :@5              
-          ^@@!   ^YGPY?7!!!7!^.  P@J.:^~7YB? ^5G?^...^?~       J@&^             
-          :^^:      :^~!~~^.    .^^::^^^~~~.   .^~^:..         ^^^:
 
-          M E T A D A T A   &   R E N D E R I N G   C O N T R A C T
+        .++++++    .-=+**++=:  -+++++++++++-      .-=+**.     .++++:      
+         :@@@@. .+%@#++++#@@@@#=*@@@%++*@@@*   :*@@%+=-:      +@@@+       
+          %@@# +@@+        :#@@#.@@@=    :#+ .#@@*.          -@@@+        
+          #@@#*@@=           *@# @@@@-      -@@@*+*+=-      :@@@= =       
+          #@@@@@@             += @@@@@@%%%=:@@@@*++#@@@#:  :@@@--%#       
+          #@@@@@@                @@@= -*@@=#@@@     .*@@@--@@# +@@#   =   
+          #@@@@@@-               @@@=    :.@@@%       #@@@@@+..+@@%-*@@   
+          #@@#%@@@-           .%@@@@=      #@@@:      -@@@@@@@@@@@@@@@@   
+          %@@# #@@@#-       :+@%-@@@=     :%@@@%.     *@@+     +@@%       
+         :@@@@. :*@@@@%###%@@#= +@@@#++#%@@@**@@@#=-=%@%-     .@@@@-      
+        .*****+    :=*###*+-.  -************:  -*###*=:      :******=
+
+        M E T A D A T A   &   R E N D E R I N G   C O N T R A C T
 
 */
 
@@ -27,26 +29,29 @@ import {IICE64DataStore} from "./interfaces/IICE64DataStore.sol";
 import {IICE64Renderer} from "./interfaces/IICE64Renderer.sol";
 import {IExquisiteGraphics} from "./interfaces/IExquisiteGraphics.sol";
 
-/// @title ICE64 Renderer
-/// @author Sam King (samkingstudio.eth)
-/// @notice Renders token metadata for the main ICE64 contract
-///
-///         Code is licensed as MIT.
-///         https://spdx.org/licenses/MIT.html
-///
-///         Token metadata and images licensed as CC BY-NC 4.0
-///         https://creativecommons.org/licenses/by-nc/4.0/
-///         You are free to:
-///           - Share: copy and redistribute the material in any medium or format
-///           - Adapt: remix, transform, and build upon the material
-///         Under the following terms:
-///           - Attribution: You must give appropriate credit, provide a link to the license,
-///             and indicate if changes were made. You may do so in any reasonable manner, but not
-///             in any way that suggests the licensor endorses you or your use.
-///           - NonCommercial: You may not use the material for commercial purposes
-///           - No additional restrictions: You may not apply legal terms or technological measures
-///             that legally restrict others from doing anything the license permits.
-///
+/**
+@title ICE64 Renderer
+@author Sam King (samkingstudio.eth)
+@notice This contract renders token metadata for the main ICE64 contract: a standard baseURI
+        for original photos stored off-chain, and base64 encoded on-chain SVGs for editions.
+
+        Code is licensed as MIT.
+        https://spdx.org/licenses/MIT.html
+
+        Token metadata and images licensed as CC BY-NC 4.0
+        https://creativecommons.org/licenses/by-nc/4.0/
+        You are free to:
+            - Share: copy and redistribute the material in any medium or format
+            - Adapt: remix, transform, and build upon the material
+        Under the following terms:
+            - Attribution: You must give appropriate credit, provide a link to the license,
+            and indicate if changes were made. You may do so in any reasonable manner, but not
+            in any way that suggests the licensor endorses you or your use.
+            - NonCommercial: You may not use the material for commercial purposes
+            - No additional restrictions: You may not apply legal terms or technological measures
+            that legally restrict others from doing anything the license permits.
+
+*/
 contract ICE64Renderer is IICE64Renderer {
     using Strings for uint256;
     using DynamicBuffer for bytes;
@@ -169,7 +174,7 @@ contract ICE64Renderer is IICE64Renderer {
                 string(svgBase64),
                 '","external_url":"https://ice64.com/photo/',
                 id.toString(),
-                '","attributes":[]}'
+                '","attributes":[{"trait_type":"Size","value":"64x64px"},{"trait_type":"Border","value":"32px"},{"trait_type":"Colors","value":"64"}]}'
             )
         );
 

@@ -2,11 +2,9 @@ export const originalIds = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export const editionIds = Array.from({ length: 16 }, (_, i) => i + 101);
 
+export const MAX_EDITIONS = 32;
+
 export const allIds = [...originalIds, ...editionIds];
-export const modalIds = [
-  ...originalIds,
-  ...editionIds.map((i) => i - 100 + 16),
-];
 
 export const joinedIds = originalIds.reduce((list: number[], id) => {
   return [...list, id, id + 100];
@@ -20,7 +18,7 @@ export function getEditionId(id: number) {
   return id > 100 ? id : id + 100;
 }
 
-export function isEdition(id: number) {
+export function getIsEdition(id: number) {
   return id > 100;
 }
 

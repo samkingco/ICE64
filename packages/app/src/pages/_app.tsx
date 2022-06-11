@@ -1,9 +1,6 @@
 import { Global } from "@emotion/react";
 import type { AppProps } from "next/app";
-import {
-  createClient as createGraphClient,
-  Provider as GraphProvider,
-} from "urql";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
@@ -13,9 +10,7 @@ import { publicProvider } from "wagmi/providers/public";
 import { globalStyle } from "../components/GlobalStyle";
 import { targetNetwork } from "../utils/contracts";
 
-export const graphClient = createGraphClient({
-  url: "https://api.studio.thegraph.com/query/19218/ice64-testing/v0.0.13",
-});
+const queryClient = new QueryClient();
 
 const { chains, provider, webSocketProvider } = configureChains(
   [chain[targetNetwork.name]],
@@ -50,10 +45,10 @@ const wagmiClient = createClient({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
-      <GraphProvider value={graphClient}>
+      <QueryClientProvider client={queryClient}>
         <Global styles={globalStyle} />
         <Component {...pageProps} />
-      </GraphProvider>
+      </QueryClientProvider>
     </WagmiConfig>
   );
 }

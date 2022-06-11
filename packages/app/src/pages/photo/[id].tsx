@@ -1,7 +1,7 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { PhotoDetail } from "../../components/PhotoDetail";
-import { allIds } from "../../utils/tokenIds";
+import { allIds, getOriginalId } from "../../utils/tokenIds";
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -25,6 +25,5 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export default function ID(
   props: InferGetStaticPropsType<typeof getStaticProps>
 ) {
-  const { id } = props;
-  return <PhotoDetail id={id} closeHref="/" />;
+  return <PhotoDetail key={getOriginalId(props.id)} {...props} closeHref="/" />;
 }

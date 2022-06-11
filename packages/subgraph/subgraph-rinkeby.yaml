@@ -6,9 +6,9 @@ dataSources:
     name: ICE64
     network: rinkeby
     source:
-      address: "0x29D37319c5e7Ed0FE62a8F9c578d66C03CE589Bb"
+      address: "0x880614Bd83011Bf1ffB19744cF7590579F430014"
       abi: ICE64
-      startBlock: 10816448
+      startBlock: 10829602
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

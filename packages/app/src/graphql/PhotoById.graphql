@@ -14,6 +14,7 @@ query PhotoById($originalId: ID!, $editionId: ID!, $wallet: ID!) {
     }
   }
   wallet(id: $wallet) {
+    id
     roots {
       id
       hasClaimedEdition

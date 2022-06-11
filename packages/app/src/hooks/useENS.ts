@@ -34,6 +34,7 @@ export const useENS = (address: string) => {
 
   useEffect(() => {
     (async () => {
+      if (!addressLowercase) return;
       try {
         const data = await cachedFetch(
           `https://api.ensideas.com/ens/resolve/${addressLowercase}`

@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import fs from "fs";
 import hre, { ethers, network } from "hardhat";
 import { chunks } from "../test/tokenStorageChunks";
@@ -41,6 +42,7 @@ async function exists(path: string) {
 }
 
 const start = async () => {
+  const targetGasPrice = ethers.utils.parseUnits("40", "gwei");
   const [deployer] = await ethers.getSigners();
   const deploysPath = `${__dirname}/../deploys.json`;
   const deploys = (await exists(deploysPath))
@@ -79,7 +81,11 @@ const start = async () => {
   );
   const dataStore = await ICE64DataStoreFactory.deploy(
     deployer.address,
-    baseURI
+    baseURI,
+    {
+      gasLimit: BigNumber.from(623500),
+      gasPrice: targetGasPrice,
+    }
   );
   console.log("ICE64DataStore deployed to", dataStore.address);
 
@@ -87,20 +93,25 @@ const start = async () => {
   for (const [chunkIdx, tokenData] of chunks.entries()) {
     const tx = await dataStore.storeChunkedEditionPhotoData(
       chunkIdx + 1,
-      tokenData
+      tokenData,
+      {
+        gasLimit: BigNumber.from(2003000),
+        gasPrice: targetGasPrice,
+      }
     );
     await tx.wait();
     console.log(`Stored data for chunk ${chunkIdx + 1}/${chunks.length}`);
   }
 
   console.log("Setting owner for ICE64DataStore...");
-  const setOwner = await dataStore.setOwner(ownerAddr);
-  await setOwner.wait();
+  await dataStore.setOwner(ownerAddr, {
+    gasPrice: targetGasPrice,
+  });
   console.log("Set owner for ICE64DataStore");
 
   console.log("Waiting for 5 confirmations before deploying main contract...");
   const deployedDataStore = await dataStore.deployTransaction.wait(
-    isLocal ? 0 : 5
+    isLocal ? 0 : 8
   );
 
   console.log("Deploying ICE64...");
@@ -108,24 +119,34 @@ const start = async () => {
   const contract = await ICE64Factory.deploy(
     ownerAddr,
     royaltiesAddr,
-    rootsAddr
+    rootsAddr,
+    {
+      gasLimit: BigNumber.from(1869000),
+      gasPrice: targetGasPrice,
+    }
   );
   console.log("ICE64 deployed to", contract.address);
 
   console.log("Waiting for 5 confirmations before deploying renderer…");
-  const deployedICE64 = await contract.deployTransaction.wait(isLocal ? 0 : 5);
+  const deployedICE64 = await contract.deployTransaction.wait(isLocal ? 0 : 8);
 
   console.log("Deploying ICE64Renderer...");
   const ICE64RendererFactory = await ethers.getContractFactory("ICE64Renderer");
   const renderer = await ICE64RendererFactory.deploy(
     deployedICE64.contractAddress,
     deployedDataStore.contractAddress,
-    xqstgfxAddr
+    xqstgfxAddr,
+    {
+      gasLimit: BigNumber.from(1125000),
+      gasPrice: targetGasPrice,
+    }
   );
   console.log("ICE64Renderer deployed to", renderer.address);
 
   console.log("Setting metadata in ICE64...");
-  await contract.setMetadata(renderer.address);
+  await contract.setMetadata(renderer.address, {
+    gasPrice: targetGasPrice,
+  });
   console.log("Metadata set in ICE64");
 
   console.log("Waiting for 5 confirmations before verifying contracts");

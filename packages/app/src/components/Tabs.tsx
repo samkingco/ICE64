@@ -70,6 +70,7 @@ const Tab = styled(ReachTab)`
   position: relative;
   z-index: 1;
   opacity: 0.48;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   &:hover {
     opacity: 1;
   }
@@ -118,7 +119,7 @@ export function Tabs({
 
         <TabIndicators>
           {tabHeadings.map((tab, idx) => (
-            <TabIndicatorWrapper key={`tab_indicator_${tab}`}>
+            <TabIndicatorWrapper key={`tab_${tab}`}>
               {idx === tabIndex && <TabIndicator layoutId="activeTab" />}
             </TabIndicatorWrapper>
           ))}

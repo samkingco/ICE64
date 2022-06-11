@@ -1,11 +1,15 @@
-import { gql } from 'urql';
-import * as Urql from 'urql';
+import { GraphQLClient } from 'graphql-request';
+import { RequestInit } from 'graphql-request/dist/types.dom';
+import { useQuery, UseQueryOptions } from 'react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+function fetcher<TData, TVariables>(client: GraphQLClient, query: string, variables?: TVariables, headers?: RequestInit['headers']) {
+  return async (): Promise<TData> => client.request<TData, TVariables>(query, variables, headers);
+}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -19,24 +23,24 @@ export type Scalars = {
 };
 
 export type BlockChangedFilter = {
-  readonly number_gte: Scalars['Int'];
+  number_gte: Scalars['Int'];
 };
 
 export type Block_Height = {
-  readonly hash?: InputMaybe<Scalars['Bytes']>;
-  readonly number?: InputMaybe<Scalars['Int']>;
-  readonly number_gte?: InputMaybe<Scalars['Int']>;
+  hash?: InputMaybe<Scalars['Bytes']>;
+  number?: InputMaybe<Scalars['Int']>;
+  number_gte?: InputMaybe<Scalars['Int']>;
 };
 
 export type EditionPhoto = {
-  readonly __typename?: 'EditionPhoto';
-  readonly currentOwners: ReadonlyArray<Wallet>;
-  readonly id: Scalars['ID'];
-  readonly maxEditions: Scalars['BigInt'];
-  readonly originalId: Scalars['BigInt'];
-  readonly purchasedBy: ReadonlyArray<Wallet>;
-  readonly totalPurchased: Scalars['BigInt'];
-  readonly uri?: Maybe<Scalars['String']>;
+  __typename?: 'EditionPhoto';
+  currentOwners: Array<Wallet>;
+  id: Scalars['ID'];
+  maxEditions: Scalars['BigInt'];
+  originalId: Scalars['BigInt'];
+  purchasedBy: Array<Wallet>;
+  totalPurchased: Scalars['BigInt'];
+  uri?: Maybe<Scalars['String']>;
 };
 
 
@@ -59,71 +63,71 @@ export type EditionPhotoPurchasedByArgs = {
 
 export type EditionPhoto_Filter = {
   /** Filter for the block changed event. */
-  readonly _change_block?: InputMaybe<BlockChangedFilter>;
-  readonly currentOwners?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwners_contains?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwners_contains_nocase?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwners_not?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwners_not_contains?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwners_not_contains_nocase?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly id?: InputMaybe<Scalars['ID']>;
-  readonly id_gt?: InputMaybe<Scalars['ID']>;
-  readonly id_gte?: InputMaybe<Scalars['ID']>;
-  readonly id_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly id_lt?: InputMaybe<Scalars['ID']>;
-  readonly id_lte?: InputMaybe<Scalars['ID']>;
-  readonly id_not?: InputMaybe<Scalars['ID']>;
-  readonly id_not_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly maxEditions?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly maxEditions_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_not?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly originalId?: InputMaybe<Scalars['BigInt']>;
-  readonly originalId_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly originalId_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly originalId_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly originalId_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly originalId_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly originalId_not?: InputMaybe<Scalars['BigInt']>;
-  readonly originalId_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly purchasedBy?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_contains?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_contains_nocase?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_not?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_not_contains?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_not_contains_nocase?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly totalPurchased?: InputMaybe<Scalars['BigInt']>;
-  readonly totalPurchased_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly totalPurchased_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly totalPurchased_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly totalPurchased_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly totalPurchased_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly totalPurchased_not?: InputMaybe<Scalars['BigInt']>;
-  readonly totalPurchased_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly uri?: InputMaybe<Scalars['String']>;
-  readonly uri_contains?: InputMaybe<Scalars['String']>;
-  readonly uri_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_ends_with?: InputMaybe<Scalars['String']>;
-  readonly uri_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_gt?: InputMaybe<Scalars['String']>;
-  readonly uri_gte?: InputMaybe<Scalars['String']>;
-  readonly uri_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly uri_lt?: InputMaybe<Scalars['String']>;
-  readonly uri_lte?: InputMaybe<Scalars['String']>;
-  readonly uri_not?: InputMaybe<Scalars['String']>;
-  readonly uri_not_contains?: InputMaybe<Scalars['String']>;
-  readonly uri_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_not_ends_with?: InputMaybe<Scalars['String']>;
-  readonly uri_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly uri_not_starts_with?: InputMaybe<Scalars['String']>;
-  readonly uri_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_starts_with?: InputMaybe<Scalars['String']>;
-  readonly uri_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  currentOwners?: InputMaybe<Array<Scalars['String']>>;
+  currentOwners_contains?: InputMaybe<Array<Scalars['String']>>;
+  currentOwners_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  currentOwners_not?: InputMaybe<Array<Scalars['String']>>;
+  currentOwners_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  currentOwners_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  maxEditions?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_gt?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_gte?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  maxEditions_lt?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_lte?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_not?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  originalId?: InputMaybe<Scalars['BigInt']>;
+  originalId_gt?: InputMaybe<Scalars['BigInt']>;
+  originalId_gte?: InputMaybe<Scalars['BigInt']>;
+  originalId_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  originalId_lt?: InputMaybe<Scalars['BigInt']>;
+  originalId_lte?: InputMaybe<Scalars['BigInt']>;
+  originalId_not?: InputMaybe<Scalars['BigInt']>;
+  originalId_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  purchasedBy?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_contains?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_not?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_not_contains?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_not_contains_nocase?: InputMaybe<Array<Scalars['String']>>;
+  totalPurchased?: InputMaybe<Scalars['BigInt']>;
+  totalPurchased_gt?: InputMaybe<Scalars['BigInt']>;
+  totalPurchased_gte?: InputMaybe<Scalars['BigInt']>;
+  totalPurchased_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  totalPurchased_lt?: InputMaybe<Scalars['BigInt']>;
+  totalPurchased_lte?: InputMaybe<Scalars['BigInt']>;
+  totalPurchased_not?: InputMaybe<Scalars['BigInt']>;
+  totalPurchased_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  uri?: InputMaybe<Scalars['String']>;
+  uri_contains?: InputMaybe<Scalars['String']>;
+  uri_contains_nocase?: InputMaybe<Scalars['String']>;
+  uri_ends_with?: InputMaybe<Scalars['String']>;
+  uri_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  uri_gt?: InputMaybe<Scalars['String']>;
+  uri_gte?: InputMaybe<Scalars['String']>;
+  uri_in?: InputMaybe<Array<Scalars['String']>>;
+  uri_lt?: InputMaybe<Scalars['String']>;
+  uri_lte?: InputMaybe<Scalars['String']>;
+  uri_not?: InputMaybe<Scalars['String']>;
+  uri_not_contains?: InputMaybe<Scalars['String']>;
+  uri_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  uri_not_ends_with?: InputMaybe<Scalars['String']>;
+  uri_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  uri_not_in?: InputMaybe<Array<Scalars['String']>>;
+  uri_not_starts_with?: InputMaybe<Scalars['String']>;
+  uri_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  uri_starts_with?: InputMaybe<Scalars['String']>;
+  uri_starts_with_nocase?: InputMaybe<Scalars['String']>;
 };
 
 export enum EditionPhoto_OrderBy {
@@ -143,102 +147,102 @@ export enum OrderDirection {
 }
 
 export type OriginalPhoto = {
-  readonly __typename?: 'OriginalPhoto';
-  readonly currentOwner?: Maybe<Wallet>;
-  readonly editionId: Scalars['BigInt'];
-  readonly id: Scalars['ID'];
-  readonly purchasedAt?: Maybe<Scalars['BigInt']>;
-  readonly purchasedBy?: Maybe<Wallet>;
-  readonly uri?: Maybe<Scalars['String']>;
+  __typename?: 'OriginalPhoto';
+  currentOwner?: Maybe<Wallet>;
+  editionId: Scalars['BigInt'];
+  id: Scalars['ID'];
+  purchasedAt?: Maybe<Scalars['BigInt']>;
+  purchasedBy?: Maybe<Wallet>;
+  uri?: Maybe<Scalars['String']>;
 };
 
 export type OriginalPhoto_Filter = {
   /** Filter for the block changed event. */
-  readonly _change_block?: InputMaybe<BlockChangedFilter>;
-  readonly currentOwner?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_contains?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_ends_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_gt?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_gte?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwner_lt?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_lte?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_contains?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_starts_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly editionId?: InputMaybe<Scalars['BigInt']>;
-  readonly editionId_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly editionId_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly editionId_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly editionId_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly editionId_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly editionId_not?: InputMaybe<Scalars['BigInt']>;
-  readonly editionId_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly id?: InputMaybe<Scalars['ID']>;
-  readonly id_gt?: InputMaybe<Scalars['ID']>;
-  readonly id_gte?: InputMaybe<Scalars['ID']>;
-  readonly id_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly id_lt?: InputMaybe<Scalars['ID']>;
-  readonly id_lte?: InputMaybe<Scalars['ID']>;
-  readonly id_not?: InputMaybe<Scalars['ID']>;
-  readonly id_not_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly purchasedAt?: InputMaybe<Scalars['BigInt']>;
-  readonly purchasedAt_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly purchasedAt_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly purchasedAt_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly purchasedAt_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly purchasedAt_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly purchasedAt_not?: InputMaybe<Scalars['BigInt']>;
-  readonly purchasedAt_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly purchasedBy?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_contains?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_ends_with?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_gt?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_gte?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_lt?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_lte?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not_contains?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not_ends_with?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly purchasedBy_not_starts_with?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_starts_with?: InputMaybe<Scalars['String']>;
-  readonly purchasedBy_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri?: InputMaybe<Scalars['String']>;
-  readonly uri_contains?: InputMaybe<Scalars['String']>;
-  readonly uri_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_ends_with?: InputMaybe<Scalars['String']>;
-  readonly uri_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_gt?: InputMaybe<Scalars['String']>;
-  readonly uri_gte?: InputMaybe<Scalars['String']>;
-  readonly uri_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly uri_lt?: InputMaybe<Scalars['String']>;
-  readonly uri_lte?: InputMaybe<Scalars['String']>;
-  readonly uri_not?: InputMaybe<Scalars['String']>;
-  readonly uri_not_contains?: InputMaybe<Scalars['String']>;
-  readonly uri_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_not_ends_with?: InputMaybe<Scalars['String']>;
-  readonly uri_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly uri_not_starts_with?: InputMaybe<Scalars['String']>;
-  readonly uri_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly uri_starts_with?: InputMaybe<Scalars['String']>;
-  readonly uri_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  currentOwner?: InputMaybe<Scalars['String']>;
+  currentOwner_contains?: InputMaybe<Scalars['String']>;
+  currentOwner_contains_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_ends_with?: InputMaybe<Scalars['String']>;
+  currentOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_gt?: InputMaybe<Scalars['String']>;
+  currentOwner_gte?: InputMaybe<Scalars['String']>;
+  currentOwner_in?: InputMaybe<Array<Scalars['String']>>;
+  currentOwner_lt?: InputMaybe<Scalars['String']>;
+  currentOwner_lte?: InputMaybe<Scalars['String']>;
+  currentOwner_not?: InputMaybe<Scalars['String']>;
+  currentOwner_not_contains?: InputMaybe<Scalars['String']>;
+  currentOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
+  currentOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
+  currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
+  currentOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_starts_with?: InputMaybe<Scalars['String']>;
+  currentOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  editionId?: InputMaybe<Scalars['BigInt']>;
+  editionId_gt?: InputMaybe<Scalars['BigInt']>;
+  editionId_gte?: InputMaybe<Scalars['BigInt']>;
+  editionId_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  editionId_lt?: InputMaybe<Scalars['BigInt']>;
+  editionId_lte?: InputMaybe<Scalars['BigInt']>;
+  editionId_not?: InputMaybe<Scalars['BigInt']>;
+  editionId_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  purchasedAt?: InputMaybe<Scalars['BigInt']>;
+  purchasedAt_gt?: InputMaybe<Scalars['BigInt']>;
+  purchasedAt_gte?: InputMaybe<Scalars['BigInt']>;
+  purchasedAt_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  purchasedAt_lt?: InputMaybe<Scalars['BigInt']>;
+  purchasedAt_lte?: InputMaybe<Scalars['BigInt']>;
+  purchasedAt_not?: InputMaybe<Scalars['BigInt']>;
+  purchasedAt_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  purchasedBy?: InputMaybe<Scalars['String']>;
+  purchasedBy_contains?: InputMaybe<Scalars['String']>;
+  purchasedBy_contains_nocase?: InputMaybe<Scalars['String']>;
+  purchasedBy_ends_with?: InputMaybe<Scalars['String']>;
+  purchasedBy_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  purchasedBy_gt?: InputMaybe<Scalars['String']>;
+  purchasedBy_gte?: InputMaybe<Scalars['String']>;
+  purchasedBy_in?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_lt?: InputMaybe<Scalars['String']>;
+  purchasedBy_lte?: InputMaybe<Scalars['String']>;
+  purchasedBy_not?: InputMaybe<Scalars['String']>;
+  purchasedBy_not_contains?: InputMaybe<Scalars['String']>;
+  purchasedBy_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  purchasedBy_not_ends_with?: InputMaybe<Scalars['String']>;
+  purchasedBy_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  purchasedBy_not_in?: InputMaybe<Array<Scalars['String']>>;
+  purchasedBy_not_starts_with?: InputMaybe<Scalars['String']>;
+  purchasedBy_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  purchasedBy_starts_with?: InputMaybe<Scalars['String']>;
+  purchasedBy_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  uri?: InputMaybe<Scalars['String']>;
+  uri_contains?: InputMaybe<Scalars['String']>;
+  uri_contains_nocase?: InputMaybe<Scalars['String']>;
+  uri_ends_with?: InputMaybe<Scalars['String']>;
+  uri_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  uri_gt?: InputMaybe<Scalars['String']>;
+  uri_gte?: InputMaybe<Scalars['String']>;
+  uri_in?: InputMaybe<Array<Scalars['String']>>;
+  uri_lt?: InputMaybe<Scalars['String']>;
+  uri_lte?: InputMaybe<Scalars['String']>;
+  uri_not?: InputMaybe<Scalars['String']>;
+  uri_not_contains?: InputMaybe<Scalars['String']>;
+  uri_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  uri_not_ends_with?: InputMaybe<Scalars['String']>;
+  uri_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  uri_not_in?: InputMaybe<Array<Scalars['String']>>;
+  uri_not_starts_with?: InputMaybe<Scalars['String']>;
+  uri_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  uri_starts_with?: InputMaybe<Scalars['String']>;
+  uri_starts_with_nocase?: InputMaybe<Scalars['String']>;
 };
 
 export enum OriginalPhoto_OrderBy {
@@ -251,18 +255,18 @@ export enum OriginalPhoto_OrderBy {
 }
 
 export type Query = {
-  readonly __typename?: 'Query';
+  __typename?: 'Query';
   /** Access to subgraph metadata */
-  readonly _meta?: Maybe<_Meta_>;
-  readonly editionPhoto?: Maybe<EditionPhoto>;
-  readonly editionPhotos: ReadonlyArray<EditionPhoto>;
-  readonly originalPhoto?: Maybe<OriginalPhoto>;
-  readonly originalPhotos: ReadonlyArray<OriginalPhoto>;
-  readonly rootsPhoto?: Maybe<RootsPhoto>;
-  readonly rootsPhotos: ReadonlyArray<RootsPhoto>;
-  readonly settings: ReadonlyArray<Settings>;
-  readonly wallet?: Maybe<Wallet>;
-  readonly wallets: ReadonlyArray<Wallet>;
+  _meta?: Maybe<_Meta_>;
+  editionPhoto?: Maybe<EditionPhoto>;
+  editionPhotos: Array<EditionPhoto>;
+  originalPhoto?: Maybe<OriginalPhoto>;
+  originalPhotos: Array<OriginalPhoto>;
+  rootsPhoto?: Maybe<RootsPhoto>;
+  rootsPhotos: Array<RootsPhoto>;
+  settings: Array<Settings>;
+  wallet?: Maybe<Wallet>;
+  wallets: Array<Wallet>;
 };
 
 
@@ -354,68 +358,68 @@ export type QueryWalletsArgs = {
 };
 
 export type RootsPhoto = {
-  readonly __typename?: 'RootsPhoto';
-  readonly currentOwner: Wallet;
-  readonly hasClaimedEdition: Scalars['Boolean'];
-  readonly id: Scalars['ID'];
-  readonly tokenURI: Scalars['String'];
+  __typename?: 'RootsPhoto';
+  currentOwner: Wallet;
+  hasClaimedEdition: Scalars['Boolean'];
+  id: Scalars['ID'];
+  tokenURI: Scalars['String'];
 };
 
 export type RootsPhoto_Filter = {
   /** Filter for the block changed event. */
-  readonly _change_block?: InputMaybe<BlockChangedFilter>;
-  readonly currentOwner?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_contains?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_ends_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_gt?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_gte?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwner_lt?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_lte?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_contains?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_starts_with?: InputMaybe<Scalars['String']>;
-  readonly currentOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly hasClaimedEdition?: InputMaybe<Scalars['Boolean']>;
-  readonly hasClaimedEdition_in?: InputMaybe<ReadonlyArray<Scalars['Boolean']>>;
-  readonly hasClaimedEdition_not?: InputMaybe<Scalars['Boolean']>;
-  readonly hasClaimedEdition_not_in?: InputMaybe<ReadonlyArray<Scalars['Boolean']>>;
-  readonly id?: InputMaybe<Scalars['ID']>;
-  readonly id_gt?: InputMaybe<Scalars['ID']>;
-  readonly id_gte?: InputMaybe<Scalars['ID']>;
-  readonly id_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly id_lt?: InputMaybe<Scalars['ID']>;
-  readonly id_lte?: InputMaybe<Scalars['ID']>;
-  readonly id_not?: InputMaybe<Scalars['ID']>;
-  readonly id_not_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly tokenURI?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_contains?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_ends_with?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_gt?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_gte?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly tokenURI_lt?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_lte?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not_contains?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not_contains_nocase?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not_ends_with?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not_in?: InputMaybe<ReadonlyArray<Scalars['String']>>;
-  readonly tokenURI_not_starts_with?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_starts_with?: InputMaybe<Scalars['String']>;
-  readonly tokenURI_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  currentOwner?: InputMaybe<Scalars['String']>;
+  currentOwner_contains?: InputMaybe<Scalars['String']>;
+  currentOwner_contains_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_ends_with?: InputMaybe<Scalars['String']>;
+  currentOwner_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_gt?: InputMaybe<Scalars['String']>;
+  currentOwner_gte?: InputMaybe<Scalars['String']>;
+  currentOwner_in?: InputMaybe<Array<Scalars['String']>>;
+  currentOwner_lt?: InputMaybe<Scalars['String']>;
+  currentOwner_lte?: InputMaybe<Scalars['String']>;
+  currentOwner_not?: InputMaybe<Scalars['String']>;
+  currentOwner_not_contains?: InputMaybe<Scalars['String']>;
+  currentOwner_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_not_ends_with?: InputMaybe<Scalars['String']>;
+  currentOwner_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_not_in?: InputMaybe<Array<Scalars['String']>>;
+  currentOwner_not_starts_with?: InputMaybe<Scalars['String']>;
+  currentOwner_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  currentOwner_starts_with?: InputMaybe<Scalars['String']>;
+  currentOwner_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  hasClaimedEdition?: InputMaybe<Scalars['Boolean']>;
+  hasClaimedEdition_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  hasClaimedEdition_not?: InputMaybe<Scalars['Boolean']>;
+  hasClaimedEdition_not_in?: InputMaybe<Array<Scalars['Boolean']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  tokenURI?: InputMaybe<Scalars['String']>;
+  tokenURI_contains?: InputMaybe<Scalars['String']>;
+  tokenURI_contains_nocase?: InputMaybe<Scalars['String']>;
+  tokenURI_ends_with?: InputMaybe<Scalars['String']>;
+  tokenURI_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenURI_gt?: InputMaybe<Scalars['String']>;
+  tokenURI_gte?: InputMaybe<Scalars['String']>;
+  tokenURI_in?: InputMaybe<Array<Scalars['String']>>;
+  tokenURI_lt?: InputMaybe<Scalars['String']>;
+  tokenURI_lte?: InputMaybe<Scalars['String']>;
+  tokenURI_not?: InputMaybe<Scalars['String']>;
+  tokenURI_not_contains?: InputMaybe<Scalars['String']>;
+  tokenURI_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  tokenURI_not_ends_with?: InputMaybe<Scalars['String']>;
+  tokenURI_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenURI_not_in?: InputMaybe<Array<Scalars['String']>>;
+  tokenURI_not_starts_with?: InputMaybe<Scalars['String']>;
+  tokenURI_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenURI_starts_with?: InputMaybe<Scalars['String']>;
+  tokenURI_starts_with_nocase?: InputMaybe<Scalars['String']>;
 };
 
 export enum RootsPhoto_OrderBy {
@@ -426,48 +430,48 @@ export enum RootsPhoto_OrderBy {
 }
 
 export type Settings = {
-  readonly __typename?: 'Settings';
-  readonly id: Scalars['ID'];
-  readonly maxEditions: Scalars['BigInt'];
-  readonly priceEdition: Scalars['BigInt'];
-  readonly priceOriginal: Scalars['BigInt'];
+  __typename?: 'Settings';
+  id: Scalars['ID'];
+  maxEditions: Scalars['BigInt'];
+  priceEdition: Scalars['BigInt'];
+  priceOriginal: Scalars['BigInt'];
 };
 
 export type Settings_Filter = {
   /** Filter for the block changed event. */
-  readonly _change_block?: InputMaybe<BlockChangedFilter>;
-  readonly id?: InputMaybe<Scalars['ID']>;
-  readonly id_gt?: InputMaybe<Scalars['ID']>;
-  readonly id_gte?: InputMaybe<Scalars['ID']>;
-  readonly id_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly id_lt?: InputMaybe<Scalars['ID']>;
-  readonly id_lte?: InputMaybe<Scalars['ID']>;
-  readonly id_not?: InputMaybe<Scalars['ID']>;
-  readonly id_not_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly maxEditions?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly maxEditions_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_not?: InputMaybe<Scalars['BigInt']>;
-  readonly maxEditions_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly priceEdition?: InputMaybe<Scalars['BigInt']>;
-  readonly priceEdition_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly priceEdition_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly priceEdition_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly priceEdition_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly priceEdition_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly priceEdition_not?: InputMaybe<Scalars['BigInt']>;
-  readonly priceEdition_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly priceOriginal?: InputMaybe<Scalars['BigInt']>;
-  readonly priceOriginal_gt?: InputMaybe<Scalars['BigInt']>;
-  readonly priceOriginal_gte?: InputMaybe<Scalars['BigInt']>;
-  readonly priceOriginal_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly priceOriginal_lt?: InputMaybe<Scalars['BigInt']>;
-  readonly priceOriginal_lte?: InputMaybe<Scalars['BigInt']>;
-  readonly priceOriginal_not?: InputMaybe<Scalars['BigInt']>;
-  readonly priceOriginal_not_in?: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  maxEditions?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_gt?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_gte?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  maxEditions_lt?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_lte?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_not?: InputMaybe<Scalars['BigInt']>;
+  maxEditions_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  priceEdition?: InputMaybe<Scalars['BigInt']>;
+  priceEdition_gt?: InputMaybe<Scalars['BigInt']>;
+  priceEdition_gte?: InputMaybe<Scalars['BigInt']>;
+  priceEdition_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  priceEdition_lt?: InputMaybe<Scalars['BigInt']>;
+  priceEdition_lte?: InputMaybe<Scalars['BigInt']>;
+  priceEdition_not?: InputMaybe<Scalars['BigInt']>;
+  priceEdition_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  priceOriginal?: InputMaybe<Scalars['BigInt']>;
+  priceOriginal_gt?: InputMaybe<Scalars['BigInt']>;
+  priceOriginal_gte?: InputMaybe<Scalars['BigInt']>;
+  priceOriginal_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  priceOriginal_lt?: InputMaybe<Scalars['BigInt']>;
+  priceOriginal_lte?: InputMaybe<Scalars['BigInt']>;
+  priceOriginal_not?: InputMaybe<Scalars['BigInt']>;
+  priceOriginal_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 };
 
 export enum Settings_OrderBy {
@@ -478,18 +482,18 @@ export enum Settings_OrderBy {
 }
 
 export type Subscription = {
-  readonly __typename?: 'Subscription';
+  __typename?: 'Subscription';
   /** Access to subgraph metadata */
-  readonly _meta?: Maybe<_Meta_>;
-  readonly editionPhoto?: Maybe<EditionPhoto>;
-  readonly editionPhotos: ReadonlyArray<EditionPhoto>;
-  readonly originalPhoto?: Maybe<OriginalPhoto>;
-  readonly originalPhotos: ReadonlyArray<OriginalPhoto>;
-  readonly rootsPhoto?: Maybe<RootsPhoto>;
-  readonly rootsPhotos: ReadonlyArray<RootsPhoto>;
-  readonly settings: ReadonlyArray<Settings>;
-  readonly wallet?: Maybe<Wallet>;
-  readonly wallets: ReadonlyArray<Wallet>;
+  _meta?: Maybe<_Meta_>;
+  editionPhoto?: Maybe<EditionPhoto>;
+  editionPhotos: Array<EditionPhoto>;
+  originalPhoto?: Maybe<OriginalPhoto>;
+  originalPhotos: Array<OriginalPhoto>;
+  rootsPhoto?: Maybe<RootsPhoto>;
+  rootsPhotos: Array<RootsPhoto>;
+  settings: Array<Settings>;
+  wallet?: Maybe<Wallet>;
+  wallets: Array<Wallet>;
 };
 
 
@@ -581,12 +585,12 @@ export type SubscriptionWalletsArgs = {
 };
 
 export type Wallet = {
-  readonly __typename?: 'Wallet';
-  readonly address: Scalars['Bytes'];
-  readonly editions: ReadonlyArray<EditionPhoto>;
-  readonly id: Scalars['ID'];
-  readonly originals: ReadonlyArray<OriginalPhoto>;
-  readonly roots: ReadonlyArray<RootsPhoto>;
+  __typename?: 'Wallet';
+  address: Scalars['Bytes'];
+  editions: Array<EditionPhoto>;
+  id: Scalars['ID'];
+  originals: Array<OriginalPhoto>;
+  roots: Array<RootsPhoto>;
 };
 
 
@@ -618,21 +622,21 @@ export type WalletRootsArgs = {
 
 export type Wallet_Filter = {
   /** Filter for the block changed event. */
-  readonly _change_block?: InputMaybe<BlockChangedFilter>;
-  readonly address?: InputMaybe<Scalars['Bytes']>;
-  readonly address_contains?: InputMaybe<Scalars['Bytes']>;
-  readonly address_in?: InputMaybe<ReadonlyArray<Scalars['Bytes']>>;
-  readonly address_not?: InputMaybe<Scalars['Bytes']>;
-  readonly address_not_contains?: InputMaybe<Scalars['Bytes']>;
-  readonly address_not_in?: InputMaybe<ReadonlyArray<Scalars['Bytes']>>;
-  readonly id?: InputMaybe<Scalars['ID']>;
-  readonly id_gt?: InputMaybe<Scalars['ID']>;
-  readonly id_gte?: InputMaybe<Scalars['ID']>;
-  readonly id_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly id_lt?: InputMaybe<Scalars['ID']>;
-  readonly id_lte?: InputMaybe<Scalars['ID']>;
-  readonly id_not?: InputMaybe<Scalars['ID']>;
-  readonly id_not_in?: InputMaybe<ReadonlyArray<Scalars['ID']>>;
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  address?: InputMaybe<Scalars['Bytes']>;
+  address_contains?: InputMaybe<Scalars['Bytes']>;
+  address_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  address_not?: InputMaybe<Scalars['Bytes']>;
+  address_not_contains?: InputMaybe<Scalars['Bytes']>;
+  address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
 };
 
 export enum Wallet_OrderBy {
@@ -644,16 +648,16 @@ export enum Wallet_OrderBy {
 }
 
 export type _Block_ = {
-  readonly __typename?: '_Block_';
+  __typename?: '_Block_';
   /** The hash of the block */
-  readonly hash?: Maybe<Scalars['Bytes']>;
+  hash?: Maybe<Scalars['Bytes']>;
   /** The block number */
-  readonly number: Scalars['Int'];
+  number: Scalars['Int'];
 };
 
 /** The type for the top-level _meta field */
 export type _Meta_ = {
-  readonly __typename?: '_Meta_';
+  __typename?: '_Meta_';
   /**
    * Information about a specific subgraph block. The hash of the block
    * will be null if the _meta field has a block constraint that asks for
@@ -661,11 +665,11 @@ export type _Meta_ = {
    * and therefore asks for the latest  block
    *
    */
-  readonly block: _Block_;
+  block: _Block_;
   /** The deployment ID */
-  readonly deployment: Scalars['String'];
+  deployment: Scalars['String'];
   /** If `true`, the subgraph encountered indexing errors at some past block */
-  readonly hasIndexingErrors: Scalars['Boolean'];
+  hasIndexingErrors: Scalars['Boolean'];
 };
 
 export enum _SubgraphErrorPolicy_ {
@@ -682,10 +686,10 @@ export type PhotoByIdQueryVariables = Exact<{
 }>;
 
 
-export type PhotoByIdQuery = { readonly __typename?: 'Query', readonly originalPhoto?: { readonly __typename?: 'OriginalPhoto', readonly id: string, readonly uri?: string | null, readonly currentOwner?: { readonly __typename?: 'Wallet', readonly address: any } | null } | null, readonly editionPhoto?: { readonly __typename?: 'EditionPhoto', readonly id: string, readonly totalPurchased: any, readonly currentOwners: ReadonlyArray<{ readonly __typename?: 'Wallet', readonly address: any }> } | null, readonly wallet?: { readonly __typename?: 'Wallet', readonly roots: ReadonlyArray<{ readonly __typename?: 'RootsPhoto', readonly id: string, readonly hasClaimedEdition: boolean }> } | null };
+export type PhotoByIdQuery = { __typename?: 'Query', originalPhoto?: { __typename?: 'OriginalPhoto', id: string, uri?: string | null, currentOwner?: { __typename?: 'Wallet', address: any } | null } | null, editionPhoto?: { __typename?: 'EditionPhoto', id: string, totalPurchased: any, currentOwners: Array<{ __typename?: 'Wallet', address: any }> } | null, wallet?: { __typename?: 'Wallet', id: string, roots: Array<{ __typename?: 'RootsPhoto', id: string, hasClaimedEdition: boolean }> } | null };
 
 
-export const PhotoByIdDocument = gql`
+export const PhotoByIdDocument = `
     query PhotoById($originalId: ID!, $editionId: ID!, $wallet: ID!) {
   originalPhoto(id: $originalId) {
     id
@@ -702,6 +706,7 @@ export const PhotoByIdDocument = gql`
     }
   }
   wallet(id: $wallet) {
+    id
     roots {
       id
       hasClaimedEdition
@@ -709,7 +714,24 @@ export const PhotoByIdDocument = gql`
   }
 }
     `;
+export const usePhotoByIdQuery = <
+      TData = PhotoByIdQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables: PhotoByIdQueryVariables,
+      options?: UseQueryOptions<PhotoByIdQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<PhotoByIdQuery, TError, TData>(
+      ['PhotoById', variables],
+      fetcher<PhotoByIdQuery, PhotoByIdQueryVariables>(client, PhotoByIdDocument, variables, headers),
+      options
+    );
+usePhotoByIdQuery.document = PhotoByIdDocument;
 
-export function usePhotoByIdQuery(options: Omit<Urql.UseQueryArgs<PhotoByIdQueryVariables>, 'query'>) {
-  return Urql.useQuery<PhotoByIdQuery>({ query: PhotoByIdDocument, ...options });
-};
+
+usePhotoByIdQuery.getKey = (variables: PhotoByIdQueryVariables) => ['PhotoById', variables];
+;
+
+usePhotoByIdQuery.fetcher = (client: GraphQLClient, variables: PhotoByIdQueryVariables, headers?: RequestInit['headers']) => fetcher<PhotoByIdQuery, PhotoByIdQueryVariables>(client, PhotoByIdDocument, variables, headers);

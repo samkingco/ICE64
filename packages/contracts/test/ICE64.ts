@@ -15,7 +15,7 @@ import { chunks } from "./tokenStorageChunks";
 
 const originalBaseURI = "ipfs://<CID>/";
 const maxId = BigNumber.from(16);
-const maxEditions = BigNumber.from(32);
+const maxEditions = BigNumber.from(64);
 const chunkSize = 2;
 
 const tokenDataArr: string[] = [];

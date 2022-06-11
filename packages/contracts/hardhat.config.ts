@@ -27,7 +27,7 @@ export default {
       chainId: 31337,
       blockGasLimit: 100000000,
       accounts: {
-        count: 40,
+        count: 70,
       },
     },
     rinkeby: {
@@ -42,7 +42,7 @@ export default {
   },
   gasReporter: {
     currency: "USD",
-    gasPrice: 10,
+    gasPrice: 50,
     token: "ETH",
     coinmarketcap: process.env.COINMARKETCAP_API_KEY || "",
     excludeContracts: ["mocks/"],

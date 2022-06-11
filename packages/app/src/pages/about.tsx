@@ -76,13 +76,13 @@ export default function About() {
 
       <Content>
         <MainBody>
-          <Title>Iceland in winter</Title>
+          <Title>Iceland endures</Title>
           <Body margin="16 0 0">
             ICE64 is a series of 16 photographs by{" "}
             <a href="https://samking.studio">Sam King</a>, documenting the
-            desolate landscape of Iceland during the winter. Every image is an
-            original 1 of 1 NFT, with an accompanying edition of a smaller SVG
-            based artwork.
+            desolate landscape of Iceland during the winter, enduring harsh yet
+            beautiful conditions. Every image is an original 1 of 1 NFT, with an
+            accompanying edition of a smaller SVG based artwork.
           </Body>
           <Body margin="16 0 0">
             All tokens are permanently stored on the internet. The originals

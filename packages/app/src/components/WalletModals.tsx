@@ -12,36 +12,39 @@ import {
   useConnectedStatus,
 } from "../hooks/useConnectedStatus";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
+import { useIsMounted } from "../hooks/useIsMounted";
 import { targetNetwork } from "../utils/contracts";
-import { buttonReset } from "./Button";
+import { buttonReset, MonoButton } from "./Button";
 import { CopyToClipboard } from "./CopyToClipboard";
 import { Divider } from "./Divider";
-import { ENSAddress } from "./ENSAddress";
 import { Modal } from "./Modal";
 import { Body, Mono, Subheading } from "./Typography";
+import { MetaMask, WallectConnect } from "./WalletProviderIcons";
 
 const ModalContent = styled.div`
   width: 100%;
   background: var(--background);
   display: grid;
   grid-template-columns: 1fr;
-  padding: 1rem;
+  grid-gap: 0.5rem;
+  padding: 2rem;
   border-radius: 1.5rem;
   box-shadow: 0 1px 32px rgba(0, 0, 0, 0.08);
   @media (min-width: 80rem) {
-    padding: 1vw;
+    padding: 2vw;
     border-radius: 2vw;
   }
 `;
 
-const modalItemStyles = css`
+const modalInteractiveItemStyles = css`
   ${buttonReset};
   text-align: left;
   transition: background-color 150ms ease;
   border-radius: 0.5rem;
   padding: 8px 12px;
+  background: var(--background-emphasis);
   &:hover {
-    background: var(--background-emphasis);
+    background: rgba(var(--foreground-alpha), 0.1);
     text-decoration: none;
   }
   @media (min-width: 80rem) {
@@ -51,17 +54,13 @@ const modalItemStyles = css`
 `;
 
 const ModalItem = styled.div`
-  padding: 8px 12px;
-  min-width: 100%;
-
+  min-width: 0;
   h3 {
+    display: inline;
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  @media (min-width: 80rem) {
-    padding: 1vw 1.5vw;
   }
 `;
 
@@ -98,14 +97,32 @@ const StatusDot = styled.div<{ status: ConnectedStatus }>`
   }}
 `;
 
-const ModalItemButton = styled.button`
-  ${modalItemStyles};
+const ModalItemButton = styled(MonoButton)`
+  ${modalInteractiveItemStyles};
+  padding: 8px 12px;
+  @media (min-width: 80rem) {
+    padding: 1vw 1.5vw;
+  }
   -webkit-appearance: none;
   -moz-appearance: none;
 `;
 
 const ModalItemLink = styled.a`
-  ${modalItemStyles};
+  ${modalInteractiveItemStyles};
+  padding: 8px 12px;
+  @media (min-width: 80rem) {
+    padding: 1vw 1.5vw;
+  }
+`;
+
+const ProviderButton = styled(ModalItemButton)`
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  grid-gap: 0.5rem;
+  align-items: center;
+  @media (min-width: 80rem) {
+    grid-template-columns: 1.5vw 1fr;
+  }
 `;
 
 interface Props {
@@ -114,9 +131,10 @@ interface Props {
 }
 
 export function ConnectWalletModal({ isOpen, onClose }: Props) {
-  const { connect, connectors, isConnecting, pendingConnector } = useConnect();
+  const isMounted = useIsMounted();
+  const { connect, connectors } = useConnect();
 
-  return (
+  return isMounted ? (
     <Modal
       onClose={onClose}
       isOpen={isOpen}
@@ -124,11 +142,9 @@ export function ConnectWalletModal({ isOpen, onClose }: Props) {
       size="sm"
     >
       <ModalContent>
-        <ModalItem>
-          <Subheading>Connect wallet</Subheading>
-        </ModalItem>
+        <Subheading>Connect wallet</Subheading>
         {connectors.map((connector) => (
-          <ModalItemButton
+          <ProviderButton
             disabled={!connector.ready}
             key={connector.id}
             onClick={() => {
@@ -136,18 +152,18 @@ export function ConnectWalletModal({ isOpen, onClose }: Props) {
               onClose();
             }}
           >
-            <Mono>
-              {connector.name}
-              {isConnecting && connector.id === pendingConnector?.id && "…"}
-            </Mono>
-          </ModalItemButton>
+            {connector.name === "MetaMask" && <MetaMask />}
+            {connector.name === "WalletConnect" && <WallectConnect />}
+            {connector.name}
+          </ProviderButton>
         ))}
       </ModalContent>
     </Modal>
-  );
+  ) : null;
 }
 
 export function WalletInfoModal({ isOpen, onClose }: Props) {
+  const isMounted = useIsMounted();
   const { data: account } = useAccount();
   const { data: balance } = useBalance({
     addressOrName: account?.address,
@@ -160,7 +176,7 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
 
   const etherscan = useEtherscanURL();
 
-  return account ? (
+  return account && isMounted ? (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
@@ -174,17 +190,16 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
               copyText={account.address || ""}
               success="Copied to clipboard"
             >
-              <ENSAddress address={account.address || ""} />
+              {account.address || ""}
+              {/* <ENSAddress address={account.address || ""} /> */}
             </CopyToClipboard>
           </Subheading>
           {balance && <Mono subdued>{balance.formatted} ETH</Mono>}
         </ModalItem>
         <ModalItemLink href={`${etherscan}/address/${account.address}`}>
-          <Mono>View on Etherscan</Mono>
+          <Mono as="span">View on Etherscan</Mono>
         </ModalItemLink>
-        <ModalItem>
-          <Divider />
-        </ModalItem>
+        <Divider margin="16 0" />
         {activeChain && (
           <ConnectedChain>
             <Body>Connected to {activeChain.name}</Body>
@@ -195,7 +210,7 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
           <ModalItemButton
             onClick={() => switchNetwork && switchNetwork(targetNetwork.id)}
           >
-            <Mono>Switch to {targetNetwork.name}</Mono>
+            Switch to {targetNetwork.name}
           </ModalItemButton>
         )}
         <ModalItemButton
@@ -204,7 +219,7 @@ export function WalletInfoModal({ isOpen, onClose }: Props) {
             onClose();
           }}
         >
-          <Mono>Disconnect</Mono>
+          Disconnect
         </ModalItemButton>
       </ModalContent>
     </Modal>

@@ -5,10 +5,12 @@ generates:
     plugins:
       - "@graphql-codegen/typescript"
       - "@graphql-codegen/typescript-operations"
-      - "@graphql-codegen/typescript-urql"
+      - "@graphql-codegen/typescript-react-query"
     config:
-      gqlImport: urql#gql
-      immutableTypes: true
+      fetcher: graphql-request
+      exposeDocument: true
+      exposeQueryKeys: true
+      exposeFetcher: true
 hooks:
   afterAllFileWrite:
     - eslint --fix
