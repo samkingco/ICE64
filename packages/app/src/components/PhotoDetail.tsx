@@ -446,7 +446,7 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
                       <SecondaryInfo>
                         <Mono subdued>
                           {activeChain
-                            ? `Connected to ${activeChain?.name}`
+                            ? `Connected to ${activeChain.name}`
                             : "Wrong network selected"}
                         </Mono>
                       </SecondaryInfo>
@@ -468,7 +468,9 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
                           subdued
                         >
                           Connected as{" "}
-                          <ENSAddress address={account?.address || ""} />
+                          <ENSAddress
+                            address={(account && account.address) || ""}
+                          />
                         </MonoButton>
                       </SecondaryInfo>
                     </ButtonWrapper>
@@ -604,7 +606,7 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
                       <SecondaryInfo>
                         <Mono subdued>
                           {activeChain
-                            ? `Connected to ${activeChain?.name}`
+                            ? `Connected to ${activeChain.name}`
                             : "Wrong network selected"}
                         </Mono>
                       </SecondaryInfo>
@@ -633,7 +635,9 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
                           subdued
                         >
                           Connected as{" "}
-                          <ENSAddress address={account?.address || ""} />
+                          <ENSAddress
+                            address={(account && account.address) || ""}
+                          />
                         </MonoButton>
                       </SecondaryInfo>
                     </ButtonWrapper>
