@@ -1,6 +1,11 @@
 export function WallectConnect() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      width="24"
+      height="24"
+    >
       <defs>
         <radialGradient cx="0%" cy="50%" fx="0%" fy="50%" r="100%" id="a">
           <stop stopColor="#5D9DF6" offset="0%" />
@@ -27,6 +32,8 @@ export function MetaMask() {
       y="0"
       version="1.1"
       viewBox="0 0 318.6 318.6"
+      width="24"
+      height="24"
     >
       <path
         fill="#e2761b"
