@@ -31,6 +31,10 @@ const ConnectNav = styled.nav`
   top: 0;
   right: 0;
   padding-left: 12vw;
+  &,
+  & button {
+    text-align: right;
+  }
 `;
 
 interface Props {
