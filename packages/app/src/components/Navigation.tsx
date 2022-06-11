@@ -9,7 +9,6 @@ const baseNavStyle = css`
   position: fixed;
   z-index: 10;
   padding: 1vw 2vw;
-  width: 50%;
 `;
 
 const LogoNav = styled.header`
@@ -25,7 +24,6 @@ const AboutNav = styled.nav`
   right: 0;
   padding-top: 8vw;
   padding-left: 12vw;
-  text-align: right;
 `;
 
 const ConnectNav = styled.nav`
@@ -33,7 +31,6 @@ const ConnectNav = styled.nav`
   top: 0;
   right: 0;
   padding-left: 12vw;
-  text-align: right;
 `;
 
 interface Props {
