@@ -13,9 +13,7 @@ export default function SocialMeta({
   socialImage,
 }: Props) {
   const router = useRouter();
-  const baseUrl = `https://${
-    process.env.NEXT_PUBLIC_VERCEL_URL || "localhost:3000"
-  }`;
+  const baseUrl = "https://ice64.com";
   const url = `${baseUrl}${router.asPath}`;
   const ogImage = socialImage || `${baseUrl}/og-image.png`;
 

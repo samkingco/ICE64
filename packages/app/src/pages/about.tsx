@@ -94,14 +94,14 @@ export default function About() {
             available.
           </Body>
 
-          {/* <MetaLinks>
+          <MetaLinks>
             <Mono>
               <a href="https://twitter.com/samkingco">Twitter</a>
             </Mono>
             <Mono>
               <a href={`${opensea}/collection/ice64`}>OpenSea</a>
             </Mono>
-          </MetaLinks> */}
+          </MetaLinks>
         </MainBody>
 
         <LinksAndCredits>
