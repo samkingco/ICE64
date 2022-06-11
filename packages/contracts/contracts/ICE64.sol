@@ -189,7 +189,7 @@ contract ICE64 is ERC1155, Owned, IICE64 {
         } else {
             // Else mint both the original and the reserved edition
             /// @dev We could use `_batchMint` here, but there are issues with those tokens
-            ///      not being picked up by certain marketplaces *cough* OpenSea *cough*.
+            ///      not being picked up by certain marketplaces at the time of deployment.
             ///      Gas should be the same since we're only updating one of each token anyway.
             _mint(msg.sender, id, 1, "");
             _mint(msg.sender, editionId, 1, "");

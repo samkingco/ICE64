@@ -21,11 +21,7 @@ pragma solidity ^0.8.14;
 */
 
 import {Owned} from "@rari-capital/solmate/src/auth/Owned.sol";
-
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {SSTORE2} from "@0xsequence/sstore2/contracts/SSTORE2.sol";
-import {DynamicBuffer} from "@divergencetech/ethier/contracts/utils/DynamicBuffer.sol";
-import {Base64} from "./Base64.sol";
 
 import {IICE64} from "./interfaces/IICE64.sol";
 import {IICE64DataStore} from "./interfaces/IICE64DataStore.sol";

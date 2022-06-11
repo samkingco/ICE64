@@ -1,8 +1,8 @@
 {
   "ICE64": {
     "mainnet": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "blockNumber": 0
+      "address": "0x6d36745510dC7a75570755B295694e8Ec625b7d2",
+      "blockNumber": 14941946
     },
     "rinkeby": {
       "address": "0x880614Bd83011Bf1ffB19744cF7590579F430014",
@@ -15,8 +15,8 @@
   },
   "ICE64Renderer": {
     "mainnet": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "blockNumber": 0
+      "address": "0x071dA60182b2B6AFa520a2ff1e8bbF574265A4bC",
+      "blockNumber": 14941954
     },
     "rinkeby": {
       "address": "0xB5cC34610509fc9690194684Da457b41883b8918",
@@ -29,8 +29,8 @@
   },
   "ICE64DataStore": {
     "mainnet": {
-      "address": "0x0000000000000000000000000000000000000000",
-      "blockNumber": 0
+      "address": "0x67fca1a4f04093a927af648f1f4ca337521bda37",
+      "blockNumber": 14941917
     },
     "rinkeby": {
       "address": "0x60ceC55f1b06d94E4e5bA083C092734B31DAC96A",

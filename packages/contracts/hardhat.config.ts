@@ -36,6 +36,12 @@ export default {
         ? [process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY]
         : [],
     },
+    mainnet: {
+      url: process.env.ETHEREUM_MAINNET_RPC_URL || "",
+      accounts: process.env.ETHEREUM_MAINNET_DEPLOYER_PRIVATE_KEY
+        ? [process.env.ETHEREUM_MAINNET_DEPLOYER_PRIVATE_KEY]
+        : [],
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY || "",
