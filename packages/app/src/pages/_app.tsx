@@ -1,5 +1,6 @@
 import { Global } from "@emotion/react";
 import type { AppProps } from "next/app";
+import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
@@ -23,6 +24,7 @@ const { chains, provider, webSocketProvider } = configureChains(
 
 const wagmiClient = createClient({
   autoConnect: true,
+
   connectors: [
     new InjectedConnector({
       chains,
@@ -47,6 +49,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <WagmiConfig client={wagmiClient}>
       <QueryClientProvider client={queryClient}>
         <Global styles={globalStyle} />
+        <Head>
+          <script
+            defer
+            data-domain="ice64.com"
+            src="https://plausible.io/js/plausible.js"
+          ></script>
+        </Head>
         <Component {...pageProps} />
       </QueryClientProvider>
     </WagmiConfig>
