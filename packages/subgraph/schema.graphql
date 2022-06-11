@@ -9,9 +9,9 @@ type OriginalPhoto @entity {
   id: ID!
   editionId: BigInt!
   uri: String
-  purchasedBy: Wallet!
-  purchasedAt: BigInt!
-  currentOwner: Wallet!
+  purchasedBy: Wallet
+  purchasedAt: BigInt
+  currentOwner: Wallet
 }
 
 type EditionPhoto @entity {
@@ -24,9 +24,17 @@ type EditionPhoto @entity {
   totalPurchased: BigInt!
 }
 
+type RootsPhoto @entity {
+  id: ID!
+  tokenURI: String!
+  currentOwner: Wallet!
+  hasClaimedEdition: Boolean!
+}
+
 type Wallet @entity {
   id: ID!
   address: Bytes!
   originals: [OriginalPhoto!]! @derivedFrom(field: "currentOwner")
   editions: [EditionPhoto!]! @derivedFrom(field: "currentOwners")
+  roots: [RootsPhoto!]! @derivedFrom(field: "currentOwner")
 }

@@ -7,14 +7,15 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import {
-  ChainName,
   ContractName,
   deployedAbi,
   deployedAddress,
+  targetNetwork,
 } from "../utils/contracts";
 
 export enum TxState {
   NotReady,
+  WrongNetwork,
   Ready,
   WaitingOnWallet,
   Broadcasted,
@@ -39,15 +40,22 @@ export function useContractTransaction(
   const [errorMessage, setErrorMessage] = useState("");
 
   const { data: account } = useAccount();
-  const { activeChain } = useNetwork();
-  const chainName =
-    activeChain && (activeChain.name.toLowerCase() as ChainName);
-  const contractAddress = deployedAddress(contractName, chainName);
+  const { activeChain, switchNetwork } = useNetwork();
+
+  const contractAddress = deployedAddress(contractName, targetNetwork);
   const contractAbi = deployedAbi(contractName);
 
   useEffect(() => {
-    setTxState(account ? TxState.Ready : TxState.NotReady);
-  }, [account]);
+    if (account) {
+      if (activeChain && activeChain.unsupported) {
+        setTxState(TxState.WrongNetwork);
+      } else {
+        setTxState(TxState.Ready);
+      }
+    } else {
+      setTxState(TxState.NotReady);
+    }
+  }, [account, activeChain]);
 
   useEffect(() => {
     if (txState !== TxState.Error) setErrorMessage("");
@@ -89,7 +97,7 @@ export function useContractTransaction(
     }
   );
 
-  const waitForTransaction = useWaitForTransaction({
+  const _ = useWaitForTransaction({
     hash: writeData && writeData.hash,
     onError(error) {
       setTxState(TxState.Error);
@@ -112,6 +120,7 @@ export function useContractTransaction(
     writeData,
     txState,
     setToReady,
+    switchNetwork,
     errorMessage,
   };
 }

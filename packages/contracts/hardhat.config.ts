@@ -24,15 +24,23 @@ export default {
   },
   networks: {
     hardhat: {
-      chainId: 1337,
+      chainId: 31337,
       blockGasLimit: 100000000,
       accounts: {
-        count: 40,
+        count: 70,
       },
     },
     rinkeby: {
       url: process.env.ETHEREUM_RINKEBY_RPC_URL || "",
-      accounts: [process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY || ""],
+      accounts: process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY
+        ? [process.env.ETHEREUM_RINKEBY_DEPLOYER_PRIVATE_KEY]
+        : [],
+    },
+    mainnet: {
+      url: process.env.ETHEREUM_MAINNET_RPC_URL || "",
+      accounts: process.env.ETHEREUM_MAINNET_DEPLOYER_PRIVATE_KEY
+        ? [process.env.ETHEREUM_MAINNET_DEPLOYER_PRIVATE_KEY]
+        : [],
     },
   },
   etherscan: {
@@ -40,13 +48,13 @@ export default {
   },
   gasReporter: {
     currency: "USD",
-    gasPrice: 10,
+    gasPrice: 50,
     token: "ETH",
     coinmarketcap: process.env.COINMARKETCAP_API_KEY || "",
     excludeContracts: ["mocks/"],
   },
   abiExporter: {
     runOnCompile: true,
-    only: ["ICE64.sol", "ICE64Renderer.sol"],
+    only: ["ICE64.sol", "ICE64DataStore.sol", "ICE64Renderer.sol"],
   },
 };

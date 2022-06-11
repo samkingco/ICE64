@@ -1,14 +1,16 @@
-schema: https://api.studio.thegraph.com/query/19218/ice64-test/v0.0.2
+schema: https://api.thegraph.com/subgraphs/name/samkingco/ice64
 documents: "src/**/*.{ts,tsx,graphql}"
 generates:
   ./src/graphql/subgraph.ts:
     plugins:
       - "@graphql-codegen/typescript"
       - "@graphql-codegen/typescript-operations"
-      - "@graphql-codegen/typescript-urql"
+      - "@graphql-codegen/typescript-react-query"
     config:
-      gqlImport: urql#gql
-      immutableTypes: true
+      fetcher: graphql-request
+      exposeDocument: true
+      exposeQueryKeys: true
+      exposeFetcher: true
 hooks:
   afterAllFileWrite:
     - eslint --fix

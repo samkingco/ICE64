@@ -12,11 +12,6 @@
         "type": "address"
       },
       {
-        "internalType": "string",
-        "name": "originalsBaseURI_",
-        "type": "string"
-      },
-      {
         "internalType": "contract IERC721",
         "name": "roots_",
         "type": "address"
@@ -32,38 +27,12 @@
   },
   {
     "inputs": [],
-    "name": "EditionForOriginalHolderStillReserved",
+    "name": "EditionForOriginalStillReserved",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "IncorrectEthAmount",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_end",
-        "type": "uint256"
-      }
-    ],
-    "name": "InvalidCodeAtRange",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidPhotoData",
     "type": "error"
   },
   {
@@ -83,11 +52,6 @@
   },
   {
     "inputs": [],
-    "name": "NotOwnerOfOriginal",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "NotOwnerOfRootsPhoto",
     "type": "error"
   },
@@ -98,27 +62,12 @@
   },
   {
     "inputs": [],
-    "name": "ReservedEditionAlreadyClaimed",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "RootsPhotoAlreadyUsedClaim",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "SaleNotActive",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "SoldOut",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "WriteError",
     "type": "error"
   },
   {
@@ -148,6 +97,12 @@
   },
   {
     "anonymous": false,
+    "inputs": [],
+    "name": "ICE64Emerges",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
     "inputs": [
       {
         "indexed": true,
@@ -163,6 +118,44 @@
       }
     ],
     "name": "OwnerUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "rootsId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "originalId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "editionId",
+        "type": "uint256"
+      }
+    ],
+    "name": "RootsClaim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "metadata",
+        "type": "address"
+      }
+    ],
+    "name": "SetMetadataAddress",
     "type": "event"
   },
   {
@@ -345,44 +338,6 @@
         "type": "uint256"
       }
     ],
-    "name": "getEditionPhotoBase64SVG",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getEditionPhotoSVG",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
     "name": "getEditionTokenId",
     "outputs": [
       {
@@ -462,38 +417,6 @@
       }
     ],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getOriginalsBaseURI",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getRawEditionPhotoData",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -778,19 +701,6 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "baseURI",
-        "type": "string"
-      }
-    ],
-    "name": "setOriginalsBaseURI",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
@@ -815,24 +725,6 @@
       }
     ],
     "name": "setRoyaltyInfo",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "chunkId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "storeChunkedEditionPhotoData",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

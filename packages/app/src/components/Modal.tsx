@@ -6,13 +6,13 @@ import {
 } from "@reach/dialog";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
+import { scrollable } from "./GlobalStyle";
 
 const MotionDialogOverlay = motion(ReachDialogOverlay);
 
 const ModalOverlay = styled(MotionDialogOverlay)`
   &[data-reach-dialog-overlay] {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: fixed;
@@ -21,21 +21,20 @@ const ModalOverlay = styled(MotionDialogOverlay)`
     right: 0;
     bottom: 0;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.92) !important;
+    background: rgba(var(--background-alpha), 0.92) !important;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    overflow-y: auto;
+    ${scrollable};
   }
 `;
 
 const ModalContent = styled(ReachDialogContent)<{ size: ModalSize }>`
   &[data-reach-dialog-content] {
     width: 100%;
+    margin: auto;
     ${(p) =>
       p.size === "sm" &&
       css`
-        margin: 0 auto;
-        margin: 0 auto;
         padding: 2vw;
         max-width: 24rem;
         @media (min-width: 80rem) {
@@ -69,7 +68,8 @@ interface ModalProps {
   a11yLabel: string;
   isOpen: boolean;
   size?: ModalSize;
-  onClose: () => void;
+  onClose?: () => void;
+  dangerouslyBypassFocusLock?: boolean;
 }
 
 export function Modal({
@@ -78,13 +78,16 @@ export function Modal({
   isOpen,
   size = "md",
   onClose,
+  dangerouslyBypassFocusLock,
 }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
         <ModalOverlay
+          isOpen={isOpen}
           onDismiss={onClose}
           allowPinchZoom={true}
+          dangerouslyBypassFocusLock={dangerouslyBypassFocusLock}
           variants={{
             visible: {
               opacity: 1,

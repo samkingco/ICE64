@@ -1,5 +1,6 @@
 import fs from "fs";
 import hre, { ethers, network } from "hardhat";
+import { chunks } from "../test/tokenStorageChunks";
 
 interface Args {
   ownerAddr: Record<string, string>;
@@ -40,6 +41,7 @@ async function exists(path: string) {
 }
 
 const start = async () => {
+  // const targetGasPrice = ethers.utils.parseUnits("30", "gwei");
   const [deployer] = await ethers.getSigners();
   const deploysPath = `${__dirname}/../deploys.json`;
   const deploys = (await exists(deploysPath))
@@ -72,26 +74,60 @@ const start = async () => {
 
   console.log(`Starting deploy on ${network.name} from ${deployer.address}`);
 
+  console.log("Deploying ICE64DataStore...");
+  const ICE64DataStoreFactory = await ethers.getContractFactory(
+    "ICE64DataStore"
+  );
+  const dataStore = await ICE64DataStoreFactory.deploy(
+    deployer.address,
+    baseURI
+  );
+  console.log("ICE64DataStore deployed to", dataStore.address);
+
+  console.log("Storing photo data in ICE64DataStore...");
+  for (const [chunkIdx, tokenData] of chunks.entries()) {
+    const tx = await dataStore.storeChunkedEditionPhotoData(
+      chunkIdx + 1,
+      tokenData
+    );
+    await tx.wait();
+    console.log(`Stored data for chunk ${chunkIdx + 1}/${chunks.length}`);
+  }
+
+  console.log("Setting owner for ICE64DataStore...");
+  await dataStore.setOwner(ownerAddr);
+  console.log("Set owner for ICE64DataStore");
+
+  console.log("Waiting for 5 confirmations before deploying main contract...");
+  const deployedDataStore = await dataStore.deployTransaction.wait(
+    isLocal ? 0 : 8
+  );
+
+  console.log("Deploying ICE64...");
   const ICE64Factory = await ethers.getContractFactory("ICE64");
   const contract = await ICE64Factory.deploy(
     ownerAddr,
     royaltiesAddr,
-    baseURI,
     rootsAddr
   );
-
   console.log("ICE64 deployed to", contract.address);
-  console.log("Waiting for 5 confirmations before deploying renderer…");
-  const deployedICE64 = await contract.deployTransaction.wait(isLocal ? 0 : 5);
 
+  console.log("Waiting for 5 confirmations before deploying renderer…");
+  const deployedICE64 = await contract.deployTransaction.wait(isLocal ? 0 : 8);
+
+  console.log("Deploying ICE64Renderer...");
   const ICE64RendererFactory = await ethers.getContractFactory("ICE64Renderer");
   const renderer = await ICE64RendererFactory.deploy(
-    ownerAddr,
     deployedICE64.contractAddress,
+    deployedDataStore.contractAddress,
     xqstgfxAddr
   );
+  console.log("ICE64Renderer deployed to", renderer.address);
 
-  console.log("Renderer deployed to", renderer.address);
+  console.log("Setting metadata in ICE64...");
+  await contract.setMetadata(renderer.address);
+  console.log("Metadata set in ICE64");
+
   console.log("Waiting for 5 confirmations before verifying contracts");
   const deployedRenderer = await renderer.deployTransaction.wait(
     isLocal ? 0 : 5
@@ -101,20 +137,26 @@ const start = async () => {
     console.log("Verifying contracts…");
 
     await hre.run("verify:verify", {
-      address: deployedICE64.contractAddress,
-      constructorArguments: [ownerAddr, royaltiesAddr, baseURI, rootsAddr],
+      address: deployedDataStore.contractAddress,
+      constructorArguments: [deployer.address, baseURI],
     });
-    console.log("Collection verified");
+    console.log("ICE64DataStore verified");
+
+    await hre.run("verify:verify", {
+      address: deployedICE64.contractAddress,
+      constructorArguments: [ownerAddr, royaltiesAddr, rootsAddr],
+    });
+    console.log("ICE64 verified");
 
     await hre.run("verify:verify", {
       address: deployedRenderer.contractAddress,
       constructorArguments: [
-        ownerAddr,
         deployedICE64.contractAddress,
+        deployedDataStore.contractAddress,
         xqstgfxAddr,
       ],
     });
-    console.log("Renderer verified");
+    console.log("ICE64Renderer verified");
   }
 
   await fs.promises.writeFile(
@@ -127,6 +169,13 @@ const start = async () => {
           [network.name]: {
             address: deployedICE64.contractAddress,
             blockNumber: deployedICE64.blockNumber,
+          },
+        },
+        ICE64DataStore: {
+          ...deploys.ICE64DataStore,
+          [network.name]: {
+            address: deployedDataStore.contractAddress,
+            blockNumber: deployedDataStore.blockNumber,
           },
         },
         ICE64Renderer: {

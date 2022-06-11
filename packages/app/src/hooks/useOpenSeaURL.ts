@@ -1,14 +1,7 @@
-import { useNetwork } from "wagmi";
-import { chainIdToName } from "../utils/contracts";
+import { targetNetwork } from "../utils/contracts";
 
 export function useOpenSeaURL() {
-  const { activeChain } = useNetwork();
-  let chainId = activeChain?.id;
-  const chainName = chainIdToName(chainId);
-
-  const opensea = `https://${
-    chainName !== "mainnet" ? "testnets." : ""
-  }opensea.io`;
-
+  const chainId = targetNetwork.id;
+  const opensea = `https://${chainId !== 1 ? "testnets." : ""}opensea.io`;
   return opensea;
 }

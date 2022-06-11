@@ -24,15 +24,11 @@ export interface ICE64Interface extends utils.Interface {
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
     "burn(uint256)": FunctionFragment;
     "claimEditionAsRootsHolder(uint256,uint256)": FunctionFragment;
-    "getEditionPhotoBase64SVG(uint256)": FunctionFragment;
-    "getEditionPhotoSVG(uint256)": FunctionFragment;
     "getEditionTokenId(uint256)": FunctionFragment;
     "getEditionsSold(uint256)": FunctionFragment;
     "getMaxEditions()": FunctionFragment;
     "getOriginalSold(uint256)": FunctionFragment;
     "getOriginalTokenId(uint256)": FunctionFragment;
-    "getOriginalsBaseURI()": FunctionFragment;
-    "getRawEditionPhotoData(uint256)": FunctionFragment;
     "hasEditionBeenClaimedForRootsPhoto(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "isEdition(uint256)": FunctionFragment;
@@ -48,10 +44,8 @@ export interface ICE64Interface extends utils.Interface {
     "safeTransferFrom(address,address,uint256,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setMetadata(address)": FunctionFragment;
-    "setOriginalsBaseURI(string)": FunctionFragment;
     "setOwner(address)": FunctionFragment;
     "setRoyaltyInfo(address,uint256)": FunctionFragment;
-    "storeChunkedEditionPhotoData(uint256,bytes)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "uri(uint256)": FunctionFragment;
     "withdrawBalance()": FunctionFragment;
@@ -72,14 +66,6 @@ export interface ICE64Interface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getEditionPhotoBase64SVG",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getEditionPhotoSVG",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getEditionTokenId",
     values: [BigNumberish]
   ): string;
@@ -97,14 +83,6 @@ export interface ICE64Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getOriginalTokenId",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getOriginalsBaseURI",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getRawEditionPhotoData",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -155,18 +133,10 @@ export interface ICE64Interface extends utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(functionFragment: "setMetadata", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setOriginalsBaseURI",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setRoyaltyInfo",
     values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "storeChunkedEditionPhotoData",
-    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -193,14 +163,6 @@ export interface ICE64Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getEditionPhotoBase64SVG",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getEditionPhotoSVG",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getEditionTokenId",
     data: BytesLike
   ): Result;
@@ -218,14 +180,6 @@ export interface ICE64Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getOriginalTokenId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getOriginalsBaseURI",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getRawEditionPhotoData",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -276,17 +230,9 @@ export interface ICE64Interface extends utils.Interface {
     functionFragment: "setMetadata",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setOriginalsBaseURI",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setRoyaltyInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "storeChunkedEditionPhotoData",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -305,14 +251,20 @@ export interface ICE64Interface extends utils.Interface {
 
   events: {
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "ICE64Emerges()": EventFragment;
     "OwnerUpdated(address,address)": EventFragment;
+    "RootsClaim(uint256,uint256,uint256)": EventFragment;
+    "SetMetadataAddress(address)": EventFragment;
     "TransferBatch(address,address,address,uint256[],uint256[])": EventFragment;
     "TransferSingle(address,address,address,uint256,uint256)": EventFragment;
     "URI(string,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ICE64Emerges"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnerUpdated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RootsClaim"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SetMetadataAddress"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferBatch"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransferSingle"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "URI"): EventFragment;
@@ -325,12 +277,31 @@ export type ApprovalForAllEvent = TypedEvent<
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
+export type ICE64EmergesEvent = TypedEvent<[], {}>;
+
+export type ICE64EmergesEventFilter = TypedEventFilter<ICE64EmergesEvent>;
+
 export type OwnerUpdatedEvent = TypedEvent<
   [string, string],
   { user: string; newOwner: string }
 >;
 
 export type OwnerUpdatedEventFilter = TypedEventFilter<OwnerUpdatedEvent>;
+
+export type RootsClaimEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber],
+  { rootsId: BigNumber; originalId: BigNumber; editionId: BigNumber }
+>;
+
+export type RootsClaimEventFilter = TypedEventFilter<RootsClaimEvent>;
+
+export type SetMetadataAddressEvent = TypedEvent<
+  [string],
+  { metadata: string }
+>;
+
+export type SetMetadataAddressEventFilter =
+  TypedEventFilter<SetMetadataAddressEvent>;
 
 export type TransferBatchEvent = TypedEvent<
   [string, string, string, BigNumber[], BigNumber[]],
@@ -415,16 +386,6 @@ export interface ICE64 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getEditionPhotoBase64SVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    getEditionPhotoSVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     getEditionTokenId(
       id: BigNumberish,
       overrides?: CallOverrides
@@ -446,13 +407,6 @@ export interface ICE64 extends BaseContract {
       editionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-
-    getOriginalsBaseURI(overrides?: CallOverrides): Promise<[string]>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
 
     hasEditionBeenClaimedForRootsPhoto(
       rootsId: BigNumberish,
@@ -524,11 +478,6 @@ export interface ICE64 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setOriginalsBaseURI(
-      baseURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setOwner(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -537,12 +486,6 @@ export interface ICE64 extends BaseContract {
     setRoyaltyInfo(
       receiver: string,
       amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    storeChunkedEditionPhotoData(
-      chunkId: BigNumberish,
-      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -586,16 +529,6 @@ export interface ICE64 extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getEditionPhotoBase64SVG(
-    id: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getEditionPhotoSVG(
-    id: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   getEditionTokenId(
     id: BigNumberish,
     overrides?: CallOverrides
@@ -617,13 +550,6 @@ export interface ICE64 extends BaseContract {
     editionId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  getOriginalsBaseURI(overrides?: CallOverrides): Promise<string>;
-
-  getRawEditionPhotoData(
-    id: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   hasEditionBeenClaimedForRootsPhoto(
     rootsId: BigNumberish,
@@ -695,11 +621,6 @@ export interface ICE64 extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setOriginalsBaseURI(
-    baseURI: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setOwner(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -708,12 +629,6 @@ export interface ICE64 extends BaseContract {
   setRoyaltyInfo(
     receiver: string,
     amount: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  storeChunkedEditionPhotoData(
-    chunkId: BigNumberish,
-    data: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -754,16 +669,6 @@ export interface ICE64 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getEditionPhotoBase64SVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getEditionPhotoSVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     getEditionTokenId(
       id: BigNumberish,
       overrides?: CallOverrides
@@ -785,13 +690,6 @@ export interface ICE64 extends BaseContract {
       editionId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    getOriginalsBaseURI(overrides?: CallOverrides): Promise<string>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     hasEditionBeenClaimedForRootsPhoto(
       rootsId: BigNumberish,
@@ -857,22 +755,11 @@ export interface ICE64 extends BaseContract {
 
     setMetadata(metadataAddr: string, overrides?: CallOverrides): Promise<void>;
 
-    setOriginalsBaseURI(
-      baseURI: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     setRoyaltyInfo(
       receiver: string,
       amount: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    storeChunkedEditionPhotoData(
-      chunkId: BigNumberish,
-      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -903,6 +790,9 @@ export interface ICE64 extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
+    "ICE64Emerges()"(): ICE64EmergesEventFilter;
+    ICE64Emerges(): ICE64EmergesEventFilter;
+
     "OwnerUpdated(address,address)"(
       user?: string | null,
       newOwner?: string | null
@@ -911,6 +801,22 @@ export interface ICE64 extends BaseContract {
       user?: string | null,
       newOwner?: string | null
     ): OwnerUpdatedEventFilter;
+
+    "RootsClaim(uint256,uint256,uint256)"(
+      rootsId?: BigNumberish | null,
+      originalId?: BigNumberish | null,
+      editionId?: null
+    ): RootsClaimEventFilter;
+    RootsClaim(
+      rootsId?: BigNumberish | null,
+      originalId?: BigNumberish | null,
+      editionId?: null
+    ): RootsClaimEventFilter;
+
+    "SetMetadataAddress(address)"(
+      metadata?: string | null
+    ): SetMetadataAddressEventFilter;
+    SetMetadataAddress(metadata?: string | null): SetMetadataAddressEventFilter;
 
     "TransferBatch(address,address,address,uint256[],uint256[])"(
       operator?: string | null,
@@ -973,16 +879,6 @@ export interface ICE64 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    getEditionPhotoBase64SVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getEditionPhotoSVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getEditionTokenId(
       id: BigNumberish,
       overrides?: CallOverrides
@@ -1002,13 +898,6 @@ export interface ICE64 extends BaseContract {
 
     getOriginalTokenId(
       editionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getOriginalsBaseURI(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1080,11 +969,6 @@ export interface ICE64 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setOriginalsBaseURI(
-      baseURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setOwner(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1093,12 +977,6 @@ export interface ICE64 extends BaseContract {
     setRoyaltyInfo(
       receiver: string,
       amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    storeChunkedEditionPhotoData(
-      chunkId: BigNumberish,
-      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1143,16 +1021,6 @@ export interface ICE64 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    getEditionPhotoBase64SVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getEditionPhotoSVG(
-      id: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getEditionTokenId(
       id: BigNumberish,
       overrides?: CallOverrides
@@ -1172,15 +1040,6 @@ export interface ICE64 extends BaseContract {
 
     getOriginalTokenId(
       editionId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getOriginalsBaseURI(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getRawEditionPhotoData(
-      id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1255,11 +1114,6 @@ export interface ICE64 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOriginalsBaseURI(
-      baseURI: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setOwner(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1268,12 +1122,6 @@ export interface ICE64 extends BaseContract {
     setRoyaltyInfo(
       receiver: string,
       amount: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    storeChunkedEditionPhotoData(
-      chunkId: BigNumberish,
-      data: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

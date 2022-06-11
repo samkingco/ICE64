@@ -14,7 +14,7 @@ import { monoStyles } from "./Typography";
 
 const TabsWrapper = styled.div`
   position: relative;
-  background: rgba(var(--foreground-alpha), 0.04);
+  background: var(--background-emphasis);
   border-radius: 1rem;
   position: relative;
   margin-bottom: 1.5rem;
@@ -41,8 +41,14 @@ const TabIndicators = styled.div`
   display: flex;
 `;
 
+const TabIndicatorWrapper = styled.div`
+  position: relative;
+  height: 100%;
+  flex: 1;
+`;
+
 const TabIndicator = styled(motion.div)`
-  background: rgba(var(--foreground-alpha), 0.04);
+  background: var(--background-emphasis);
   position: absolute;
   top: 0;
   left: 0;
@@ -56,11 +62,6 @@ const TabIndicator = styled(motion.div)`
   }
 `;
 
-const TabIndicatorWrapper = styled.div`
-  position: relative;
-  flex: 1;
-`;
-
 const Tab = styled(ReachTab)`
   flex: 1;
   ${buttonReset};
@@ -69,6 +70,7 @@ const Tab = styled(ReachTab)`
   position: relative;
   z-index: 1;
   opacity: 0.48;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   &:hover {
     opacity: 1;
   }
@@ -117,7 +119,7 @@ export function Tabs({
 
         <TabIndicators>
           {tabHeadings.map((tab, idx) => (
-            <TabIndicatorWrapper key={`tab_indicator_${tab}`}>
+            <TabIndicatorWrapper key={`tab_${tab}`}>
               {idx === tabIndex && <TabIndicator layoutId="activeTab" />}
             </TabIndicatorWrapper>
           ))}

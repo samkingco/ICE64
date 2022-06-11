@@ -24,7 +24,7 @@ interface Metadata {
 }
 
 const originalPhotosBaseURI =
-  "ipfs://Qmd2kWNp8wAPTXjahaaBeQP5L9oWxAoDeL4s8XohJXCqWM/";
+  "ipfs://QmSfjahNsYStJeuERwbfKBuiaS1HGkBFh1okxRMkPZFV2c/";
 
 function arrayToChunkedArray<T>(arr: T[], size: number) {
   const res = [];
@@ -59,9 +59,10 @@ async function main() {
 
       metadata[tokenId] = {
         name: `ICE64 #${tokenId}`,
-        description: "ICE64",
+        description:
+          "An original 1 of 1 artwork documenting the desolate landscape of Iceland during the winter. Each original also comes with an on-chain edition of the same photo.",
         image: `${originalPhotosBaseURI}${tokenId}.jpg`,
-        external_url: `https://ice64.samking.photo/photo/${tokenId}`,
+        external_url: `https://ice64.com/photo/${tokenId}`,
         attributes: attributes[tokenId],
       };
 

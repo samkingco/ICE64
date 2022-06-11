@@ -1,22 +1,44 @@
 {
   "ICE64": {
+    "mainnet": {
+      "address": "0x6d36745510dC7a75570755B295694e8Ec625b7d2",
+      "blockNumber": 14941946
+    },
     "rinkeby": {
-      "address": "0x401995d4fd0B1BF94B286cA949af245af2daE3d3",
-      "blockNumber": 10788127
+      "address": "0x880614Bd83011Bf1ffB19744cF7590579F430014",
+      "blockNumber": 10829602
+    },
+    "localhost": {
+      "address": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+      "blockNumber": 13
+    }
+  },
+  "ICE64Renderer": {
+    "mainnet": {
+      "address": "0x071dA60182b2B6AFa520a2ff1e8bbF574265A4bC",
+      "blockNumber": 14941954
+    },
+    "rinkeby": {
+      "address": "0xB5cC34610509fc9690194684Da457b41883b8918",
+      "blockNumber": 10812282
+    },
+    "localhost": {
+      "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+      "blockNumber": 14
+    }
+  },
+  "ICE64DataStore": {
+    "mainnet": {
+      "address": "0x67fca1a4f04093a927af648f1f4ca337521bda37",
+      "blockNumber": 14941917
+    },
+    "rinkeby": {
+      "address": "0x60ceC55f1b06d94E4e5bA083C092734B31DAC96A",
+      "blockNumber": 10812266
     },
     "localhost": {
       "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       "blockNumber": 3
-    }
-  },
-  "ICE64Renderer": {
-    "rinkeby": {
-      "address": "0x44Dc3CdA4e7a904bBCA217Da14732E1218129b7f",
-      "blockNumber": 10787898
-    },
-    "localhost": {
-      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "blockNumber": 4
     }
   }
 }

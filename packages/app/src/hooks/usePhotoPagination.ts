@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import {
   getEditionId,
+  getIsEdition,
   getOriginalId,
   wrapEditions,
   wrapOriginals,
@@ -10,22 +11,17 @@ import {
 
 interface Options {
   id: number;
-  isEdition: boolean;
   closeHref?: string;
   onClose?: () => void;
 }
 
-export function usePhotoPagination({
-  id,
-  isEdition,
-  closeHref,
-  onClose,
-}: Options) {
+export function usePhotoPagination({ id, closeHref, onClose }: Options) {
   const router = useRouter();
   const { makeContextualHref } = useContextualRouting();
 
   const originalId = getOriginalId(id);
   const editionId = getEditionId(id);
+  const isEdition = getIsEdition(id);
 
   const prevId = isEdition
     ? wrapEditions(editionId - 1)
@@ -35,20 +31,20 @@ export function usePhotoPagination({
     : wrapOriginals(originalId + 1);
 
   const goToPrev = useCallback(() => {
-    router.push(makeContextualHref({ photo: prevId }), `/photo/${prevId}`, {
+    router.push(makeContextualHref({ id: prevId }), `/photo/${prevId}`, {
       scroll: false,
     });
   }, [prevId, router, makeContextualHref]);
 
   const goToNext = useCallback(() => {
-    router.push(makeContextualHref({ photo: nextId }), `/photo/${nextId}`, {
+    router.push(makeContextualHref({ id: nextId }), `/photo/${nextId}`, {
       scroll: false,
     });
   }, [nextId, router, makeContextualHref]);
 
   const goToOriginal = useCallback(() => {
     router.replace(
-      makeContextualHref({ photo: originalId }),
+      makeContextualHref({ id: originalId }),
       `/photo/${originalId}`,
       {
         scroll: false,
@@ -58,7 +54,7 @@ export function usePhotoPagination({
 
   const goToEdition = useCallback(() => {
     router.replace(
-      makeContextualHref({ photo: editionId }),
+      makeContextualHref({ id: editionId }),
       `/photo/${editionId}`,
       {
         scroll: false,
@@ -74,7 +70,7 @@ export function usePhotoPagination({
       if (["o"].includes(key)) goToOriginal();
       if (["Escape"].includes(key)) {
         if (closeHref) router.push(closeHref);
-        // if (onClose) onClose();
+        if (onClose) onClose();
       }
     };
 

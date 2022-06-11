@@ -7,27 +7,27 @@ import {
   BigNumberish,
   BytesLike,
   CallOverrides,
-  ContractTransaction,
-  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
 } from "ethers";
-import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
+import { FunctionFragment, Result } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ICE64RendererInterface extends utils.Interface {
   functions: {
+    "dataStore()": FunctionFragment;
     "drawSVGToBytes(bytes)": FunctionFragment;
     "drawSVGToString(bytes)": FunctionFragment;
+    "getEditionPhotoBase64SVG(uint256)": FunctionFragment;
+    "getEditionPhotoSVG(uint256)": FunctionFragment;
     "ice64()": FunctionFragment;
-    "owner()": FunctionFragment;
-    "setOwner(address)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "xqstgfx()": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "dataStore", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "drawSVGToBytes",
     values: [BytesLike]
@@ -36,15 +36,22 @@ export interface ICE64RendererInterface extends utils.Interface {
     functionFragment: "drawSVGToString",
     values: [BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getEditionPhotoBase64SVG",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getEditionPhotoSVG",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "ice64", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "setOwner", values: [string]): string;
   encodeFunctionData(
     functionFragment: "tokenURI",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "xqstgfx", values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: "dataStore", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "drawSVGToBytes",
     data: BytesLike
@@ -53,25 +60,20 @@ export interface ICE64RendererInterface extends utils.Interface {
     functionFragment: "drawSVGToString",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getEditionPhotoBase64SVG",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getEditionPhotoSVG",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "ice64", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setOwner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "xqstgfx", data: BytesLike): Result;
 
-  events: {
-    "OwnerUpdated(address,address)": EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: "OwnerUpdated"): EventFragment;
+  events: {};
 }
-
-export type OwnerUpdatedEvent = TypedEvent<
-  [string, string],
-  { user: string; newOwner: string }
->;
-
-export type OwnerUpdatedEventFilter = TypedEventFilter<OwnerUpdatedEvent>;
 
 export interface ICE64Renderer extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -100,6 +102,8 @@ export interface ICE64Renderer extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    dataStore(overrides?: CallOverrides): Promise<[string]>;
+
     drawSVGToBytes(
       data: BytesLike,
       overrides?: CallOverrides
@@ -110,38 +114,48 @@ export interface ICE64Renderer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getEditionPhotoBase64SVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    getEditionPhotoSVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     ice64(overrides?: CallOverrides): Promise<[string]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     tokenURI(id: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
     xqstgfx(overrides?: CallOverrides): Promise<[string]>;
   };
 
+  dataStore(overrides?: CallOverrides): Promise<string>;
+
   drawSVGToBytes(data: BytesLike, overrides?: CallOverrides): Promise<string>;
 
   drawSVGToString(data: BytesLike, overrides?: CallOverrides): Promise<string>;
 
+  getEditionPhotoBase64SVG(
+    id: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getEditionPhotoSVG(
+    id: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   ice64(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  setOwner(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   tokenURI(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   xqstgfx(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
+    dataStore(overrides?: CallOverrides): Promise<string>;
+
     drawSVGToBytes(data: BytesLike, overrides?: CallOverrides): Promise<string>;
 
     drawSVGToString(
@@ -149,29 +163,28 @@ export interface ICE64Renderer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getEditionPhotoBase64SVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getEditionPhotoSVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     ice64(overrides?: CallOverrides): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    setOwner(newOwner: string, overrides?: CallOverrides): Promise<void>;
 
     tokenURI(id: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     xqstgfx(overrides?: CallOverrides): Promise<string>;
   };
 
-  filters: {
-    "OwnerUpdated(address,address)"(
-      user?: string | null,
-      newOwner?: string | null
-    ): OwnerUpdatedEventFilter;
-    OwnerUpdated(
-      user?: string | null,
-      newOwner?: string | null
-    ): OwnerUpdatedEventFilter;
-  };
+  filters: {};
 
   estimateGas: {
+    dataStore(overrides?: CallOverrides): Promise<BigNumber>;
+
     drawSVGToBytes(
       data: BytesLike,
       overrides?: CallOverrides
@@ -182,14 +195,17 @@ export interface ICE64Renderer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    ice64(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getEditionPhotoBase64SVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getEditionPhotoSVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    ice64(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenURI(id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -197,6 +213,8 @@ export interface ICE64Renderer extends BaseContract {
   };
 
   populateTransaction: {
+    dataStore(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     drawSVGToBytes(
       data: BytesLike,
       overrides?: CallOverrides
@@ -207,14 +225,17 @@ export interface ICE64Renderer extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    ice64(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    setOwner(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+    getEditionPhotoBase64SVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getEditionPhotoSVG(
+      id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    ice64(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenURI(
       id: BigNumberish,

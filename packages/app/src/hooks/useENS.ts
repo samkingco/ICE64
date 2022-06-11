@@ -3,7 +3,7 @@ import createStore from "zustand";
 import { persist } from "zustand/middleware";
 import { cachedFetch } from "../utils/cachedFetch";
 
-function addressDisplayName(address: string) {
+export function addressDisplayName(address: string) {
   const match = address.match(
     /^(0x[a-zA-Z0-9]{3})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/
   );
@@ -34,6 +34,7 @@ export const useENS = (address: string) => {
 
   useEffect(() => {
     (async () => {
+      if (!addressLowercase) return;
       try {
         const data = await cachedFetch(
           `https://api.ensideas.com/ens/resolve/${addressLowercase}`

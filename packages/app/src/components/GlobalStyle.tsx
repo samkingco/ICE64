@@ -1,11 +1,38 @@
 import { css } from "@emotion/react";
 
+export const scrollable = css`
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border: solid 4px transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(var(--foreground-alpha), 0.2);
+  }
+  &::-webkit-scrollbar-thumb:hover {
+  } */
+`;
+
 export const globalStyle = css`
   @font-face {
     font-family: "Dahlia";
     font-display: fallback;
     src: url("/fonts/Dahlia-Regular.woff") format("woff"),
       url("/fonts/Dahlia-Regular.woff2") format("woff2");
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  @font-face {
+    font-family: "Text";
+    font-display: fallback;
+    src: url("/fonts/Text.woff") format("woff"),
+      url("/fonts/Text.woff2") format("woff2");
     font-style: normal;
     font-weight: normal;
   }
@@ -25,12 +52,23 @@ export const globalStyle = css`
     --foreground-alpha: 0, 0, 0;
     --background: rgb(255, 255, 255);
     --background-alpha: 255, 255, 255;
+    --background-emphasis: rgba(0, 0, 0, 0.04);
     --font-heading: "Dahlia", sans-serif;
-    --font-sans: system, -apple-system, "Helvetica Neue", Helvetica, "Segoe UI",
-      Roboto, sans-serif;
+    --font-sans: "Text", system, -apple-system, "Helvetica Neue", Helvetica,
+      "Segoe UI", Roboto, sans-serif;
     --font-mono: "Mono", SFMono-Regular, SF Mono, Menlo, Consolas,
       Liberation Mono, monospace;
   }
+
+  /* @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground: rgb(255, 255, 255);
+      --foreground-alpha: 255, 255, 255;
+      --background: rgb(0, 0, 0);
+      --background-alpha: 0, 0, 0;
+      --background-emphasis: rgba(255, 255, 255, 0.1);
+    }
+  } */
 
   *,
   *:before,
