@@ -43,10 +43,6 @@ type Deploys = Record<ContractName, Deploy>;
 
 const deploys = deploysJson as Deploys;
 
-console.log(deploys);
-console.log(targetNetwork);
-console.log(deployedAddress("ICE64"));
-
 export function deployedAddress(
   contract: ContractName,
   network = targetNetwork
