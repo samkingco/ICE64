@@ -265,6 +265,8 @@ export type Query = {
   rootsPhoto?: Maybe<RootsPhoto>;
   rootsPhotos: Array<RootsPhoto>;
   settings: Array<Settings>;
+  transfer?: Maybe<Transfer>;
+  transfers: Array<Transfer>;
   wallet?: Maybe<Wallet>;
   wallets: Array<Wallet>;
 };
@@ -337,6 +339,24 @@ export type QuerySettingsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Settings_Filter>;
+};
+
+
+export type QueryTransferArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryTransfersArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Transfer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Transfer_Filter>;
 };
 
 
@@ -492,6 +512,8 @@ export type Subscription = {
   rootsPhoto?: Maybe<RootsPhoto>;
   rootsPhotos: Array<RootsPhoto>;
   settings: Array<Settings>;
+  transfer?: Maybe<Transfer>;
+  transfers: Array<Transfer>;
   wallet?: Maybe<Wallet>;
   wallets: Array<Wallet>;
 };
@@ -567,6 +589,24 @@ export type SubscriptionSettingsArgs = {
 };
 
 
+export type SubscriptionTransferArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionTransfersArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Transfer_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<Transfer_Filter>;
+};
+
+
 export type SubscriptionWalletArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -583,6 +623,123 @@ export type SubscriptionWalletsArgs = {
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<Wallet_Filter>;
 };
+
+export type Transfer = {
+  __typename?: 'Transfer';
+  from: Wallet;
+  id: Scalars['ID'];
+  rootsId?: Maybe<Scalars['BigInt']>;
+  timestamp: Scalars['BigInt'];
+  to: Wallet;
+  tokenId: Scalars['BigInt'];
+  txHash: Scalars['Bytes'];
+  txType: TransferType;
+};
+
+export enum TransferType {
+  Burn = 'Burn',
+  Purchase = 'Purchase',
+  RootsClaim = 'RootsClaim',
+  Transfer = 'Transfer'
+}
+
+export type Transfer_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  from?: InputMaybe<Scalars['String']>;
+  from_contains?: InputMaybe<Scalars['String']>;
+  from_contains_nocase?: InputMaybe<Scalars['String']>;
+  from_ends_with?: InputMaybe<Scalars['String']>;
+  from_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  from_gt?: InputMaybe<Scalars['String']>;
+  from_gte?: InputMaybe<Scalars['String']>;
+  from_in?: InputMaybe<Array<Scalars['String']>>;
+  from_lt?: InputMaybe<Scalars['String']>;
+  from_lte?: InputMaybe<Scalars['String']>;
+  from_not?: InputMaybe<Scalars['String']>;
+  from_not_contains?: InputMaybe<Scalars['String']>;
+  from_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  from_not_ends_with?: InputMaybe<Scalars['String']>;
+  from_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  from_not_in?: InputMaybe<Array<Scalars['String']>>;
+  from_not_starts_with?: InputMaybe<Scalars['String']>;
+  from_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  from_starts_with?: InputMaybe<Scalars['String']>;
+  from_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  id_gt?: InputMaybe<Scalars['ID']>;
+  id_gte?: InputMaybe<Scalars['ID']>;
+  id_in?: InputMaybe<Array<Scalars['ID']>>;
+  id_lt?: InputMaybe<Scalars['ID']>;
+  id_lte?: InputMaybe<Scalars['ID']>;
+  id_not?: InputMaybe<Scalars['ID']>;
+  id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  rootsId?: InputMaybe<Scalars['BigInt']>;
+  rootsId_gt?: InputMaybe<Scalars['BigInt']>;
+  rootsId_gte?: InputMaybe<Scalars['BigInt']>;
+  rootsId_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  rootsId_lt?: InputMaybe<Scalars['BigInt']>;
+  rootsId_lte?: InputMaybe<Scalars['BigInt']>;
+  rootsId_not?: InputMaybe<Scalars['BigInt']>;
+  rootsId_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  timestamp?: InputMaybe<Scalars['BigInt']>;
+  timestamp_gt?: InputMaybe<Scalars['BigInt']>;
+  timestamp_gte?: InputMaybe<Scalars['BigInt']>;
+  timestamp_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  timestamp_lt?: InputMaybe<Scalars['BigInt']>;
+  timestamp_lte?: InputMaybe<Scalars['BigInt']>;
+  timestamp_not?: InputMaybe<Scalars['BigInt']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  to?: InputMaybe<Scalars['String']>;
+  to_contains?: InputMaybe<Scalars['String']>;
+  to_contains_nocase?: InputMaybe<Scalars['String']>;
+  to_ends_with?: InputMaybe<Scalars['String']>;
+  to_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  to_gt?: InputMaybe<Scalars['String']>;
+  to_gte?: InputMaybe<Scalars['String']>;
+  to_in?: InputMaybe<Array<Scalars['String']>>;
+  to_lt?: InputMaybe<Scalars['String']>;
+  to_lte?: InputMaybe<Scalars['String']>;
+  to_not?: InputMaybe<Scalars['String']>;
+  to_not_contains?: InputMaybe<Scalars['String']>;
+  to_not_contains_nocase?: InputMaybe<Scalars['String']>;
+  to_not_ends_with?: InputMaybe<Scalars['String']>;
+  to_not_ends_with_nocase?: InputMaybe<Scalars['String']>;
+  to_not_in?: InputMaybe<Array<Scalars['String']>>;
+  to_not_starts_with?: InputMaybe<Scalars['String']>;
+  to_not_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  to_starts_with?: InputMaybe<Scalars['String']>;
+  to_starts_with_nocase?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['BigInt']>;
+  tokenId_gt?: InputMaybe<Scalars['BigInt']>;
+  tokenId_gte?: InputMaybe<Scalars['BigInt']>;
+  tokenId_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  tokenId_lt?: InputMaybe<Scalars['BigInt']>;
+  tokenId_lte?: InputMaybe<Scalars['BigInt']>;
+  tokenId_not?: InputMaybe<Scalars['BigInt']>;
+  tokenId_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  txHash?: InputMaybe<Scalars['Bytes']>;
+  txHash_contains?: InputMaybe<Scalars['Bytes']>;
+  txHash_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  txHash_not?: InputMaybe<Scalars['Bytes']>;
+  txHash_not_contains?: InputMaybe<Scalars['Bytes']>;
+  txHash_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  txType?: InputMaybe<TransferType>;
+  txType_in?: InputMaybe<Array<TransferType>>;
+  txType_not?: InputMaybe<TransferType>;
+  txType_not_in?: InputMaybe<Array<TransferType>>;
+};
+
+export enum Transfer_OrderBy {
+  From = 'from',
+  Id = 'id',
+  RootsId = 'rootsId',
+  Timestamp = 'timestamp',
+  To = 'to',
+  TokenId = 'tokenId',
+  TxHash = 'txHash',
+  TxType = 'txType'
+}
 
 export type Wallet = {
   __typename?: 'Wallet';
@@ -679,6 +836,11 @@ export enum _SubgraphErrorPolicy_ {
   Deny = 'deny'
 }
 
+export type ActivityFeedQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ActivityFeedQuery = { __typename?: 'Query', transfers: Array<{ __typename?: 'Transfer', txHash: any, txType: TransferType, timestamp: any, tokenId: any, rootsId?: any | null, to: { __typename?: 'Wallet', address: any }, from: { __typename?: 'Wallet', address: any } }> };
+
 export type PhotoByIdQueryVariables = Exact<{
   originalId: Scalars['ID'];
   editionId: Scalars['ID'];
@@ -689,6 +851,44 @@ export type PhotoByIdQueryVariables = Exact<{
 export type PhotoByIdQuery = { __typename?: 'Query', originalPhoto?: { __typename?: 'OriginalPhoto', id: string, uri?: string | null, currentOwner?: { __typename?: 'Wallet', address: any } | null } | null, editionPhoto?: { __typename?: 'EditionPhoto', id: string, totalPurchased: any, currentOwners: Array<{ __typename?: 'Wallet', address: any }> } | null, wallet?: { __typename?: 'Wallet', id: string, roots: Array<{ __typename?: 'RootsPhoto', id: string, hasClaimedEdition: boolean }> } | null };
 
 
+export const ActivityFeedDocument = `
+    query ActivityFeed {
+  transfers(orderBy: timestamp, orderDirection: desc) {
+    txHash
+    txType
+    timestamp
+    tokenId
+    rootsId
+    to {
+      address
+    }
+    from {
+      address
+    }
+  }
+}
+    `;
+export const useActivityFeedQuery = <
+      TData = ActivityFeedQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: ActivityFeedQueryVariables,
+      options?: UseQueryOptions<ActivityFeedQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<ActivityFeedQuery, TError, TData>(
+      variables === undefined ? ['ActivityFeed'] : ['ActivityFeed', variables],
+      fetcher<ActivityFeedQuery, ActivityFeedQueryVariables>(client, ActivityFeedDocument, variables, headers),
+      options
+    );
+useActivityFeedQuery.document = ActivityFeedDocument;
+
+
+useActivityFeedQuery.getKey = (variables?: ActivityFeedQueryVariables) => variables === undefined ? ['ActivityFeed'] : ['ActivityFeed', variables];
+;
+
+useActivityFeedQuery.fetcher = (client: GraphQLClient, variables?: ActivityFeedQueryVariables, headers?: RequestInit['headers']) => fetcher<ActivityFeedQuery, ActivityFeedQueryVariables>(client, ActivityFeedDocument, variables, headers);
 export const PhotoByIdDocument = `
     query PhotoById($originalId: ID!, $editionId: ID!, $wallet: ID!) {
   originalPhoto(id: $originalId) {

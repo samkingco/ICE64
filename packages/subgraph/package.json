@@ -7,7 +7,8 @@
     "build:rinkeby": "graph build subgraph-rinkeby.yaml",
     "build:mainnet": "graph build subgraph-mainnet.yaml",
     "deploy:rinkeby": "graph deploy --studio ice64-testing subgraph-rinkeby.yaml",
-    "deploy:mainnet": "graph deploy --product hosted-service samkingco/ice64 subgraph-mainnet.yaml"
+    "deploy:mainnet": "graph deploy --studio ice64-testing subgraph-mainnet.yaml",
+    "deploy:hosted": "graph deploy --product hosted-service samkingco/ice64 subgraph-mainnet.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.25.1",

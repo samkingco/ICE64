@@ -38,3 +38,21 @@ type Wallet @entity {
   editions: [EditionPhoto!]! @derivedFrom(field: "currentOwners")
   roots: [RootsPhoto!]! @derivedFrom(field: "currentOwner")
 }
+
+enum TransferType {
+  Transfer
+  Purchase
+  RootsClaim
+  Burn
+}
+
+type Transfer @entity {
+  id: ID!
+  tokenId: BigInt!
+  rootsId: BigInt
+  from: Wallet!
+  to: Wallet!
+  txHash: Bytes!
+  txType: TransferType!
+  timestamp: BigInt!
+}

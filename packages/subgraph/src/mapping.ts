@@ -7,14 +7,17 @@ import {
   TransferBatch,
   TransferSingle,
 } from "../generated/ICE64/ICE64";
-import { Roots, Transfer } from "../generated/Roots/Roots";
+import { Roots, Transfer as RootsTransfer } from "../generated/Roots/Roots";
 import {
   EditionPhoto,
   OriginalPhoto,
   RootsPhoto,
   Settings,
+  Transfer,
   Wallet,
 } from "../generated/schema";
+
+const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 export function handleInit(event: ICE64Emerges): void {
   const contract = ICE64.bind(event.address);
@@ -73,6 +76,19 @@ export function handleSetMetadata(event: SetMetadataAddress): void {
   }
 }
 
+function resolveTransferType(status: i32): string {
+  switch (status) {
+    case 1:
+      return "Purchase";
+    case 2:
+      return "RootsClaim";
+    case 3:
+      return "Burn";
+    default:
+      return "Transfer";
+  }
+}
+
 export function handleTransfer(event: TransferSingle): void {
   const contract = ICE64.bind(event.address);
 
@@ -81,8 +97,8 @@ export function handleTransfer(event: TransferSingle): void {
   const toAddress = event.params.to;
 
   let isEdition = id.gt(BigInt.fromI32(100));
-  let isMint =
-    fromAddress.toHexString() == "0x0000000000000000000000000000000000000000";
+  let isMint = fromAddress.toHexString() == zeroAddress;
+  let isBurn = toAddress.toHexString() == zeroAddress;
 
   let fromWallet = Wallet.load(fromAddress.toHexString());
   if (!fromWallet) {
@@ -96,6 +112,26 @@ export function handleTransfer(event: TransferSingle): void {
     toWallet = new Wallet(toAddress.toHexString());
     toWallet.address = toAddress;
     toWallet.save();
+  }
+
+  let transfer = Transfer.load(event.transaction.hash.toHex());
+  if (!transfer) {
+    transfer = new Transfer(event.transaction.hash.toHex());
+    transfer.tokenId = id;
+    transfer.from = fromWallet.id;
+    transfer.to = toWallet.id;
+    transfer.txHash = event.transaction.hash;
+    transfer.timestamp = event.block.timestamp;
+    if (!transfer.txType) {
+      if (isMint) {
+        transfer.txType = resolveTransferType(1);
+      } else if (isBurn) {
+        transfer.txType = resolveTransferType(3);
+      } else {
+        transfer.txType = resolveTransferType(0);
+      }
+    }
+    transfer.save();
   }
 
   if (isEdition) {
@@ -174,9 +210,16 @@ export function handleRootsClaim(event: RootsClaim): void {
   }
   rootsPhoto.hasClaimedEdition = true;
   rootsPhoto.save();
+
+  let transfer = Transfer.load(event.transaction.hash.toHex());
+  if (transfer) {
+    transfer.txType = resolveTransferType(2);
+    transfer.rootsId = rootsId;
+    transfer.save();
+  }
 }
 
-export function handleRootsTransfer(event: Transfer): void {
+export function handleRootsTransfer(event: RootsTransfer): void {
   const id = event.params.id;
   const fromAddress = event.params.from;
   const toAddress = event.params.to;

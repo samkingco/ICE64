@@ -19,6 +19,7 @@ dataSources:
         - OriginalPhoto
         - EditionPhoto
         - RootsPhoto
+        - Transfer
       abis:
         - name: ICE64
           file: ./abis/ICE64.json

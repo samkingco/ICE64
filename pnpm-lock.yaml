@@ -31,6 +31,7 @@ importers:
       '@types/react': 17.0.37
       '@xstate/react': ^3.0.0
       autoprefixer: ^10.4.0
+      date-fns: ^2.28.0
       debug: ^4.3.3
       eslint-config-next: ^12.1.6
       ethers: ^5.5.2
@@ -57,6 +58,7 @@ importers:
       '@reach/dialog': 0.17.0_5539cae010396b202b015f3568914e95
       '@reach/tabs': 0.17.0_react-dom@17.0.2+react@17.0.2
       '@xstate/react': 3.0.0_5105b79628a48e793583fa86f6bb921e
+      date-fns: 2.28.0
       debug: 4.3.4
       ethers: 5.6.8
       framer-motion: 6.3.11_react-dom@17.0.2+react@17.0.2
@@ -2642,7 +2644,7 @@ packages:
   /@types/bn.js/4.11.6:
     resolution: {integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==}
     dependencies:
-      '@types/node': 16.11.39
+      '@types/node': 17.0.42
 
   /@types/bn.js/5.1.0:
     resolution: {integrity: sha512-QSSVYj7pYFN49kW77o2s9xTCwZ8F2xLbjLLSEVh8D2F4JUhZtPAGOFLTD+ffqksBx/u4cE/KImFjyhqCjn/LIA==}
@@ -2767,7 +2769,6 @@ packages:
 
   /@types/node/17.0.42:
     resolution: {integrity: sha512-Q5BPGyGKcvQgAMbsr7qEGN/kIPN6zZecYYABeTDBizOsau+2NMdSVTar9UQw21A2+JyA2KRNDYaYrPB0Rpk2oQ==}
-    dev: true
 
   /@types/node/8.10.66:
     resolution: {integrity: sha512-tktOkFUA4kXx2hhhrB8bIFb5TbwzS4uOhKEmwiD+NoiL0qtP2OQ9mFldbgD4dV1djrlBYP6eBuQZiWjuHUpqFw==}
@@ -5544,6 +5545,11 @@ packages:
   /date-fns/1.30.1:
     resolution: {integrity: sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==}
     dev: true
+
+  /date-fns/2.28.0:
+    resolution: {integrity: sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==}
+    engines: {node: '>=0.11'}
+    dev: false
 
   /death/1.1.0:
     resolution: {integrity: sha512-vsV6S4KVHvTGxbEcij7hkWRv0It+sGGWVOM67dQde/o5Xjnr+KmLjxWJii2uEObIrt1CcM9w0Yaovx+iOlIL+w==}

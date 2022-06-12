@@ -1,0 +1,15 @@
+query ActivityFeed {
+  transfers(orderBy: timestamp, orderDirection: desc) {
+    txHash
+    txType
+    timestamp
+    tokenId
+    rootsId
+    to {
+      address
+    }
+    from {
+      address
+    }
+  }
+}

@@ -103,6 +103,19 @@ export const monoStyles = css`
 export const Mono = styled.p<BaseTextProps>`
   ${monoStyles};
   ${(p) => p.subdued && subdued};
+  ${(p) => {
+    switch (p.size) {
+      case "small":
+        return css`
+          font-size: 0.7rem;
+          @media (min-width: 80rem) {
+            font-size: 0.875vw;
+          }
+        `;
+      default:
+        break;
+    }
+  }}
   ${withMargin};
 `;
 
@@ -112,6 +125,14 @@ export const NoWrap = styled.span`
 
 export const Ellipsis = styled.span`
   display: inline;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const Ellipsis2 = styled.span`
+  display: block;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
