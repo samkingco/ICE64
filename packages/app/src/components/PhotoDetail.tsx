@@ -205,8 +205,12 @@ const InfoShimmer = styled.div`
 
 const ClaimButtonWrapper = styled.div`
   border-bottom: 1px solid rgba(var(--foreground-alpha), 0.04);
-  padding-bottom: 1vw;
-  margin-bottom: 1vw;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  @media (min-width: 80rem) {
+    padding-bottom: 1vw;
+    margin-bottom: 1vw;
+  }
 `;
 
 const ContractInfo = styled.dl`

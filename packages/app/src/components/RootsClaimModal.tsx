@@ -25,6 +25,14 @@ const ModalContent = styled.div`
   }
 `;
 
+const ModalTitle = styled(Heading)`
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  @media (min-width: 80rem) {
+    margin-bottom: 0.5vw;
+  }
+`;
+
 const Header = styled.header`
   display: grid;
   grid-template-columns: 1fr max-content;
@@ -108,12 +116,12 @@ export function RootsClaimModal({
     >
       <ModalContent>
         <Header>
-          <Heading>
+          <ModalTitle>
             Claim free edition{" "}
             <NoWrap>
               of N<sup>o</sup> {originalId}
             </NoWrap>
-          </Heading>
+          </ModalTitle>
 
           <MonoButton onClick={onClose} subdued aria-label="Close">
             <svg
@@ -138,8 +146,8 @@ export function RootsClaimModal({
         ) : (
           <>
             <Body margin="0 0 16">
-              Ahh, it looks like you don&apos;t have{" "}
-              <a href="https://roots.samking.photo">Roots</a> photo in your
+              Ahh, it looks like you don&apos;t have any{" "}
+              <a href="https://roots.samking.photo">Roots</a> photos in your
               wallet. If you pick one up, you&apos;ll be able to use it to claim
               a free edition (providing it hasn&apos;t already been used to
               claim).
