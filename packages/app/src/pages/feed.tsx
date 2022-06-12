@@ -33,6 +33,7 @@ const Content = styled.article`
 
   @media (min-width: 80rem) {
     gap: 4vw;
+    max-width: 64vw;
     padding-top: 12vw;
     padding-bottom: 16vw;
   }
@@ -74,6 +75,7 @@ const GridItem = styled.li`
   }
 
   @media (min-width: 80rem) {
+    grid-template-columns: 8vw minmax(0, 1fr);
     padding-top: 2vw;
     gap: 1.5vw;
   }
