@@ -150,7 +150,11 @@ export default function Feed() {
 
   return (
     <main>
-      <SocialMeta />
+      <SocialMeta
+        title="Feed | ICE64"
+        description="The latest transactions and activity from ICE64."
+        socialImage="/og-image-feed.png"
+      />
 
       <Navigation />
 
