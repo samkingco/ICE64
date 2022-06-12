@@ -11,6 +11,8 @@ const Content = styled.article`
   grid-template-columns: 1fr;
   gap: 2rem;
   padding: 8rem 2vw;
+  max-width: 64rem;
+  margin: 0 auto;
 
   @media (min-width: 32rem) {
     padding-top: 12rem;

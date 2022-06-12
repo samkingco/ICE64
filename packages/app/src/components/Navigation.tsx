@@ -11,30 +11,51 @@ const baseNavStyle = css`
   padding: 1vw 2vw;
 `;
 
-const LogoNav = styled.header`
-  ${baseNavStyle};
+const northNav = css`
   top: 0;
-  left: 0;
-  padding-right: 12vw;
 `;
 
-const AboutNav = styled.nav`
-  ${baseNavStyle};
-  bottom: 0;
-  right: 0;
-  padding-top: 8vw;
-  padding-left: 12vw;
-`;
-
-const ConnectNav = styled.nav`
-  ${baseNavStyle};
-  top: 0;
+const eastNav = css`
   right: 0;
   padding-left: 12vw;
   &,
   & button {
     text-align: right;
   }
+`;
+
+const southNav = css`
+  bottom: 0;
+  padding-top: 8vw;
+`;
+
+const westNav = css`
+  left: 0;
+  padding-right: 12vw;
+`;
+
+const NorthEastNav = styled.nav`
+  ${baseNavStyle};
+  ${northNav};
+  ${eastNav};
+`;
+
+const NorthWestNav = styled.header`
+  ${baseNavStyle};
+  ${northNav};
+  ${westNav};
+`;
+
+const SouthEastNav = styled.nav`
+  ${baseNavStyle};
+  ${southNav};
+  ${eastNav};
+`;
+
+const SouthWestNav = styled.nav`
+  ${baseNavStyle};
+  ${southNav};
+  ${westNav};
 `;
 
 interface Props {
@@ -47,20 +68,25 @@ export function Navigation({
   onNavMouseLeave = () => {},
 }: Props) {
   const router = useRouter();
-  const isAbout = router.pathname === "/about";
 
   return (
     <>
-      <LogoNav onMouseEnter={onNavMouseEnter} onMouseLeave={onNavMouseLeave}>
+      <NorthWestNav
+        onMouseEnter={onNavMouseEnter}
+        onMouseLeave={onNavMouseLeave}
+      >
         <Link href="/">
           <a>
             <Heading>ICE64</Heading>
           </a>
         </Link>
-      </LogoNav>
+      </NorthWestNav>
 
-      <AboutNav onMouseEnter={onNavMouseEnter} onMouseLeave={onNavMouseLeave}>
-        {isAbout ? (
+      <SouthEastNav
+        onMouseEnter={onNavMouseEnter}
+        onMouseLeave={onNavMouseLeave}
+      >
+        {router.pathname === "/about" ? (
           <Heading subdued>About</Heading>
         ) : (
           <Link href="/about">
@@ -69,11 +95,29 @@ export function Navigation({
             </a>
           </Link>
         )}
-      </AboutNav>
+      </SouthEastNav>
 
-      <ConnectNav onMouseEnter={onNavMouseEnter} onMouseLeave={onNavMouseLeave}>
+      <SouthWestNav
+        onMouseEnter={onNavMouseEnter}
+        onMouseLeave={onNavMouseLeave}
+      >
+        {router.pathname === "/feed" ? (
+          <Heading subdued>Feed</Heading>
+        ) : (
+          <Link href="/feed">
+            <a>
+              <Heading>Feed</Heading>
+            </a>
+          </Link>
+        )}
+      </SouthWestNav>
+
+      <NorthEastNav
+        onMouseEnter={onNavMouseEnter}
+        onMouseLeave={onNavMouseLeave}
+      >
         <ConnectWalletButton />
-      </ConnectNav>
+      </NorthEastNav>
     </>
   );
 }
