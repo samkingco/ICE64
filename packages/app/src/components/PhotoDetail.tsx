@@ -11,10 +11,7 @@ import { addressDisplayName } from "../hooks/useENS";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
 import { useMarketplaceTokenURL } from "../hooks/useMarketplaceUrl";
 import { usePhotoPagination } from "../hooks/usePhotoPagination";
-import {
-  hasClaimableRoots,
-  usePurchaseMachine,
-} from "../machines/purchaseMachine";
+import { usePurchaseMachine } from "../machines/purchaseMachine";
 import {
   deployedAddress,
   ice64Settings,
@@ -280,8 +277,6 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
     wallet,
     maxEditions,
   });
-
-  const hasClaimsAvailable = hasClaimableRoots(state.context);
 
   const { goToOriginal, goToEdition, goToPrev, goToNext } = usePhotoPagination({
     id,
@@ -625,13 +620,11 @@ export function PhotoDetail({ onClose, closeHref }: Props) {
                         </Mono>
                       </Button>
                       <SecondaryInfo>
-                        {hasClaimsAvailable && (
-                          <ClaimButtonWrapper>
-                            <MonoButton onClick={() => setShowClaimModal(true)}>
-                              Or claim with Roots
-                            </MonoButton>
-                          </ClaimButtonWrapper>
-                        )}
+                        <ClaimButtonWrapper>
+                          <MonoButton onClick={() => setShowClaimModal(true)}>
+                            Or claim with Roots
+                          </MonoButton>
+                        </ClaimButtonWrapper>
                         <MonoButton
                           onClick={() => setShowWalletInfoModal(true)}
                           subdued

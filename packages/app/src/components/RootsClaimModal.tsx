@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { Button, MonoButton } from "./Button";
+import { Button, LinkButton, MonoButton } from "./Button";
 import { Modal } from "./Modal";
 import { Body, Heading, Mono, NoWrap, Subheading } from "./Typography";
 
@@ -98,7 +98,8 @@ export function RootsClaimModal({
   isOpen,
   onClose,
 }: Props) {
-  return rootsPhotos.length > 0 ? (
+  const hasRootsPhotos = rootsPhotos.length > 0;
+  return (
     <Modal
       a11yLabel="Use Roots photo to claim free edition"
       isOpen={isOpen}
@@ -128,48 +129,67 @@ export function RootsClaimModal({
             </svg>
           </MonoButton>
         </Header>
-        <Body>
-          As a <a href="https://roots.samking.photo/">Roots</a> holder,
-          you&apos;re eligible to claim a free edition. It&apos;s my way of
-          saying thank you for supporting me!
-        </Body>
+        {hasRootsPhotos ? (
+          <Body>
+            As a <a href="https://roots.samking.photo">Roots</a> holder,
+            you&apos;re eligible to claim a free edition. It&apos;s my way of
+            saying thank you for supporting me!
+          </Body>
+        ) : (
+          <>
+            <Body margin="0 0 16">
+              Ahh, it looks like you don&apos;t have{" "}
+              <a href="https://roots.samking.photo">Roots</a> photo in your
+              wallet. If you pick one up, you&apos;ll be able to use it to claim
+              a free edition (providing it hasn&apos;t already been used to
+              claim).
+            </Body>
+            <LinkButton href="https://roots.samking.photo">
+              Check out Roots
+            </LinkButton>
+          </>
+        )}
 
-        <RootsList>
-          {rootsPhotos.map((i) => (
-            <RootsListItem key={i.id}>
-              <ImageWrapper>
-                <Image
-                  src={`/roots/${i.id}.jpg`}
-                  width={128}
-                  height={128}
-                  layout="responsive"
-                  alt=""
-                />
-              </ImageWrapper>
-              <div>
-                <Subheading>Roots #{i.id}</Subheading>
-                <Mono subdued>
-                  {i.hasClaimBeenUsed
-                    ? "Already claimed an edition"
-                    : "Ready to use"}
-                </Mono>
-              </div>
-              {!i.hasClaimBeenUsed && (
-                <div>
-                  <ClaimButton onClick={() => onClaim(i.id)}>
-                    Use to claim
-                  </ClaimButton>
-                </div>
-              )}
-            </RootsListItem>
-          ))}
-        </RootsList>
+        {hasRootsPhotos && (
+          <>
+            <RootsList>
+              {rootsPhotos.map((i) => (
+                <RootsListItem key={i.id}>
+                  <ImageWrapper>
+                    <Image
+                      src={`/roots/${i.id}.jpg`}
+                      width={128}
+                      height={128}
+                      layout="responsive"
+                      alt=""
+                    />
+                  </ImageWrapper>
+                  <div>
+                    <Subheading>Roots #{i.id}</Subheading>
+                    <Mono subdued>
+                      {i.hasClaimBeenUsed
+                        ? "Already claimed an edition"
+                        : "Ready to use"}
+                    </Mono>
+                  </div>
+                  {!i.hasClaimBeenUsed && (
+                    <div>
+                      <ClaimButton onClick={() => onClaim(i.id)}>
+                        Use to claim
+                      </ClaimButton>
+                    </div>
+                  )}
+                </RootsListItem>
+              ))}
+            </RootsList>
 
-        <Body size="small" subdued>
-          Note, you can only use your claims on editions that you don&apos;t
-          currently own, and while those editions are still available.
-        </Body>
+            <Body size="small" subdued>
+              Note, you can only use your claims on editions that you don&apos;t
+              currently own, and while those editions are still available.
+            </Body>
+          </>
+        )}
       </ModalContent>
     </Modal>
-  ) : null;
+  );
 }

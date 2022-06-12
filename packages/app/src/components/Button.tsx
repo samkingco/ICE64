@@ -57,17 +57,6 @@ export const Button = styled.button`
       rgba(var(--background-alpha), 0.24) 50%,
       rgba(var(--background-alpha), 0) 100%
     );
-
-    @media (prefers-color-scheme: dark) {
-      & {
-        background: linear-gradient(
-          to right,
-          rgba(var(--background-alpha), 0) 0%,
-          rgba(var(--background-alpha), 0.16) 50%,
-          rgba(var(--background-alpha), 0) 100%
-        );
-      }
-    }
   }
 
   &:hover&:not(:disabled):after {
@@ -121,5 +110,22 @@ export const MonoButton = styled(BodyButton)<BaseTextButtonProps>`
   &:hover {
     opacity: 1;
     text-decoration: none;
+  }
+`;
+
+export const LinkButton = styled.a`
+  ${monoStyles};
+  ${buttonReset};
+  background: var(--foreground);
+  color: var(--background);
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+
+  @media (min-width: 80rem) {
+    padding: 1vw 1.5vw;
+    border-radius: 1vw;
   }
 `;
