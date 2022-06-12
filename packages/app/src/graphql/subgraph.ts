@@ -853,7 +853,7 @@ export type PhotoByIdQuery = { __typename?: 'Query', originalPhoto?: { __typenam
 
 export const ActivityFeedDocument = `
     query ActivityFeed {
-  transfers(orderBy: timestamp, orderDirection: desc) {
+  transfers(orderBy: timestamp, orderDirection: desc, first: 1000) {
     txHash
     txType
     timestamp

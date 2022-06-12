@@ -1,5 +1,5 @@
 query ActivityFeed {
-  transfers(orderBy: timestamp, orderDirection: desc) {
+  transfers(orderBy: timestamp, orderDirection: desc, first: 1000) {
     txHash
     txType
     timestamp
