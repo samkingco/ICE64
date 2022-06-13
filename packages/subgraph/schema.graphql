@@ -35,7 +35,9 @@ type Wallet @entity {
   id: ID!
   address: Bytes!
   originals: [OriginalPhoto!]! @derivedFrom(field: "currentOwner")
+  originalsCount: BigInt!
   editions: [EditionPhoto!]! @derivedFrom(field: "currentOwners")
+  editionsCount: BigInt!
   roots: [RootsPhoto!]! @derivedFrom(field: "currentOwner")
 }
 

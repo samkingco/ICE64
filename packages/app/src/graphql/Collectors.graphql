@@ -1,0 +1,13 @@
+query Collectors {
+  wallets(orderBy: originalsCount, orderDirection: desc, first: 1000) {
+    address
+    editionsCount
+    originalsCount
+    originals(first: 1) {
+      id
+    }
+    editions(first: 1) {
+      id
+    }
+  }
+}

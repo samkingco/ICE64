@@ -104,15 +104,37 @@ export function handleTransfer(event: TransferSingle): void {
   if (!fromWallet) {
     fromWallet = new Wallet(fromAddress.toHexString());
     fromWallet.address = fromAddress;
-    fromWallet.save();
+    fromWallet.originalsCount = BigInt.fromI32(0);
+    fromWallet.editionsCount = BigInt.fromI32(0);
   }
+  if (!isMint) {
+    if (isEdition) {
+      fromWallet.editionsCount = fromWallet.editionsCount.minus(
+        BigInt.fromI32(1)
+      );
+    } else {
+      fromWallet.originalsCount = fromWallet.originalsCount.minus(
+        BigInt.fromI32(1)
+      );
+    }
+  }
+  fromWallet.save();
 
   let toWallet = Wallet.load(toAddress.toHexString());
   if (!toWallet) {
     toWallet = new Wallet(toAddress.toHexString());
     toWallet.address = toAddress;
-    toWallet.save();
+    toWallet.originalsCount = BigInt.fromI32(0);
+    toWallet.editionsCount = BigInt.fromI32(0);
   }
+  if (!isBurn) {
+    if (isEdition) {
+      toWallet.editionsCount = toWallet.editionsCount.plus(BigInt.fromI32(1));
+    } else {
+      toWallet.originalsCount = toWallet.originalsCount.plus(BigInt.fromI32(1));
+    }
+  }
+  toWallet.save();
 
   let transfer = Transfer.load(event.transaction.hash.toHex());
   if (!transfer) {
@@ -144,7 +166,7 @@ export function handleTransfer(event: TransferSingle): void {
         const before = edition.currentOwners.slice(0, currentOwnerIndex);
         const after = edition.currentOwners.slice(currentOwnerIndex + 1);
         const newOwners = [before, after].flat();
-        newOwners.push(fromWallet.id);
+        newOwners.push(toWallet.id);
         edition.currentOwners = newOwners;
       }
       if (isMint) {

@@ -1,21 +1,14 @@
 import styled from "@emotion/styled";
 import { formatDistanceToNowStrict } from "date-fns";
-import { useContextualRouting } from "next-use-contextual-routing";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
 import { ENSAddress } from "../components/ENSAddress";
 import { LoadingIndicatorWrapper } from "../components/LoadingIndicator";
-import { Modal } from "../components/Modal";
 import { Navigation } from "../components/Navigation";
-import { PhotoDetail } from "../components/PhotoDetail";
 import SocialMeta from "../components/SocialMeta";
 import { Ellipsis2, Mono, Title } from "../components/Typography";
 import { graphQlClient } from "../graphql/client";
 import { useActivityFeedQuery } from "../graphql/subgraph";
 import { useEtherscanURL } from "../hooks/useEtherscanURL";
-import { useOpenSeaURL } from "../hooks/useOpenSeaURL";
-import { firstParam } from "../utils/firstParam";
 import { getIsEdition, getOriginalId } from "../utils/tokenIds";
 
 const Content = styled.article`
@@ -104,50 +97,8 @@ enum TransferType {
 }
 
 export default function Feed() {
-  const router = useRouter();
   const { data, isLoading } = useActivityFeedQuery(graphQlClient);
   const feed = (data && data.transfers) || [];
-
-  const { returnHref, makeContextualHref } = useContextualRouting();
-  const [modalId, setModalId] = useState<number | undefined>();
-  const refs = useRef<Record<number, HTMLAnchorElement | null>>([]);
-
-  // Setup refs to photo links for scrolling into view when the modal is closed
-  useEffect(() => {
-    refs.current = {};
-    return () => {
-      refs.current = {};
-    };
-  }, []);
-
-  useEffect(() => {
-    const id = firstParam(router.query.id);
-    if (id) {
-      setModalId(parseInt(id, 10));
-    }
-    return () => {
-      setModalId(undefined);
-    };
-  }, [router.query.id]);
-
-  const onModalClose = () => {
-    router.push(returnHref, undefined, { scroll: false });
-
-    if (modalId) {
-      // Scroll to the image and set focus when the modal closes
-      if (refs.current[modalId]) {
-        // @ts-ignore: Object is possibly 'null'.
-        refs.current[modalId].scrollIntoView({
-          block: "center",
-          inline: "center",
-        });
-        // @ts-ignore: Object is possibly 'null'.
-        refs.current[modalId].focus();
-      }
-    }
-  };
-
-  const opensea = useOpenSeaURL();
   const etherscan = useEtherscanURL();
 
   return (
@@ -234,18 +185,6 @@ export default function Feed() {
           </Grid>
         )}
       </Content>
-
-      <Modal
-        a11yLabel={`Detail view of photo #${modalId}`}
-        isOpen={Boolean(!!router.query.id && modalId)}
-        onClose={onModalClose}
-        size="full-screen"
-        dangerouslyBypassFocusLock
-      >
-        {modalId && (
-          <PhotoDetail key={getOriginalId(modalId)} onClose={onModalClose} />
-        )}
-      </Modal>
     </main>
   );
 }

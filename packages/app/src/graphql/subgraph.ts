@@ -745,8 +745,10 @@ export type Wallet = {
   __typename?: 'Wallet';
   address: Scalars['Bytes'];
   editions: Array<EditionPhoto>;
+  editionsCount: Scalars['BigInt'];
   id: Scalars['ID'];
   originals: Array<OriginalPhoto>;
+  originalsCount: Scalars['BigInt'];
   roots: Array<RootsPhoto>;
 };
 
@@ -786,6 +788,14 @@ export type Wallet_Filter = {
   address_not?: InputMaybe<Scalars['Bytes']>;
   address_not_contains?: InputMaybe<Scalars['Bytes']>;
   address_not_in?: InputMaybe<Array<Scalars['Bytes']>>;
+  editionsCount?: InputMaybe<Scalars['BigInt']>;
+  editionsCount_gt?: InputMaybe<Scalars['BigInt']>;
+  editionsCount_gte?: InputMaybe<Scalars['BigInt']>;
+  editionsCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  editionsCount_lt?: InputMaybe<Scalars['BigInt']>;
+  editionsCount_lte?: InputMaybe<Scalars['BigInt']>;
+  editionsCount_not?: InputMaybe<Scalars['BigInt']>;
+  editionsCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   id?: InputMaybe<Scalars['ID']>;
   id_gt?: InputMaybe<Scalars['ID']>;
   id_gte?: InputMaybe<Scalars['ID']>;
@@ -794,13 +804,23 @@ export type Wallet_Filter = {
   id_lte?: InputMaybe<Scalars['ID']>;
   id_not?: InputMaybe<Scalars['ID']>;
   id_not_in?: InputMaybe<Array<Scalars['ID']>>;
+  originalsCount?: InputMaybe<Scalars['BigInt']>;
+  originalsCount_gt?: InputMaybe<Scalars['BigInt']>;
+  originalsCount_gte?: InputMaybe<Scalars['BigInt']>;
+  originalsCount_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  originalsCount_lt?: InputMaybe<Scalars['BigInt']>;
+  originalsCount_lte?: InputMaybe<Scalars['BigInt']>;
+  originalsCount_not?: InputMaybe<Scalars['BigInt']>;
+  originalsCount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
 };
 
 export enum Wallet_OrderBy {
   Address = 'address',
   Editions = 'editions',
+  EditionsCount = 'editionsCount',
   Id = 'id',
   Originals = 'originals',
+  OriginalsCount = 'originalsCount',
   Roots = 'roots'
 }
 
@@ -840,6 +860,11 @@ export type ActivityFeedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ActivityFeedQuery = { __typename?: 'Query', transfers: Array<{ __typename?: 'Transfer', txHash: any, txType: TransferType, timestamp: any, tokenId: any, rootsId?: any | null, to: { __typename?: 'Wallet', address: any }, from: { __typename?: 'Wallet', address: any } }> };
+
+export type CollectorsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CollectorsQuery = { __typename?: 'Query', wallets: Array<{ __typename?: 'Wallet', address: any, editionsCount: any, originalsCount: any, originals: Array<{ __typename?: 'OriginalPhoto', id: string }>, editions: Array<{ __typename?: 'EditionPhoto', id: string }> }> };
 
 export type PhotoByIdQueryVariables = Exact<{
   originalId: Scalars['ID'];
@@ -889,6 +914,42 @@ useActivityFeedQuery.getKey = (variables?: ActivityFeedQueryVariables) => variab
 ;
 
 useActivityFeedQuery.fetcher = (client: GraphQLClient, variables?: ActivityFeedQueryVariables, headers?: RequestInit['headers']) => fetcher<ActivityFeedQuery, ActivityFeedQueryVariables>(client, ActivityFeedDocument, variables, headers);
+export const CollectorsDocument = `
+    query Collectors {
+  wallets(orderBy: originalsCount, orderDirection: desc, first: 1000) {
+    address
+    editionsCount
+    originalsCount
+    originals(first: 1) {
+      id
+    }
+    editions(first: 1) {
+      id
+    }
+  }
+}
+    `;
+export const useCollectorsQuery = <
+      TData = CollectorsQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: CollectorsQueryVariables,
+      options?: UseQueryOptions<CollectorsQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<CollectorsQuery, TError, TData>(
+      variables === undefined ? ['Collectors'] : ['Collectors', variables],
+      fetcher<CollectorsQuery, CollectorsQueryVariables>(client, CollectorsDocument, variables, headers),
+      options
+    );
+useCollectorsQuery.document = CollectorsDocument;
+
+
+useCollectorsQuery.getKey = (variables?: CollectorsQueryVariables) => variables === undefined ? ['Collectors'] : ['Collectors', variables];
+;
+
+useCollectorsQuery.fetcher = (client: GraphQLClient, variables?: CollectorsQueryVariables, headers?: RequestInit['headers']) => fetcher<CollectorsQuery, CollectorsQueryVariables>(client, CollectorsDocument, variables, headers);
 export const PhotoByIdDocument = `
     query PhotoById($originalId: ID!, $editionId: ID!, $wallet: ID!) {
   originalPhoto(id: $originalId) {

@@ -4,7 +4,6 @@ import {
   PixelBuffer,
   pngToPixels,
 } from "@exquisite-graphics/js";
-import { utils } from "ethers";
 import exifr from "exifr";
 import fs from "fs";
 import path from "path";
@@ -26,13 +25,13 @@ interface Metadata {
 const originalPhotosBaseURI =
   "ipfs://QmSfjahNsYStJeuERwbfKBuiaS1HGkBFh1okxRMkPZFV2c/";
 
-function arrayToChunkedArray<T>(arr: T[], size: number) {
-  const res = [];
-  for (let i = 0; i < arr.length; i += size) {
-    res.push(arr.slice(i, i + size));
-  }
-  return res;
-}
+// function arrayToChunkedArray<T>(arr: T[], size: number) {
+//   const res = [];
+//   for (let i = 0; i < arr.length; i += size) {
+//     res.push(arr.slice(i, i + size));
+//   }
+//   return res;
+// }
 
 async function main() {
   const metadata: Record<string, Metadata> = {};
@@ -83,12 +82,18 @@ async function main() {
       const rects = getRects(editionStorageData);
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" width="100%" height="100%" version="1.1" viewBox="0 0 128 128" fill="#fff"><rect width="128" height="128" fill="#fff" /><g transform="translate(32,32)">${rects}</g></svg>`;
 
+      const svgFull = `<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" width="100%" height="100%" version="1.1" viewBox="0 0 64 64" fill="#fff">${rects}</svg>`;
+
       svgs[tokenId] = svg;
 
       await fs.promises.writeFile(`output/svgs/${tokenId}.svg`, svg);
 
       // Also save svgs to app/public
       await fs.promises.writeFile(`../app/public/tokens/${tokenId}.svg`, svg);
+      await fs.promises.writeFile(
+        `../app/public/tokens/${tokenId}-borderless.svg`,
+        svgFull
+      );
     }
   }
 
@@ -103,15 +108,15 @@ async function main() {
     tokenDataArr.push(image);
   }
 
-  const tokenDataChunks = arrayToChunkedArray(tokenDataArr, 2);
-  const tokenDataPackedChunks = tokenDataChunks.map((chunk) => {
-    const types = Array.from({ length: chunk.length }, () => "bytes");
-    return utils.solidityPack(types, chunk);
-  });
+  // const tokenDataChunks = arrayToChunkedArray(tokenDataArr, 2);
+  // const tokenDataPackedChunks = tokenDataChunks.map((chunk) => {
+  //   const types = Array.from({ length: chunk.length }, () => "bytes");
+  //   return utils.solidityPack(types, chunk);
+  // });
 
-  for (const [id, chunk] of tokenDataPackedChunks.entries()) {
-    fs.writeFileSync(`output/storage/chunk_${id + 1}.txt`, chunk);
-  }
+  // for (const [id, chunk] of tokenDataPackedChunks.entries()) {
+  //   fs.writeFileSync(`output/storage/chunk_${id + 1}.txt`, chunk);
+  // }
 
   // Data to use in tests
   fs.writeFileSync(
@@ -119,10 +124,10 @@ async function main() {
     `export const data = ${JSON.stringify(storageData)};`
   );
 
-  fs.writeFileSync(
-    `../contracts/test/tokenStorageChunks.ts`,
-    `export const chunks = ${JSON.stringify(tokenDataPackedChunks)};`
-  );
+  // fs.writeFileSync(
+  //   `../contracts/test/tokenStorageChunks.ts`,
+  //   `export const chunks = ${JSON.stringify(tokenDataPackedChunks)};`
+  // );
 
   fs.writeFileSync(
     `../contracts/test/tokenSVGs.ts`,
