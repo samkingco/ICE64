@@ -920,10 +920,10 @@ export const CollectorsDocument = `
     address
     editionsCount
     originalsCount
-    originals(first: 1) {
+    originals {
       id
     }
-    editions(first: 1) {
+    editions {
       id
     }
   }

@@ -51,6 +51,15 @@ const ModalContent = styled(ReachDialogContent)<{ size: ModalSize }>`
         }
       `}
     ${(p) =>
+      p.size === "lg" &&
+      css`
+        padding: 2vw;
+        max-width: 64rem;
+        @media (min-width: 80rem) {
+          max-width: 64vw;
+        }
+      `}
+    ${(p) =>
       p.size === "full-screen" &&
       css`
         height: 100%;
@@ -61,7 +70,7 @@ const ModalContent = styled(ReachDialogContent)<{ size: ModalSize }>`
   }
 `;
 
-type ModalSize = "sm" | "md" | "full-screen";
+type ModalSize = "sm" | "md" | "lg" | "full-screen";
 
 interface ModalProps {
   children: React.ReactNode;

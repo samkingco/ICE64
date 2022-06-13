@@ -1,21 +1,18 @@
 import styled from "@emotion/styled";
-import { formatDistanceToNowStrict } from "date-fns";
-import Image from "next/image";
-import { ENSAddress } from "../components/ENSAddress";
-import { LoadingIndicatorWrapper } from "../components/LoadingIndicator";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Collectors from "../components/Collectors";
 import { Navigation } from "../components/Navigation";
 import SocialMeta from "../components/SocialMeta";
-import { Ellipsis2, Mono, Title } from "../components/Typography";
-import { graphQlClient } from "../graphql/client";
-import { useActivityFeedQuery } from "../graphql/subgraph";
-import { useEtherscanURL } from "../hooks/useEtherscanURL";
-import { getIsEdition, getOriginalId } from "../utils/tokenIds";
+import Transactions from "../components/Transactions";
+import { monoStyles, Title } from "../components/Typography";
+import { firstParam } from "../utils/firstParam";
 
 const Content = styled.article`
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  padding: 8rem 2vw;
+  padding: 8rem 1vw;
   max-width: 64rem;
   margin: 0 auto;
 
@@ -32,74 +29,67 @@ const Content = styled.article`
   }
 `;
 
-const Grid = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
+const Header = styled.header`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
-
+  grid-gap: 1rem;
+  padding: 0 1vw;
   @media (min-width: 32rem) {
-    padding-bottom: 4.5rem;
+    grid-template-columns: 1fr max-content;
+    align-items: baseline;
   }
-
-  @media (min-width: 48rem) {
-    gap: 2rem;
-    grid-template-columns: 1fr 1fr;
+  @media (min-width: 80rem) {
+    padding: 0 1vw;
   }
+`;
 
+const Tabs = styled.nav`
+  display: flex;
+  gap: 2rem;
   @media (min-width: 80rem) {
     gap: 2vw;
-    padding-bottom: 6vw;
   }
 `;
 
-const GridItem = styled.li`
-  display: grid;
-  grid-template-columns: 8rem minmax(0, 1fr);
-  gap: 1.5rem;
-  align-items: center;
-  border-top: 1px solid rgba(var(--foreground-alpha), 0.1);
-  padding-top: 1rem;
-
-  @media (min-width: 48rem) {
-    padding-top: 2rem;
+const Tab = styled.a<{ isActive: boolean }>`
+  ${monoStyles};
+  opacity: ${(p) => (p.isActive ? 1 : 0.48)};
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  &:hover {
+    opacity: 1;
+    text-decoration: none;
   }
-
-  @media (min-width: 80rem) {
-    grid-template-columns: 8vw minmax(0, 1fr);
-    padding-top: 2vw;
-    gap: 1.5vw;
+  &[data-reach-tab][data-selected] {
+    opacity: 1;
   }
 `;
 
-const TokenImage = styled.figure`
-  width: 100%;
-  position: relative;
-  margin: 0 auto;
+enum TabType {
+  Transactions,
+  Collectors,
+  Collected,
+}
 
-  a {
-    display: block;
-    cursor: inherit;
+function urlTabToEnum(urlTab?: string): TabType {
+  if (urlTab && urlTab.toLowerCase() === "collectors") {
+    return TabType.Collectors;
   }
-
-  @media (orientation: landscape) {
-    max-width: 100vh;
+  if (urlTab && urlTab.toLowerCase() === "collected") {
+    return TabType.Collected;
   }
-`;
-
-enum TransferType {
-  Transfer = "Transfer",
-  Purchase = "Purchase",
-  RootsClaim = "RootsClaim",
-  Burn = "Burn",
+  return TabType.Transactions;
 }
 
 export default function Feed() {
-  const { data, isLoading } = useActivityFeedQuery(graphQlClient);
-  const feed = (data && data.transfers) || [];
-  const etherscan = useEtherscanURL();
+  const router = useRouter();
+  const { tab: urlTab } = router.query;
+
+  const tabs = [
+    { name: "Transactions", type: TabType.Transactions },
+    { name: "Collectors", type: TabType.Collectors },
+    // { name: "Collected", type: TabType.Collected },
+  ];
+  const currentTab = urlTabToEnum(firstParam(urlTab));
 
   return (
     <main>
@@ -112,78 +102,27 @@ export default function Feed() {
       <Navigation />
 
       <Content>
-        <header>
+        <Header>
           <Title>Feed</Title>
-          {feed.length > 0 && (
-            <Mono subdued>Latest {feed.length} transactions</Mono>
-          )}
-        </header>
-
-        {isLoading && (
-          <LoadingIndicatorWrapper>
-            <LoadingIndicatorWrapper />
-          </LoadingIndicatorWrapper>
-        )}
-
-        {feed.length > 0 && !isLoading && (
-          <Grid>
-            {feed.map((tx) => (
-              <GridItem key={tx.txHash}>
-                <TokenImage>
-                  <a href={`${etherscan}/tx/${tx.txHash}`}>
-                    <Image
-                      src={
-                        getIsEdition(tx.tokenId)
-                          ? `/tokens/${getOriginalId(tx.tokenId)}.svg`
-                          : `/tokens/${tx.tokenId}.jpg`
-                      }
-                      width={2800}
-                      height={2800}
-                      layout="responsive"
-                      alt=""
-                    />
-                  </a>
-                </TokenImage>
-                <div>
-                  <div>
-                    <Mono>
-                      <Ellipsis2>
-                        <span>
-                          <ENSAddress address={tx.to.address} />
-                        </span>
-                      </Ellipsis2>
-                      <Mono subdued>
-                        No. {getOriginalId(tx.tokenId)}
-                        {getIsEdition(tx.tokenId) && " (Edition)"}
-                      </Mono>
-                    </Mono>
-                  </div>
-                  <Mono subdued size="small" margin="8 0 0">
-                    <a href={`${etherscan}/tx/${tx.txHash}`}>
-                      {tx.txType === TransferType.Transfer && (
-                        <>
-                          Transferred from{" "}
-                          <ENSAddress address={tx.from.address} />
-                        </>
-                      )}
-                      {tx.txType === TransferType.Purchase && "Purchased"}
-                      {tx.txType === TransferType.RootsClaim && (
-                        <>Used Roots #{tx.rootsId}</>
-                      )}
-                      {tx.txType === TransferType.Burn && "Burned"}{" "}
-                      {formatDistanceToNowStrict(
-                        new Date(tx.timestamp * 1000),
-                        {
-                          addSuffix: true,
-                        }
-                      )}
-                    </a>
-                  </Mono>
-                </div>
-              </GridItem>
+          <Tabs>
+            {tabs.map((tab) => (
+              <Link
+                key={`tab_${tab.name}`}
+                href={{
+                  pathname: router.pathname,
+                  query: { tab: tab.name.toLowerCase() },
+                }}
+                replace
+                passHref
+              >
+                <Tab isActive={currentTab === tab.type}>{tab.name}</Tab>
+              </Link>
             ))}
-          </Grid>
-        )}
+          </Tabs>
+        </Header>
+
+        {currentTab === TabType.Transactions && <Transactions />}
+        {currentTab === TabType.Collectors && <Collectors />}
       </Content>
     </main>
   );
