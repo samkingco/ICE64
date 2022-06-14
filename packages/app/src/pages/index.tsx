@@ -114,7 +114,7 @@ export default function Index() {
         text={
           cursorVisible
             ? relPos.x > 0.5
-              ? "Edition of 32"
+              ? "Edition of 64"
               : "Original 1 of 1"
             : ""
         }
