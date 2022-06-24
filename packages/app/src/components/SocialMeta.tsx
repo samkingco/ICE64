@@ -16,7 +16,7 @@ export default function SocialMeta({
   const baseUrl = "https://ice64.com";
   const url = `${baseUrl}${router.asPath}`;
   const ogImage = socialImage
-    ? `${baseUrl}/${socialImage}`
+    ? `${baseUrl}${socialImage}`
     : `${baseUrl}/og-image-text.png`;
 
   return (
