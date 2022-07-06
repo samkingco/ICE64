@@ -23,6 +23,7 @@ const Content = styled.article`
     gap: 4vw;
     padding-top: 12vw;
     padding-bottom: 16vw;
+    max-width: 64vw;
   }
 `;
 
